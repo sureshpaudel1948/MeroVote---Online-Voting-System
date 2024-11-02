@@ -24,14 +24,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['role'] = $user['role'];
 
         // Redirect based on the user's role (admin or voter)
-        if (is_admin()) {
-            redirect('../admin_dashboard.html'); // Assuming admin has a separate dashboard
+        if ($user['role'] == 'admin') {
+            header('Location: ../dashboard.php'); // Admin dashboard
         } else {
-            redirect('../dashboard.html'); // Redirect normal users to the dashboard
+            header('Location: ../dashboard.php'); // Voter dashboard
         }
+        exit();
     } else {
         // Show an error message if credentials are invalid
         echo "Invalid phone number or password!";
     }
 }
-?>
