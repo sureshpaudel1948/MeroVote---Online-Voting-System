@@ -18,12 +18,19 @@ if (!isset($_SESSION['user_id'])) {
 <body>
     <div class="container mt-4">
         <h1>Welcome <?php echo ($_SESSION['role'] == 'admin') ? 'Admin' : 'Voter'; ?>!</h1>
-        
+        <!-- Display success/failure message -->
+        <?php if (isset($message)): ?>
+            <div class="alert alert-<?php echo $msg_type; ?>" role="alert">
+                <?php echo $message; ?>
+            </div>
+        <?php endif; ?>
+
         <?php if ($_SESSION['role'] == 'admin'): ?>
             <!-- Admin Panel Content -->
             <div id="adminPanel">
                 <h2>Admin Panel</h2>
                 <p>Here you can manage elections, candidates, and more.</p>
+                <a href="elections.php" class="btn btn-success mb-3">Create New Election</a>
                 <!-- Add other admin functionalities here -->
             </div>
         <?php else: ?>

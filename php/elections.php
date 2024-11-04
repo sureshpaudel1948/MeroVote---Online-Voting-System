@@ -1,27 +1,34 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    // Redirect non-admin users to the dashboard or login page
     header('Location: dashboard.php');
     exit();
 }
 
-// Include database configuration
 include 'db_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and retrieve form inputs
     $election_name = htmlspecialchars($_POST['election_name']);
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
 
-    // Insert the election details into the database
-    $stmt = $pdo->prepare("INSERT INTO elections (name, start_date, end_date) VALUES (?, ?, ?)");
-    if ($stmt->execute([$election_name, $start_date, $end_date])) {
-        echo "<p>Election created successfully!</p>";
-    } else {
-        echo "<p>Error creating election. Please try again.</p>";
+    try {
+        $stmt = $pdo->prepare("INSERT INTO elections (name, start_date, end_date) VALUES (?, ?, ?)");
+        if ($stmt->execute([$election_name, $start_date, $end_date])) {
+            $_SESSION['message'] = "Election created successfully!";
+            $_SESSION['msg_type'] = "success";
+        } else {
+            $_SESSION['message'] = "Error creating election. Please try again.";
+            $_SESSION['msg_type'] = "danger";
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Database error: " . $e->getMessage();
+        $_SESSION['msg_type'] = "danger";
     }
+
+    // Redirect back to dashboard.php with the message
+    header('Location: dashboard.php');
+    exit();
 }
 ?>
 
