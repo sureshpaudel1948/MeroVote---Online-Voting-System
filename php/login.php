@@ -83,7 +83,7 @@ ob_end_flush();
             <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
         <?php endif; ?>
 
-        <form id="loginForm" method="POST" action="login.php">
+        <form id="loginForm" method="POST" action="./login.php">
             <div class="mb-3">
                 <label for="phone-number" class="form-label">Phone Number</label>
                 <input type="text" class="form-control" id="phone-number" name="phone-number"
@@ -109,7 +109,7 @@ ob_end_flush();
         </form>
 
         <div class="mt-3 text-center">
-            <p>Don't have an account? <a href="register.html">Register here</a></p>
+            <p>Don't have an account? <a href="./register.php">Register here</a></p>
         </div>
     </main>
 

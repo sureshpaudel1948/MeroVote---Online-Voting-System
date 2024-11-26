@@ -5,8 +5,42 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Include database configuration
+include 'db_config.php';
+
 // Define user role from the session
 $userRole = $_SESSION['role'];
+
+// Fetch elections for admin
+$elections = [];
+if ($userRole === 'admin') {
+    try {
+        $stmt = $pdo->query("SELECT id, name, start_date, end_date FROM elections ORDER BY start_date DESC");
+        $elections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        die("Error fetching elections: " . $e->getMessage());
+    }
+}
+else {
+    // Fetch ongoing and expired elections for voters
+    $ongoingElections = [];
+    $expiredElections = [];
+    $currentDate = date('Y-m-d');
+
+    try {
+        $stmt = $pdo->query("SELECT id, name, start_date, end_date FROM elections ORDER BY start_date ASC");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($row['start_date'] <= $currentDate && $row['end_date'] >= $currentDate) {
+                $ongoingElections[] = $row;
+            } elseif ($row['end_date'] < $currentDate) {
+                $expiredElections[] = $row;
+            }
+        }
+    } catch (PDOException $e) {
+        die("Error fetching elections: " . $e->getMessage());
+    }
+}
+?>
 ?>
 
 <!doctype html>
@@ -57,25 +91,57 @@ $userRole = $_SESSION['role'];
                             <th scope="col">Election Name</th>
                             <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
-                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody id="adminElectionsTable">
-                        <!-- Dynamically populated -->
+                        <?php if (!empty($elections)): ?>
+                            <?php foreach ($elections as $election): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($election['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($election['start_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($election['end_date']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="3" class="text-center">No elections found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         <?php else: ?>
-            <!-- User Panel -->
-            <div id="userPanel" class="mt-5">
+             <!-- Voter Panel -->
+             <div id="userPanel" class="mt-5">
                 <h2>Ongoing Elections</h2>
                 <div id="ongoingElections">
-                    <!-- Dynamically populated -->
+                    <ul class="list-group">
+                        <?php if (!empty($ongoingElections)): ?>
+                            <?php foreach ($ongoingElections as $election): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <?php echo htmlspecialchars($election['name']); ?>
+                                    <a href="vote.php?election_id=<?php echo $election['id']; ?>" class="btn btn-primary">Vote Now</a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="list-group-item text-center">No ongoing elections available.</li>
+                        <?php endif; ?>
+                    </ul>
                 </div>
 
                 <h2 class="mt-5">Expired Elections</h2>
                 <div id="expiredElections">
-                    <!-- Dynamically populated -->
+                    <ul class="list-group">
+                        <?php if (!empty($expiredElections)): ?>
+                            <?php foreach ($expiredElections as $election): ?>
+                                <li class="list-group-item">
+                                    <?php echo htmlspecialchars($election['name']); ?> (Ended on <?php echo htmlspecialchars($election['end_date']); ?>)
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="list-group-item text-center">No expired elections found.</li>
+                        <?php endif; ?>
+                    </ul>
                 </div>
             </div>
         <?php endif; ?>
@@ -88,18 +154,8 @@ $userRole = $_SESSION['role'];
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
-    <script src="js/script.js"></script>
     <script>
-        // Display Admin or Voter panel based on the user's role
-        const userRole = "<?php echo $userRole; ?>";
-        
-        if (userRole === "admin") {
-            document.getElementById("adminPanel").style.display = "block";
-        } else {
-            document.getElementById("userPanel").style.display = "block";
-        }
-
-        // Function to redirect to elections.php to create a new election
+        // Redirect to create election page
         function createElection() {
             window.location.href = "elections.php";
         }

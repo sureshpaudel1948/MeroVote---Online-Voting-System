@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (email === 'admin@votingportal.com' && password === 'admin123') {
                 alert('Login successful');
                 // Redirect to dashboard
-                window.location.href = 'dashboard.html';
+                window.location.href = 'php/dashboard.php';
             } else {
                 alert('Invalid email or password');
             }
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
     
                 // Send the data to the backend via AJAX
-                fetch('register.php', {
+                fetch('/php/register.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         alert(`Registration successful for ${name}`);
                         // Redirect to login page after successful registration
-                        window.location.href = 'login.html';
+                        window.location.href = '../php/login.php';
                     }
                 })
                 .catch(error => {

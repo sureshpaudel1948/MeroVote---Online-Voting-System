@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Execute the statement with the provided data
         if ($stmt->execute([$full_name, $phone_number, $password, $role])) {
             // Redirect to login page upon successful registration
-            header("Location: ../login.php");
+            header("Location: login.php");
             exit;
         } else {
             // Output an error if the registration fails
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <main class="login-container">
         <h2>Create Your Account</h2>
-        <form id="registerForm" action="php/register.php" method="POST" onsubmit="return validateForm()">
+        <form id="registerForm" action="register.php" method="POST" onsubmit="return validateForm()">
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name"
@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
 
         <div class="mt-3 text-center">
-            <p>Already have an account? <a href="login.php">Login here</a></p>
+            <p>Already have an account? <a href="./login.php">Login here</a></p>
         </div>
     </main>
 
