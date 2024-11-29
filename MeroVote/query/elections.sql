@@ -1,0 +1,6 @@
+CREATE TABLE elections (
+id SERIAL PRIMARY KEY,
+name VARCHAR (256) NOT NULL,
+start_date DATE NOT NULL,
+end_date DATE NOT NULL
+);
