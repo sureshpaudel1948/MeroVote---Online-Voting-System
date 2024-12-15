@@ -208,6 +208,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         font-weight: bold;
     }
 
+    /* Style for the live vote count list */
+    .live-vote-count {
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #f9f9ff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style for individual vote details */
+    .vote-details {
+        font-size: 1.1rem;
+        color: #343a40;
+    }
+
+    /* Badge styling for the vote count */
+    .vote-badge {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 20px;
+        box-shadow: 0 2px 6px rgba(0, 255, 0, 0.4);
+    }
+
+    /* Add hover effect for list items */
+    .live-vote-count .list-group-item:hover {
+        background-color: #eef7ff;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 123, 0.2);
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Styling for the no votes yet message */
+    .live-vote-count .text-muted {
+        font-style: italic;
+        color: #6c757d !important;
+        font-size: 0.95rem;
+    }
+
     footer {
         background-color: #343a40;
         color: #ffffff;
@@ -243,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <a class="nav-link active" href="voter_dashboard.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="voter_login.php">Logout</a>
+                            <a class="nav-link" href="../index.html">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -270,24 +309,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                     <!-- Display live vote counts -->
-                    <h6 class="text-primary">Live Vote Count:</h6>
-                    <ul class="list-group mb-3">
+                    <h6 class="text-primary mt-3">Live Vote Count:</h6>
+                    <ul class="list-group live-vote-count mb-3">
                         <?php
                             $found = false;
                             foreach ($voteCounts as $vote) {
                                 if ($vote['candidate_name'] == $candidate['name']) {
                                     $found = true;
                                     echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
-                                    echo htmlspecialchars($vote['candidate_name']);
-                                    echo "<span class='badge bg-primary rounded-pill'>" . htmlspecialchars($vote['vote_count']) . "</span>";
+                                    echo "<div class='vote-details d-flex align-items-center'>";
+                                    echo "<span class='fw-bold'>" . htmlspecialchars($vote['candidate_name']) . "</span>";
+                                    echo "</div>";
+                                    echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
                                     echo "</li>";
                                 }
                             }
                             if (!$found) {
-                                echo "<li class='list-group-item'>No votes yet.</li>";
+                                echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
                             }
                             ?>
                     </ul>
+
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -295,7 +337,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
             </div>
         </form>
-
         <!-- Feedback Modal -->
         <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -315,7 +356,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
+
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if (!empty($modalMessage)): ?>
+        var feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+        feedbackModal.show();
+        <?php endif; ?>
+    });
+    </script>
 
 </body>
 
