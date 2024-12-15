@@ -63,12 +63,35 @@ ob_end_flush();
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.html">MeroVote - Online Voting Portal</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                <!-- Brand -->
+                <a class="navbar-brand" href="admin_login.php">MeroVote - Online
+                    Voting Portal</a>
+
+                <!-- Toggler Button for Small Screens -->
+                <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Navbar Content -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Navbar Items -->
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="admin_login.php">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html#how">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="all-elections.php">Elections</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.php">Register</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>
@@ -78,7 +101,7 @@ ob_end_flush();
 
         <!-- Display error message if login failed -->
         <?php if ($error_message): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
+            <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
         <?php endif; ?>
 
         <form id="loginForm" method="POST" action="./admin_login.php">
@@ -124,18 +147,18 @@ ob_end_flush();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
     <script>
-    function togglePasswordVisibility(fieldId) {
-        const passwordField = document.getElementById(fieldId);
-        const icon = document.querySelector('#togglePasswordIcon i');
+        function togglePasswordVisibility(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = document.querySelector('#togglePasswordIcon i');
 
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
         }
-    }
     </script>
 </body>
 

@@ -8,8 +8,9 @@ body {
 }
 
 /* Navbar Styling */
-.navbar {
+/* .navbar {
     background-color: #343a40;
+    float: right;
 }
 
 .navbar-brand {
@@ -25,7 +26,39 @@ body {
 .nav-link:hover {
     background-color: #495057;
     border-radius: 5px;
+} */
+
+
+.navbar {
+    background-color: #343a40;
+    /* Light background */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
 }
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #ffffff !important;
+    /* Brand color */
+}
+
+.nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #0056b3;
+    /* Hover effect */
+}
+
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+
 
 /* Jumbotron */
 .jumbotron {
