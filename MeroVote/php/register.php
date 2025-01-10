@@ -4,7 +4,7 @@ include 'db_config.php';
 include 'utils.php';
 
 try {
-    $pdo = new PDO("pgsql:host=$host;dbname=$db", $user, $password); // Corrected $db usage
+    $pdo = new PDO("pgsql:host=$host;dbname=$db", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
@@ -18,7 +18,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Input validation
     if (empty($name) || empty($phoneNumber) || empty($password) || empty($role)) {
-        echo "All fields are required.";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showModal('Error', 'All fields are required.');
+            });
+          </script>";
+        exit;
+    }
+
+    if (!preg_match('/^[0-9]{10}$/', $phoneNumber)) {
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showModal('Error', 'Invalid phone number format. Must be 10 digits.');
+            });
+          </script>";
         exit;
     }
 
@@ -28,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($role === "voter") {
             $electionType = trim($_POST["election-type"]);
 
+            // School/College Level Voter
             if ($electionType === "college") {
                 $studentId = trim($_POST["student_id"]);
                 $gender = trim($_POST["gender"]);
@@ -43,18 +57,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ]);
 
                 if ($stmt->rowCount() > 0) {
-                    echo "Data updated successfully.";
-
-                    // Redirect to Admin login page
-                    header("Location: voter_login.php");
-                    exit;
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showModal('Success', 'Data updated successfully. Redirecting...');
+                            setTimeout(() => { window.location.href = 'voter_login.php'; }, 3000);
+                        });
+                      </script>";
+                } else {
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showModal('Error', 'No matching student ID found. Update failed. ');
+                        });
+                      </script>";
                 }
+            }
 
-                // Check if any rows were affected
-                if ($stmt->rowCount() == 0) {
-                    echo "No student found with the given Student ID.";
-                }
-            } elseif ($electionType === "local") {
+            // Local Level Voter
+            elseif ($electionType === "local") {
                 $localId = trim($_POST["local_id"]);
                 $gender = trim($_POST["gender"]);
                 $address = trim($_POST["address"]);
@@ -71,18 +90,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ]);
 
                 if ($stmt->rowCount() > 0) {
-                    echo "Data updated successfully.";
-
-                    // Redirect to Admin login page
-                    header("Location: voter_login.php");
-                    exit;
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showModal('Success', 'Data updated successfully. Redirecting...');
+                            setTimeout(() => { window.location.href = 'voter_login.php'; }, 3000);
+                        });
+                      </script>";
+                } else {
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showModal('Error', 'No matching local voter found. Update failed.');
+                        });
+                      </script>";
                 }
+            }
 
-                // Check if any rows were affected
-                if ($stmt->rowCount() == 0) {
-                    echo "No local voter found with the given Local ID.";
-                }
-            } elseif ($electionType === "org") {
+            // Organizational Level Voter
+            elseif ($electionType === "org") {
                 $employeeId = trim($_POST["employee_id"]);
                 $gender = trim($_POST["gender"]);
                 $address = trim($_POST["address"]);
@@ -97,20 +121,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     ':employeeId' => $employeeId,
                     ':address' => $address
                 ]);
+
                 if ($stmt->rowCount() > 0) {
-                    echo "Data updated successfully.";
-
-                    // Redirect to Admin login page
-                    header("Location: voter_login.php");
-                    exit;
-                }
-
-                // Check if any rows were affected
-                if ($stmt->rowCount() == 0) {
-                    echo "No employee found with the given employee ID.";
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showModal('Success', 'Data updated successfully. Redirecting...');
+                            setTimeout(() => { window.location.href = 'voter_login.php'; }, 3000);
+                        });
+                      </script>";
+                } else {
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showModal('Error', 'No matching employee found. Update failed.');
+                        });
+                      </script>";
                 }
             }
-        } elseif ($role === "admin") {
+        }
+
+        // Admin
+        elseif ($role === "admin") {
             $adminId = trim($_POST["admin_id"]);
 
             $sql = "UPDATE admins
@@ -123,22 +153,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ]);
 
             if ($stmt->rowCount() > 0) {
-                echo "Data updated successfully.";
-
-                // Redirect to Admin login page
-                header("Location: admin_login.php");
-                exit;
-            }
-            // Check if any rows were affected
-            if ($stmt->rowCount() == 0) {
-                echo "No admin found with the given ID.";
+                echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        showModal('Success', 'Data updated successfully. Redirecting...');
+                        setTimeout(() => { window.location.href = 'admin_login.php'; }, 3000);
+                    });
+                  </script>";
+            } else {
+                echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        showModal('Error', 'No admin found with the given ID.');
+                    });
+                  </script>";
             }
         }
     } catch (PDOException $e) {
-        echo "Error updating data: " . $e->getMessage();
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showModal('Error', 'Error updating data: " . addslashes($e->getMessage()) . "');
+            });
+          </script>";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -206,32 +244,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <input type="text" class="form-control" id="phone_number" name="phone_number"
                     placeholder="Enter your phone number" required />
             </div>
-
             <!-- Password Field -->
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="input-group">
                     <input type="password" class="form-control" id="password" name="password"
                         placeholder="Enter your password" required>
-                    <span class="input-group-text" id="togglePasswordIcon1"
+                    <span class="input-group-text toggle-password" id="togglePasswordIcon1"
                         onclick="togglePasswordVisibility('password', 'togglePasswordIcon1')">
                         <i class="fas fa-eye"></i>
                     </span>
                 </div>
             </div>
 
+
             <!-- Confirm Password Field -->
             <div class="mb-3">
                 <label for="confirm-password" class="form-label">Confirm Password</label>
                 <div class="input-group">
                     <input type="password" class="form-control" id="confirm-password" name="confirm-password"
-                        placeholder="Confirm your password" required />
-                    <span class="input-group-text" id="togglePasswordIcon2"
+                        placeholder="Confirm your password" required /> <span class="input-group-text toggle-password"
+                        id="togglePasswordIcon2"
                         onclick="togglePasswordVisibility('confirm-password', 'togglePasswordIcon2')">
                         <i class="fas fa-eye"></i>
                     </span>
+
                 </div>
             </div>
+
+
 
             <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
@@ -263,6 +304,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div id="additional-fields">
             </div>
 
+            <!-- Modal HTML -->
+            <div id="customModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalMessage"></p>
+                    <button class="modal-btn" onclick="closeModal()">OK</button>
+                </div>
+            </div>
             <div class="mt-3 text-center log-cont">
                 <p>Already have an account?</p>
                 <div class="login">
@@ -272,7 +322,114 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <button type="submit" class="btn btn-primary">Register</button>
+
+
+            <style>
+                /* Modal Background */
+                .modal {
+                    position: fixed;
+                    z-index: 1000;
+                    /* Ensure it appears on top of everything */
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: none;
+                    /* Keep it hidden initially */
+                    background: rgba(0, 0, 0, 0.6);
+                    backdrop-filter: blur(5px);
+                    /* Smooth blur effect */
+                    align-items: center;
+                    justify-content: center;
+                    /* Perfectly center the modal */
+                }
+
+
+                /* Modal Content */
+                .modal-content {
+                    width: 300px;
+                    /* Reduced size */
+                    max-width: 90%;
+                    padding: 15px;
+                    /* Adjusted padding */
+                    border-radius: 10px;
+                    /* Slightly smaller radius */
+                    background: #fff;
+                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+                    text-align: center;
+                    animation: modalFadeIn 0.3s ease-in-out;
+                }
+
+                /* Modal Title */
+                .modal-content h2 {
+                    font-size: 20px;
+                    /* Reduced font size */
+                    margin-bottom: 10px;
+                    color: #333;
+                }
+
+                /* Modal Message */
+                .modal-content p {
+                    font-size: 14px;
+                    /* Smaller text */
+                    margin-bottom: 15px;
+                    /* Adjust spacing */
+                    color: #555;
+                    line-height: 1.5;
+                }
+
+                /* Close Button */
+                .close {
+                    position: absolute;
+                    top: 10px;
+                    right: 15px;
+                    color: #888;
+                    font-size: 20px;
+                    /* Slightly smaller size */
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+                .close:hover {
+                    color: #444;
+                }
+
+                /* Modal Button */
+                .modal-btn {
+                    padding: 8px 16px;
+                    /* Slightly smaller padding */
+                    border: none;
+                    border-radius: 6px;
+                    /* Smaller radius */
+                    background: #007bff;
+                    color: #fff;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: 0.3s;
+                }
+
+                .modal-btn:hover {
+                    background: #0056b3;
+                }
+
+                /* Animation */
+                @keyframes modalFadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            </style>
+
+
         </form>
+
+
     </main>
 
     <!-- Add JavaScript for password matching and visibility -->
@@ -293,15 +450,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Validate form: Check if passwords match
         function validateForm() {
+            const phoneNumber = document.getElementById("phone_number").value;
             const password = document.getElementById("password").value;
             const confirmPassword = document.getElementById("confirm-password").value;
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return false; // Prevent form submission
+            // Validate phone number format (10 digits)
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                showModal("Error", "Invalid phone number. Please enter a 10-digit number.");
+                return false;
             }
-            return true; // Allow form submission if passwords match
+
+            // Validate password match
+            if (password !== confirmPassword) {
+                showModal("Error", "Passwords do not match.");
+                return false;
+            }
+
+            return true; // Form is valid
         }
+
 
         function toggleRoleFields() {
             const role = document.getElementById('role').value;
@@ -372,6 +540,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>`;
             }
         }
+
+
+        // Modal JavaScript
+
+        // Show Modal
+        function showModal(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+
+        // Navbar Collapsing on Small Screens
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const navbar = document.querySelector('.navbar-collapse');
+                if (navbar.classList.contains('show')) {
+                    navbar.classList.remove('show');
+                }
+            });
+        });
     </script>
 
     <footer class="bg-dark text-white text-center py-3">
@@ -380,7 +574,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="js/script.js"></script>
 </body>
 

@@ -1,25 +1,17 @@
 <?php
 session_start();
-// Debugging session data
-// echo "User Role: " . $_SESSION['user_role']; // Check what user role is set
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ./voter_login.php'); // Redirect to login if not logged in
+    header('Location: ./voter_login.php');
     exit();
 }
 
-// Include database configuration
 include 'db_config.php';
 
-// Get the current user's ID and role
 $user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['user_role'];
 
-// Fetch the user role from session (already set during login)
-$user_role = $_SESSION['user_role'];  // Should be 'School/College Level Election', 'Local Level Election', or 'Organizational Level Election'
-
-// Set election types based on the user's role
+// Role-based filtering of election types
 $allowedElectionType = '';
-
-// Use the user role from the session directly to filter elections
 if ($user_role == "School/College Level Election") {
     $allowedElectionType = 'School/College Level Election';
 } elseif ($user_role == "Local Level Election") {
@@ -28,34 +20,74 @@ if ($user_role == "School/College Level Election") {
     $allowedElectionType = 'Organizational Level Election';
 }
 
-// Ensure the role is set and valid
 if (empty($allowedElectionType)) {
     die("Invalid user role.");
 }
 
-// Fetch elections for the user based on allowed election type
 $ongoingElections = [];
 $expiredElections = [];
 $currentDate = date('Y-m-d');
 
-
 try {
-    // Fetch ongoing and expired elections for voters based on allowed election type
-    $stmt = $pdo->prepare("SELECT id, election_type, name, start_date, end_date FROM elections WHERE election_type = :election_type ORDER BY start_date ASC");
+    // Fetch all elections based on election type
+    $stmt = $pdo->prepare("
+        SELECT id, election_type, name, start_date, end_date
+        FROM elections
+        WHERE election_type = :election_type
+        ORDER BY start_date ASC
+    ");
     $stmt->execute(['election_type' => $allowedElectionType]);
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // Categorize elections as ongoing or expired
+        // Separate ongoing and expired elections
         if ($row['start_date'] <= $currentDate && $row['end_date'] >= $currentDate) {
-            $ongoingElections[] = $row;
+            $ongoingElections[] = $row; // Ongoing elections
         } elseif ($row['end_date'] < $currentDate) {
-            $expiredElections[] = $row;
+            // Ensure unique expired election names
+            if (!array_key_exists($row['name'], $expiredElections)) {
+                $expiredElections[$row['name']] = $row; // Expired elections
+            }
+        }
+    }
+
+    // Process winner details for expired elections
+    foreach ($expiredElections as &$election) {
+        $election['winner_name'] = "No Winner";
+        $election['winner_image'] = "default.jpg";
+        $election['winner_votes'] = 0;
+
+        $electionName = $election['name']; // Fetch using election name
+
+        // Fetch winner based on votes count for each expired election
+        $winnerStmt = $pdo->prepare("
+    SELECT 
+        c.name AS candidate_name, 
+        c.photo AS candidate_image, 
+        COUNT(v.id) AS total_votes
+    FROM candidates c
+    LEFT JOIN votes v 
+        ON CAST(c.name AS VARCHAR) = CAST(v.candidate_id AS VARCHAR) AND v.election_id = :election_name
+    WHERE c.election_id = :election_name
+    GROUP BY c.name, c.photo
+    ORDER BY total_votes DESC
+    LIMIT 1
+");
+        $winnerStmt->execute(['election_name' => $electionName]);
+        $winner = $winnerStmt->fetch(PDO::FETCH_ASSOC);
+
+        // Update winner details if votes exist
+        if ($winner && $winner['total_votes'] > 0) {
+            $election['winner_name'] = $winner['candidate_name'];
+            $election['winner_image'] = $winner['candidate_image'];
+            $election['winner_votes'] = $winner['total_votes'];
         }
     }
 } catch (PDOException $e) {
     die("Error fetching elections: " . $e->getMessage());
 }
 ?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -155,6 +187,18 @@ try {
                                     <p class="card-text">
                                         <small>Ended on: <?php echo htmlspecialchars($election['end_date']); ?></small>
                                     </p>
+
+                                    <!-- Winner Details -->
+                                    <div class="winner-details text-center mt-3">
+                                        <h6 class="text-success"><strong>Winner:</strong>
+                                            <?php echo htmlspecialchars($election['winner_name']); ?></h6>
+                                        <img src="./candidates_photos/<?php echo htmlspecialchars($election['winner_image']); ?>"
+                                            alt="Winner Image" class="rounded-circle"
+                                            style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a745;">
+                                        <p class="mt-2">Votes:
+                                            <strong><?php echo htmlspecialchars($election['winner_votes']); ?></strong>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -165,6 +209,9 @@ try {
                     </div>
                 <?php endif; ?>
             </div>
+
+
+
         </div>
     </main>
 

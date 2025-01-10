@@ -154,7 +154,7 @@ ob_end_flush();
                 <div class="input-group">
                     <input type="password" class="form-control" id="password" name="password"
                         placeholder="Enter your password" required>
-                    <span class="input-group-text" id="togglePasswordIcon"
+                    <span class="input-group-text toggle-password" id="togglePasswordIcon"
                         onclick="togglePasswordVisibility('password')">
                         <i class="fas fa-eye"></i>
                     </span>

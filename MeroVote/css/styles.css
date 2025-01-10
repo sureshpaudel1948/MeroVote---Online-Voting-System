@@ -8,26 +8,6 @@ body {
 }
 
 /* Navbar Styling */
-/* .navbar {
-    background-color: #343a40;
-    float: right;
-}
-
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
-    color: #ffffff !important;
-}
-
-.nav-link {
-    color: #ffffff !important;
-}
-
-.nav-link:hover {
-    background-color: #495057;
-    border-radius: 5px;
-} */
-
 
 .navbar {
     background-color: #343a40;
@@ -59,28 +39,95 @@ body {
     outline: none;
 }
 
-
 /* Jumbotron */
 .jumbotron {
-    background-color: #ffffff;
-    padding: 2rem 1rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to right, #007bff, #00c851);
+    /* Gradient Background */
+    color: #ffffff;
+    /* White text */
+    padding: 3rem 2rem;
+    /* Increased padding */
+    border-radius: 15px;
+    /* Softer rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* Enhanced shadow */
     text-align: center;
 }
 
 .jumbotron h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 3rem;
+    /* Larger font for the main heading */
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.jumbotron h1 .highlight {
+    color: #ffd700;
+    /* Gold color for emphasis */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    /* Subtle text shadow */
+}
+
+.jumbotron p.lead {
+    font-size: 1.5rem;
+    /* Larger lead text */
+    margin-bottom: 1.5rem;
+    font-weight: 300;
 }
 
 .jumbotron p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.jumbotron .button-group {
+    margin: 1.5rem 0;
 }
 
 .jumbotron a {
-    margin: 10px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.2rem;
+    border-radius: 30px;
+    /* Rounded buttons */
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
 }
+
+.jumbotron a.btn-primary {
+    background-color: #0056b3;
+    border: none;
+}
+
+.jumbotron a.btn-primary:hover {
+    background-color: #003d80;
+    transform: scale(1.05);
+    /* Hover effect */
+}
+
+.jumbotron a.btn-success {
+    background-color: #00c851;
+    border: none;
+}
+
+.jumbotron a.btn-success:hover {
+    background-color: #00963d;
+    transform: scale(1.05);
+}
+
+.jumbotron .note {
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+.jumbotron .note a {
+    color: #ffd700;
+    /* Gold color for the link */
+    text-decoration: underline;
+    font-weight: 600;
+}
+
 
 #adminPanel {
     width: 65%;
@@ -143,6 +190,9 @@ footer a:hover {
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 0;
+    /* Prevents interference with modal z-index */
 }
 
 .login-container h2 {
@@ -150,27 +200,118 @@ footer a:hover {
     margin-bottom: 2rem;
 }
 
+/* Input Field Styling */
 .form-control {
     margin-bottom: 1.5rem;
+    padding-right: 2.5rem;
+    /* Create space for the icon */
+    height: calc(2.5rem + 2px);
+    /* Ensure consistent height for input fields */
+    position: relative;
+    /* To handle positioning of child elements */
+    width: 100%;
+    /* Ensures the input field takes full width of its container */
 }
 
+/* Button Styling */
 .btn-login {
     width: 100%;
     background-color: #17a2b8;
-    color: white
+    color: white;
 }
 
-.input-group-text {
-    cursor: pointer;
-    padding: 0;
+.btn-primary {
+    padding: 10px 20px;
+    font-size: 16px;
 }
 
-.input-group-text i {
+/* Input group */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    /* Ensure the input group spans the full width */
+}
+
+/* Input Field Styling Inside Input Group */
+.input-group .form-control {
+    padding-right: 2.5rem;
+    /* Create space for the icon */
+    height: calc(2.5rem + 2px);
+    /* Match the height of input-group-text */
+    border-radius: 0.25rem;
+    /* Ensure consistent border radius */
+    line-height: 1.5;
+    /* Adjust line height for consistency */
+}
+
+/* Icon Container Styling for toggle-password */
+.input-group-text.toggle-password {
+    position: absolute;
+    top: 50%;
+    /* Start at the center */
+    right: 0;
+    transform: translateY(-50%);
+    /* Vertically center the icon */
+    background: transparent;
+    /* Match input background */
+    border: none;
+    /* Remove default borders */
+    border-radius: 0;
+    /* Match input field's corners */
+    height: calc(2.5rem + 2px);
+    /* Match input field height */
+    width: 2.5rem;
+    /* Fixed width for the icon container */
     font-size: 1rem;
-    /* Adjust the size of the icon if needed */
+    /* Icon size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Horizontally center the icon */
+    cursor: pointer;
+    color: #6c757d;
+    /* Neutral icon color */
+    transition: color 0.3s ease;
 }
 
-/* Admin and Voter Login */
+/* Hover Effect for Icon */
+.input-group-text.toggle-password:hover {
+    color: #007bff;
+    /* Highlight icon color on hover */
+}
+
+
+/* Icon Styling */
+.input-group-text.toggle-password i {
+    font-size: 1rem;
+    line-height: 1;
+    /* Ensure consistent line height */
+}
+
+/* Handle vertical alignment for mobile/responsive design */
+.input-group .form-control:focus {
+    z-index: 2;
+    /* Ensure the input field stays above the icon */
+}
+
+/* Responsive Fix for Small Screens */
+@media (max-width: 575px) {
+    .input-group .form-control {
+        padding-right: 2rem;
+        /* Reduce space for small screens */
+    }
+
+    .input-group-text.toggle-password {
+        width: 2.5rem;
+        /* Maintain icon container size */
+    }
+}
+
+
+
+
 /* Admin and Voter Login Container */
 .log-cont {
     margin-top: 20px;
