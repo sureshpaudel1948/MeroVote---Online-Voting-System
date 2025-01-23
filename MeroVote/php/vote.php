@@ -34,12 +34,13 @@ try {
 $voteCounts = [];
 try {
     $voteStmt = $pdo->prepare("
-        SELECT v.candidate_name AS candidate_name, COUNT(v.id) AS vote_count
-        FROM votes v
-        INNER JOIN candidates c ON v.candidate_id = c.id
-        WHERE v.election_id = :election_id
-        GROUP BY v.candidate_name
-    ");
+    SELECT c.id AS candidate_id, c.name AS candidate_name, COUNT(v.id) AS vote_count
+    FROM votes v
+    INNER JOIN candidates c ON v.candidate_id = c.id
+    WHERE v.election_id = :election_id
+    GROUP BY c.id, c.name
+");
+
     $voteStmt->execute(['election_id' => $electionId]);
     $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
