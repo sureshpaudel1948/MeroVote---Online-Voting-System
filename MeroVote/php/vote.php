@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         height: 150px;
         object-fit: cover;
         border-radius: 50%;
-        border: 3px solid #ddd;
+        border: 3px solid #007bff;
         transition: border-color 0.2s, box-shadow 0.3s;
     }
 
