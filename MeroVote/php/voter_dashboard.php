@@ -38,50 +38,54 @@ try {
     ");
     $stmt->execute(['election_type' => $allowedElectionType]);
 
+    $processedExpiredElections = []; // Array to track processed election IDs
+
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Separate ongoing and expired elections
         if ($row['start_date'] <= $currentDate && $row['end_date'] >= $currentDate) {
             $ongoingElections[] = $row; // Ongoing elections
         } elseif ($row['end_date'] < $currentDate) {
-            // Ensure unique expired election names
-            if (!array_key_exists($row['name'], $expiredElections)) {
-                $expiredElections[$row['name']] = $row; // Expired elections
+            // Check if this expired election has already been processed
+            if (!in_array($row['id'], $processedExpiredElections)) {
+                $expiredElections[] = $row; // Add to expired elections
+                $processedExpiredElections[] = $row['id']; // Track processed election ID
             }
         }
     }
 
-    // Process winner details for expired elections
-    foreach ($expiredElections as &$election) {
-        $election['winner_name'] = "No Winner";
-        $election['winner_image'] = "default.jpg";
-        $election['winner_votes'] = 0;
+   // Process winner details for expired elections
+foreach ($expiredElections as &$election) {
+    $election['winner_name'] = "No Winner";
+    $election['winner_image'] = "default.jpg";
+    $election['winner_votes'] = 0;
 
-        $electionName = $election['name']; // Fetch using election name
+    $electionName = $election['name']; // Fetch using election name
 
-        // Fetch winner based on votes count for each expired election
-        $winnerStmt = $pdo->prepare("
-    SELECT 
-        c.name AS candidate_name, 
-        c.photo AS candidate_image, 
-        COUNT(v.id) AS total_votes
-    FROM candidates c
-    LEFT JOIN votes v 
-        ON CAST(c.name AS VARCHAR) = CAST(v.candidate_id AS VARCHAR) AND v.election_id = :election_name
-    WHERE c.election_id = :election_name
-    GROUP BY c.name, c.photo
-    ORDER BY total_votes DESC
-    LIMIT 1
-");
-        $winnerStmt->execute(['election_name' => $electionName]);
-        $winner = $winnerStmt->fetch(PDO::FETCH_ASSOC);
+    // Fetch winner based on votes count for each expired election
+    $winnerStmt = $pdo->prepare("
+        SELECT 
+            c.name AS candidate_name, 
+            c.photo AS candidate_image, 
+            COUNT(v.id) AS total_votes
+        FROM candidates c
+        LEFT JOIN votes v 
+            ON v.candidate_id = c.id AND v.election_id = :election_name
+        WHERE c.election_id = :election_name
+        GROUP BY c.id, c.name, c.photo
+        ORDER BY total_votes DESC
+        LIMIT 1
+    ");
+    $winnerStmt->execute(['election_name' => $electionName]);
+    $winner = $winnerStmt->fetch(PDO::FETCH_ASSOC);
 
-        // Update winner details if votes exist
-        if ($winner && $winner['total_votes'] > 0) {
-            $election['winner_name'] = $winner['candidate_name'];
-            $election['winner_image'] = $winner['candidate_image'];
-            $election['winner_votes'] = $winner['total_votes'];
-        }
+    // Update winner details if votes exist
+    if ($winner && $winner['total_votes'] > 0) {
+        $election['winner_name'] = $winner['candidate_name'];
+        $election['winner_image'] = $winner['candidate_image'];
+        $election['winner_votes'] = $winner['total_votes'];
     }
+}
+
 } catch (PDOException $e) {
     die("Error fetching elections: " . $e->getMessage());
 }
@@ -172,45 +176,54 @@ try {
                 <?php endif; ?>
             </div>
 
-            <!-- Expired Elections -->
-            <h2 class="text-danger mt-5 mb-3">Expired Elections</h2>
-            <div id="expiredElections" class="row">
-                <?php if (!empty($expiredElections)): ?>
-                    <?php foreach ($expiredElections as $election): ?>
-                        <div class="col-md-4 mb-4">
-                            <div class="card shadow-sm border-danger">
-                                <div class="card-header bg-danger text-white">
-                                    <strong><?php echo htmlspecialchars($election['election_type']); ?></strong>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($election['name']); ?></h5>
-                                    <p class="card-text">
-                                        <small>Ended on: <?php echo htmlspecialchars($election['end_date']); ?></small>
-                                    </p>
-
-                                    <!-- Winner Details -->
-                                    <div class="winner-details text-center mt-3">
-                                        <h6 class="text-success"><strong>Winner:</strong>
-                                            <?php echo htmlspecialchars($election['winner_name']); ?></h6>
-                                        <img src="./candidates_photos/<?php echo htmlspecialchars($election['winner_image']); ?>"
-                                            alt="Winner Image" class="rounded-circle"
-                                            style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a745;">
-                                        <p class="mt-2">Votes:
-                                            <strong><?php echo htmlspecialchars($election['winner_votes']); ?></strong>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="col-12 text-center">
-                        <p class="alert alert-secondary">No expired elections found.</p>
+          <!-- Expired Elections -->
+<h2 class="text-danger mt-5 mb-3">Expired Elections</h2>
+<div id="expiredElections" class="row">
+    <?php if (!empty($expiredElections)): ?>
+        <?php 
+        // Initialize a tracking array to ensure no duplicate elections are displayed
+        $renderedElections = [];
+        ?>
+        <?php foreach ($expiredElections as $election): ?>
+            <?php 
+            // Check if this election has already been rendered
+            if (in_array($election['id'], $renderedElections)) {
+                continue; // Skip duplicate elections
+            }
+            $renderedElections[] = $election['id']; // Mark election as rendered
+            ?>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <strong><?php echo htmlspecialchars($election['election_type']); ?></strong>
                     </div>
-                <?php endif; ?>
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($election['name']); ?></h5>
+                        <p class="card-text">
+                            <small>Ended on: <?php echo htmlspecialchars($election['end_date']); ?></small>
+                        </p>
+
+                        <!-- Winner Details -->
+                        <div class="winner-details text-center mt-3">
+                            <h6 class="text-success"><strong>Winner:</strong>
+                                <?php echo htmlspecialchars($election['winner_name']); ?></h6>
+                            <img src="./candidates_photos/<?php echo htmlspecialchars($election['winner_image']); ?>"
+                                alt="Winner Image" class="rounded-circle"
+                                style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a745;">
+                            <p class="mt-2">Votes:
+                                <strong><?php echo htmlspecialchars($election['winner_votes']); ?></strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="col-12 text-center">
+            <p class="alert alert-secondary">No expired elections found.</p>
+        </div>
+    <?php endif; ?>
+</div>
 
         </div>
     </main>
