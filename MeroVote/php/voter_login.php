@@ -21,60 +21,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values
     $phone_number = sanitize_input($_POST['phone-number']);
     $password = sanitize_input($_POST['password']);
+// Check if `student_id` is provided for college users
+if (!empty($_POST['student_id'])) {
+    $student_id = sanitize_input($_POST['student_id']);
+    $stmt = $pdo->prepare("SELECT * FROM users_college WHERE phone_number = ? AND student_id = ?");
+    $stmt->execute([$phone_number, $student_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Check if `student_id` is provided for college users
-    if (!empty($_POST['student_id'])) {
-        $student_id = sanitize_input($_POST['student_id']);
-        $stmt = $pdo->prepare("SELECT * FROM users_college WHERE phone_number = ? AND student_id = ?");
-        $stmt->execute([$phone_number, $student_id]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_type'] = 'college';
-            $_SESSION['user_identifier'] = $user['student_id'];  // Set session data to identify the user
-            $_SESSION['user_role'] = 'School/College Level Election'; // Set user role for elections
-            header('Location: voter_dashboard.php'); // Redirect to dashboard
-            exit();
-        }
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = trim($user['id']);  // Trim extra spaces
+        $_SESSION['user_type'] = 'college';
+        $_SESSION['user_identifier'] = trim($user['student_id']);  // Trim identifier
+        $_SESSION['user_role'] = 'School/College Level Election'; 
+        header('Location: voter_dashboard.php');
+        exit();
     }
+}
 
-    // Check if `local_id` is provided for local users
-    if (!empty($_POST['local_id'])) {
-        $local_id = sanitize_input($_POST['local_id']);
-        $stmt = $pdo->prepare("SELECT * FROM users_local WHERE phone_number = ? AND local_id = ?");
-        $stmt->execute([$phone_number, $local_id]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+// Check if `local_id` is provided for local users
+if (!empty($_POST['local_id'])) {
+    $local_id = sanitize_input($_POST['local_id']);
+    $stmt = $pdo->prepare("SELECT * FROM users_local WHERE phone_number = ? AND local_id = ?");
+    $stmt->execute([$phone_number, $local_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_type'] = 'local';
-            $_SESSION['user_identifier'] = $user['local_id'];  // Set session data to identify the user
-            $_SESSION['user_role'] = 'Local Level Election'; // Set user role for elections
-            header('Location: voter_dashboard.php'); // Redirect to dashboard
-            exit();
-        }
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = trim($user['id']);  // Trim extra spaces
+        $_SESSION['user_type'] = 'local';
+        $_SESSION['user_identifier'] = trim($user['local_id']);  // Trim identifier
+        $_SESSION['user_role'] = 'Local Level Election'; 
+        header('Location: voter_dashboard.php');
+        exit();
     }
+}
 
-    // Check if `employee_id` is provided for organizational users
-    if (!empty($_POST['employee_id'])) {
-        $employee_id = sanitize_input($_POST['employee_id']);
-        $stmt = $pdo->prepare("SELECT * FROM users_org WHERE phone_number = ? AND employee_id = ?");
-        $stmt->execute([$phone_number, $employee_id]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+// Check if `employee_id` is provided for organizational users
+if (!empty($_POST['employee_id'])) {
+    $employee_id = sanitize_input($_POST['employee_id']);
+    $stmt = $pdo->prepare("SELECT * FROM users_org WHERE phone_number = ? AND employee_id = ?");
+    $stmt->execute([$phone_number, $employee_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_type'] = 'org';
-            $_SESSION['user_identifier'] = $user['employee_id'];  // Set session data to identify the user
-            $_SESSION['user_role'] = 'Organizational Level Election'; // Set user role for elections
-            header('Location: voter_dashboard.php'); // Redirect to dashboard
-            exit();
-        }
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = trim($user['id']);  // Trim extra spaces
+        $_SESSION['user_type'] = 'org';
+        $_SESSION['user_identifier'] = trim($user['employee_id']);  // Trim identifier
+        $_SESSION['user_role'] = 'Organizational Level Election'; 
+        header('Location: voter_dashboard.php');
+        exit();
     }
+}
 
-    // If none of the above conditions match, set error message
-    $error_message = "Invalid phone number, voter ID, or password.";
+// If none of the above conditions match, set error message
+$error_message = "Invalid phone number, voter ID, or password.";
 }
 
 // Flush output buffer

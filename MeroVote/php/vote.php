@@ -19,7 +19,7 @@ if (!$electionId) {
 
 // Function to generate a hashed voter ID for anonymity
 function generateVoterHash($user_id, $election_id) {
-    return hash('sha256', $user_id . $election_id . 'AngAd');
+    return hash('sha256', trim($user_id) . '_' . trim($election_id) . '_AngAd');
 }
 
 // Fetch candidates for the election
@@ -74,6 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Generate anonymous voter hash
                 $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
+                // echo "Generated Hash: " . $voterHash; 
+
 
                 // Check if the user has already voted in this election
                 $stmt = $pdo->prepare("
