@@ -17,6 +17,11 @@ if (!$electionId) {
     die("Election ID not specified.");
 }
 
+// Function to generate a hashed voter ID for anonymity
+function generateVoterHash($user_id, $election_id) {
+    return hash('sha256', $user_id . $election_id . 'AngAd');
+}
+
 // Fetch candidates for the election
 try {
     $stmt = $pdo->prepare("SELECT id, name, photo FROM candidates WHERE election_id = :election_id");
@@ -34,13 +39,12 @@ try {
 $voteCounts = [];
 try {
     $voteStmt = $pdo->prepare("
-    SELECT c.id AS candidate_id, c.name AS candidate_name, COUNT(v.id) AS vote_count
-    FROM votes v
-    INNER JOIN candidates c ON v.candidate_id = c.id
-    WHERE v.election_id = :election_id
-    GROUP BY c.id, c.name
-");
-
+        SELECT c.id AS candidate_id, c.name AS candidate_name, COUNT(v.id) AS vote_count
+        FROM votes v
+        INNER JOIN candidates c ON v.candidate_id = c.id
+        WHERE v.election_id = :election_id
+        GROUP BY c.id, c.name
+    ");
     $voteStmt->execute(['election_id' => $electionId]);
     $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -68,13 +72,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $modalType = "danger";
                 $modalMessage = "Invalid candidate selected.";
             } else {
+                // Generate anonymous voter hash
+                $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
+
                 // Check if the user has already voted in this election
                 $stmt = $pdo->prepare("
                     SELECT COUNT(*) FROM votes 
-                    WHERE user_id = :user_id AND election_id = :election_id
+                    WHERE hashed_user_id = :hashed_user_id AND election_id = :election_id
                 ");
                 $stmt->execute([
-                    'user_id' => $_SESSION['user_id'],
+                    'hashed_user_id' => $voterHash,
                     'election_id' => $electionId
                 ]);
                 $voteCount = $stmt->fetchColumn();
@@ -83,13 +90,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $modalType = "warning";
                     $modalMessage = "You have already voted in this election.";
                 } else {
-                    // Insert the vote using candidate ID and name
+                    // Insert the vote anonymously
                     $stmt = $pdo->prepare("
-                        INSERT INTO votes (user_id, candidate_id, candidate_name, election_id) 
-                        VALUES (:user_id, :candidate_id, :candidate_name, :election_id)
+                        INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, election_id) 
+                        VALUES (:hashed_user_id, :candidate_id, :candidate_name, :election_id)
                     ");
                     $stmt->execute([
-                        'user_id' => $_SESSION['user_id'],
+                        'hashed_user_id' => $voterHash,
                         'candidate_id' => $candidate['id'],
                         'candidate_name' => $candidate['name'],
                         'election_id' => $electionId
