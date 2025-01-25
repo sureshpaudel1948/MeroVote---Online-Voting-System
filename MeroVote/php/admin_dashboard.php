@@ -36,41 +36,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['redirect_election']))
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <!-- Brand -->
-                <a class="navbar-brand" href="admin_dashboard.php">MeroVote - Online
-                    Voting Portal</a>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <!-- Brand Logo and Name -->
+            <a class="navbar-brand d-flex align-items-center" href="admin_dashboard.php">
+                <img src="../img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
+                <span>MeroVote - Online Voting Portal</span>
+            </a>
 
-                <!-- Toggler Button for Small Screens -->
-                <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <!-- Toggler Button for Small Screens -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <!-- Navbar Content -->
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Navbar Items -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="admin_login.php">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../index.html#how">How It Works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../index.html">Logout</a>
-                        </li>
-                    </ul>
-                </div>
+            <!-- Navbar Content -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar Items -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_login.php">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#how">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">Logout</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
+
 
     <main class="container mt-4">
         <h1>Welcome, Admin !</h1>

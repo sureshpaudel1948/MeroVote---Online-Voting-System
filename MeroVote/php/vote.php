@@ -294,9 +294,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <!-- Brand -->
-                <a class="navbar-brand" href="vote.php">MeroVote - Online
-                    Voting Portal</a>
+                 <!-- Brand Logo and Name -->
+            <a class="navbar-brand d-flex align-items-center" href="admin_dashboard.php">
+                <img src="../img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
+                <span>MeroVote - Online Voting Portal</span>
+            </a>
 
                 <!-- Toggler Button for Small Screens -->
                 <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"

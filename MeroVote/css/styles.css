@@ -23,6 +23,18 @@ body {
     /* Brand color */
 }
 
+.navbar-brand .logo {
+    height: 40px; /* Adjust logo size */
+    width: auto;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand .logo {
+        height: 35px; /* Adjust for smaller screens */
+    }
+}
+
+
 .nav-link {
     font-size: 1rem;
     font-weight: 500;
