@@ -209,7 +209,7 @@ foreach ($expiredElections as &$election) {
                         <div class="winner-details text-center mt-3">
                             <h6 class="text-success"><strong>Winner:</strong>
                                 <?php echo htmlspecialchars($election['winner_name']); ?></h6>
-                            <img src="./candidates_photos/<?php echo htmlspecialchars($election['winner_image']); ?>"
+                            <img src="<?php echo htmlspecialchars($election['winner_image']); ?>"
                                 alt="Winner Image" class="rounded-circle"
                                 style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a745;">
                             <p class="mt-2">Votes:
