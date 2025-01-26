@@ -99,7 +99,8 @@ ob_end_flush();
     </header>
 
     <main class="login-container">
-        <h2>Login to Your Account</h2>
+    <h1 style="font-weight:bold; color: #003d80; text-align: center;">ADMIN LOGIN</h1>
+        <h4 style="text-align: center;">Login to Your Account</h4>
 
         <!-- Display error message if login failed -->
         <?php if ($error_message): ?>
