@@ -237,6 +237,25 @@ foreach ($expiredElections as &$election) {
         </div>
     </footer>
 
+    <!-- Feedback Modal -->
+<div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-<?= $modalType ?>">
+                <h5 class="modal-title text-white"><?= ucfirst($modalType) ?> Message</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p><?= $modalMessage ?></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-<?= $modalType ?>" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
     <script>
         // Redirect to create election page

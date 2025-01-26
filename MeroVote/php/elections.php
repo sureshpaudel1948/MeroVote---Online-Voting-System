@@ -8,6 +8,13 @@ if (!isset($_SESSION['user_id'])) {
 
 include 'db_config.php';
 
+// Check if there's a message to display in the modal
+$modalMessage = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+$modalType = isset($_SESSION['msg_type']) ? $_SESSION['msg_type'] : '';
+
+unset($_SESSION['message']); // Remove the message after displaying it
+unset($_SESSION['msg_type']); // Remove the type after displaying it
+
 // Handle election creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['election_name'])) {
     $election_type = $_POST['election_type']; // Fetch election type from the dropdown
@@ -211,6 +218,35 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
             </div>
             <button type="submit" class="btn btn-success">Add Candidate</button>
         </form>
+        <!-- Feedback Modal -->
+<div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-<?= $modalType ?>">
+                <h5 class="modal-title text-white"><?= ucfirst($modalType) ?> Message</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p><?= $modalMessage ?></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-<?= $modalType ?>" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Automatically show the modal if there is a message
+    document.addEventListener("DOMContentLoaded", function () {
+        var modalMessage = "<?= $modalMessage ?>";
+        if (modalMessage.trim() !== "") {
+            var feedbackModal = new bootstrap.Modal(document.getElementById("feedbackModal"));
+            feedbackModal.show();
+        }
+    });
+</script>
+
     </main>
 
     <footer class="bg-dark text-white text-center py-3 mt-4">
