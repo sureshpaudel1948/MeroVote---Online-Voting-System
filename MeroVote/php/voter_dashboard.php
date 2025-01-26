@@ -83,6 +83,11 @@ foreach ($expiredElections as &$election) {
         $election['winner_name'] = $winner['candidate_name'];
         $election['winner_image'] = $winner['candidate_image'];
         $election['winner_votes'] = $winner['total_votes'];
+    } else {
+        // **Ensure the default image is assigned if no votes exist**
+        $election['winner_name'] = "No Winner";
+        $election['winner_image'] = "./candidates_photos/default.jpg";
+        $election['winner_votes'] = 0;
     }
 }
 
