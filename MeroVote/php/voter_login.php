@@ -100,7 +100,7 @@ ob_end_flush();
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <!-- Brand Logo and Name -->
-            <a class="navbar-brand d-flex align-items-center" href="admin_dashboard.php">
+            <a class="navbar-brand d-flex align-items-center" href="voter_login.php">
                 <img src="../img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
                 <span>MeroVote - Online Voting Portal</span>
             </a>

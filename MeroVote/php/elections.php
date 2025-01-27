@@ -128,7 +128,7 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <!-- Brand Logo and Name -->
-            <a class="navbar-brand d-flex align-items-center" href="admin_dashboard.php">
+            <a class="navbar-brand d-flex align-items-center" href="elections.php">
                 <img src="../img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
                 <span>MeroVote - Online Voting Portal</span>
             </a>
