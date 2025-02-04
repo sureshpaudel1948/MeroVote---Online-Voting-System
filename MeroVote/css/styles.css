@@ -170,6 +170,9 @@ body {
 
 main.container {
   margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   /* Add space below the main content to separate it from the footer */
 }
 
@@ -180,6 +183,16 @@ main.container {
 .card:hover {
   transform: scale(1.05);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.feedback {
+  margin-top: 160px !important;
+  width: 60% !important;
+}
+
+.feedback h2 {
+  color: #007bff !important;
+  text-shadow: #003d80 !important;
 }
 
 /* Footer Styling */
