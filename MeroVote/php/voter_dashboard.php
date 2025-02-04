@@ -7,6 +7,29 @@ if (!isset($_SESSION['user_id'])) {
 
 include 'db_config.php';
 
+// Handle Feedback Submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_feedback'])) {
+    $name = htmlspecialchars(trim($_POST['name']));
+    $feedback = htmlspecialchars(trim($_POST['feedback']));
+    $address = htmlspecialchars(trim($_POST['address']));
+
+    if (!empty($name) && !empty($feedback) && !empty($address)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO feedback (name, feedback, address) VALUES (:name, :feedback, :address)");
+            $stmt->execute([
+                ':name' => $name,
+                ':feedback' => $feedback,
+                ':address' => $address
+            ]);
+            $feedbackSuccess = "Thank you for your feedback!";
+        } catch (PDOException $e) {
+            $feedbackError = "Error submitting feedback: " . $e->getMessage();
+        }
+    } else {
+        $feedbackError = "All fields are required!";
+    }
+}
+
 $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'];
 
@@ -233,6 +256,36 @@ foreach ($expiredElections as &$election) {
 </div>
 
         </div>
+        <!-- Feedback Form -->
+    <div class="feedback mt-5">
+        <h2 class="text-center text-info mb-4">We Value Your Feedback!</h2>
+
+        <!-- Success/Error Messages -->
+        <?php if (isset($feedbackSuccess)): ?>
+            <div class="alert alert-success text-center"><?php echo $feedbackSuccess; ?></div>
+        <?php elseif (isset($feedbackError)): ?>
+            <div class="alert alert-danger text-center"><?php echo $feedbackError; ?></div>
+        <?php endif; ?>
+
+        <form method="POST" action="" class="shadow p-4 rounded bg-light">
+            <div class="form-group mb-3">
+                <label for="name" class="form-label">Your Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="Enter your name" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="feedback" class="form-label">Your Feedback</label>
+                <textarea name="feedback" id="feedback" class="form-control" rows="4" placeholder="Share your thoughts here..." required></textarea>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="address" class="form-label">Your Address</label>
+                <input type="text" name="address" id="address" class="form-control" placeholder="Enter your address" required>
+            </div>
+
+            <button type="submit" name="submit_feedback" class="btn btn-primary w-100">Submit Feedback</button>
+        </form>
+    </div>
     </main>
 
 
