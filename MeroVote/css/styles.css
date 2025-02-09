@@ -24,13 +24,15 @@ body {
 }
 
 .navbar-brand .logo {
-  height: 40px; /* Adjust logo size */
+  height: 40px;
+  /* Adjust logo size */
   width: auto;
 }
 
 @media (max-width: 768px) {
   .navbar-brand .logo {
-    height: 35px; /* Adjust for smaller screens */
+    height: 35px;
+    /* Adjust for smaller screens */
   }
 }
 
@@ -170,9 +172,10 @@ body {
 
 main.container {
   margin-bottom: 40px;
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; */
+  width: 100%;
   /* Add space below the main content to separate it from the footer */
 }
 
@@ -185,12 +188,18 @@ main.container {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.feedback {
+.extra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.extra .feedback {
   margin-top: 160px !important;
   width: 60% !important;
 }
 
-.feedback h2 {
+.extra .feedback h2 {
   color: #007bff !important;
   text-shadow: #003d80 !important;
 }

@@ -42,11 +42,12 @@ try {
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                 <!-- Brand Logo and Name -->
-            <a class="navbar-brand d-flex align-items-center" href="voter_login.php">
-                <img src="../img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
-                <span>MeroVote - Online Voting Portal</span>
-            </a>
+                <!-- Brand Logo and Name -->
+                <a class="navbar-brand d-flex align-items-center" href="voter_login.php">
+                    <img src="../img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo"
+                        class="logo img-fluid me-2">
+                    <span>MeroVote - Online Voting Portal</span>
+                </a>
 
                 <!-- Toggler Button for Small Screens -->
                 <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -60,7 +61,7 @@ try {
                     <!-- Navbar Items -->
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="../index.html#how">How It Works</a>

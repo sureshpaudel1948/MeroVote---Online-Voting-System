@@ -256,8 +256,11 @@ foreach ($expiredElections as &$election) {
 </div>
 
         </div>
-        <!-- Feedback Form -->
-    <div class="feedback mt-5">
+       
+    </main>
+    <div class="extra">
+ <!-- Feedback Form -->
+ <div class="feedback mt-5">
         <h2 class="text-center text-info mb-4">We Value Your Feedback!</h2>
 
         <!-- Success/Error Messages -->
@@ -286,8 +289,9 @@ foreach ($expiredElections as &$election) {
             <button type="submit" name="submit_feedback" class="btn btn-primary w-100">Submit Feedback</button>
         </form>
     </div>
-    </main>
 
+    </div>
+    
 
     <footer class="bg-dark text-white text-center py-3">
         <div class="container">
