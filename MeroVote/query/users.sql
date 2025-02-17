@@ -1,7 +1,0 @@
-CREATE TABLE users (
-id SERIAL PRIMARY KEY,
-full_name VARCHAR(256) NOT NULL,
-phone_number INT NOT NULL,
-password VARCHAR (256) NOT NULL,
-role VARCHAR (256) NOT NULL
-);

@@ -273,8 +273,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
             </div>
 
-
-
             <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
                 <select class="form-control" id="role" name="role" onchange="toggleRoleFields()" required>
@@ -314,6 +312,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <button class="modal-btn" onclick="closeModal()">OK</button>
                 </div>
             </div>
+        
+
+            <button type="submit" class="btn btn-primary">Register</button>
+
             <div class="mt-3 text-center log-cont">
                 <p>Already have an account?</p>
                 <div class="login">
@@ -321,8 +323,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <a href="voter_login.php" class="voter-link">Voter Login</a>
                 </div>
             </div>
-
-            <button type="submit" class="btn btn-primary">Register</button>
 
 
             <style>
