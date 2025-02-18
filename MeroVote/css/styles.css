@@ -16,10 +16,12 @@ body {
 /* Navbar Styling */
 
 .navbar {
-  background-color: #343a40;
+  background-color: rgb(41, 41, 41);
   /* Light background */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   /* Subtle shadow */
+  padding-bottom: 5px;
+  padding-top: 0;
 }
 
 .navbar-brand {
@@ -27,17 +29,18 @@ body {
   font-size: 1.5rem;
   color: #ffffff !important;
   /* Brand color */
+  margin-left: 35px;
 }
 
 .navbar-brand .logo {
-  height: 40px;
-  /* Adjust logo size */
-  width: auto;
+  padding-right: 15px;
+  margin-right: 45px;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
   .navbar-brand .logo {
-    height: 35px;
+    height: 27px;
     /* Adjust for smaller screens */
   }
 }
@@ -65,7 +68,7 @@ body {
 
 /* Jumbotron */
 .jumbotron {
-  background: linear-gradient(to right, #007bff, #00c851);
+  background: linear-gradient(to right, #007bff, #0c9b45);
   /* Gradient Background */
   color: #ffffff;
   /* White text */
@@ -126,6 +129,10 @@ body {
 .jumbotron a.btn-primary {
   background-color: #0056b3;
   border: none;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 10px;
+  margin: 10px;
 }
 
 .jumbotron a.btn-primary:hover {
@@ -137,6 +144,10 @@ body {
 .jumbotron a.btn-success {
   background-color: #00c851;
   border: none;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 10px;
+  margin: 10px;
 }
 
 .jumbotron a.btn-success:hover {

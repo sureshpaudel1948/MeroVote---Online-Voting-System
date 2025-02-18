@@ -95,9 +95,9 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
 <nav class = 'navbar navbar-expand-lg navbar-dark bg-dark'>
 <div class = 'container-fluid'>
 <a class = 'navbar-brand d-flex align-items-center' href = 'elections.php'>
-<img src = '../img/MeroVote-Logo.png' style = 'height: 45px;
+<img src = '../img/MeroVote-Logo.png' style = 'height: 60px;
         ' alt = 'MeroVote Logo' class = 'me-2'>
-<span>MeroVote - Online Voting Portal</span>
+<span></span>
 </a>
 <button class = 'navbar-toggler' type = 'button' data-bs-toggle = 'collapse' data-bs-target = '#navbarNav'>
 <span class = 'navbar-toggler-icon'></span>

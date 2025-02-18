@@ -1,386 +1,469 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>MeroVote</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-    <head>
-        <title>MeroVote - Online Voting Portal</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
 
-        <!-- Bootstrap CSS v5.2.1 -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-            crossorigin="anonymous" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
 
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="css/styles.css" />
-    </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <!-- Brand Logo and Name -->
+          <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <img
+              src="img/MeroVote-Logo.png"
+              style="width: 100px; height: auto"
+              alt="MeroVote Logo"
+              class="logo img-fluid me-2"
+            />
+            <span> </span>
+          </a>
 
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container-fluid">
-                    <!-- Brand Logo and Name -->
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="img/MeroVote-Logo.png" style="height: 45px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
-                <span>MeroVote - Online Voting Portal</span>
-            </a>
+          <!-- Toggler Button for Small Screens -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-                    <!-- Toggler Button for Small Screens -->
-                    <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+          <!-- Navbar Content -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar Items -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.html"
+                  >Home</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#how">How It Works</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./php/all-elections.php">Elections</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./php/voter_login.php">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./php/register.php">Register</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
 
-                    <!-- Navbar Content -->
-                    <div class="collapse navbar-collapse"
-                        id="navbarSupportedContent">
-                        <!-- Navbar Items -->
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page"
-                                    href="index.html">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#how">How It Works</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="./php/all-elections.php">Elections</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="./php/voter_login.php">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="./php/register.php">Register</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+    <main class="container my-5">
+      <div class="jumbotron">
+        <h1 class="display-4">
+          Welcome to <span class="highlight">MeroVote</span> — Your Online
+          Voting System
+        </h1>
+        <p class="lead">
+          A secure, transparent, and easy-to-use platform designed for modern
+          elections.
+        </p>
+        <hr class="my-4" />
+        <p>
+          Experience hassle-free voting from the comfort of your home. Whether
+          you're a voter or an admin, we've made the process seamless for you.
+        </p>
+        <div class="button-group">
+          <a
+            class="btn btn-primary btn-lg"
+            href="./php/voter_login.php"
+            role="button"
+            >Login</a
+          >
+          <a
+            class="btn btn-success btn-lg"
+            href="./php/register.php"
+            role="button"
+            >Register</a
+          >
+        </div>
+      </div>
 
-        </header>
+      <section class="my-5" id="how">
+        <h2>How It Works</h2>
+        <p>
+          The Online Voting System ensures a secure, transparent, and
+          straightforward process for voters and admins alike. Click on each
+          step to learn more:
+        </p>
 
-        <main class="container my-5">
-            <div class="jumbotron">
-                <h1 class="display-4">Welcome to <span
-                        class="highlight">MeroVote</span> — Your Online Voting
-                    System</h1>
-                <p class="lead">A secure, transparent, and easy-to-use platform
-                    designed for modern elections.</p>
-                <hr class="my-4">
-                <p>Experience hassle-free voting from the comfort of your home.
-                    Whether you're a voter or an admin, we've made the process
-                    seamless for you.</p>
-                <div class="button-group">
-                    <a class="btn btn-primary btn-lg"
-                        href="./php/voter_login.php" role="button">Login</a>
-                    <a class="btn btn-success btn-lg" href="./php/register.php"
-                        role="button">Register</a>
-                </div>
+        <!-- Collapsible Structure -->
+        <div class="accordion" id="howItWorksAccordion">
+          <!-- Registration -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button
+                class="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                Registration
+              </button>
+            </h2>
+            <div
+              id="collapseOne"
+              class="accordion-collapse collapse show"
+              aria-labelledby="headingOne"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    Navigate to the registration page and fill in the required
+                    details.
+                  </li>
+                  <li>
+                    Select your role: <strong>Voter</strong> or
+                    <strong>Admin</strong>.
+                  </li>
+                  <li>
+                    If you're a voter, choose your election type (e.g.,
+                    School/College, Local, or Organizational) and provide your
+                    respective ID, gender, and address.
+                  </li>
+                  <li>
+                    Passwords are securely stored using encryption to protect
+                    your data.
+                  </li>
+                </ul>
+              </div>
             </div>
+          </div>
 
-            <section class="my-5" id="how">
-                <h2>How It Works</h2>
-                <p>The Online Voting System ensures a secure, transparent, and
-                    straightforward process for voters and admins alike. Click
-                    on each step to learn more:</p>
-
-                <!-- Collapsible Structure -->
-                <div class="accordion" id="howItWorksAccordion">
-
-                    <!-- Registration -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne"
-                                aria-expanded="true"
-                                aria-controls="collapseOne">
-                                Registration
-                            </button>
-                        </h2>
-                        <div id="collapseOne"
-                            class="accordion-collapse collapse show"
-                            aria-labelledby="headingOne"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Navigate to the registration page and
-                                        fill in the required details.</li>
-                                    <li>Select your role: <strong>Voter</strong>
-                                        or <strong>Admin</strong>.</li>
-                                    <li>If you're a voter, choose your election
-                                        type (e.g., School/College, Local, or
-                                        Organizational) and provide your
-                                        respective ID, gender, and address.</li>
-                                    <li>Passwords are securely stored using
-                                        encryption to protect your data.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Verification and Login -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo"
-                                aria-expanded="false"
-                                aria-controls="collapseTwo">
-                                Verification and Login
-                            </button>
-                        </h2>
-                        <div id="collapseTwo"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingTwo"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>After submitting your registration form,
-                                        your details are cross-checked with the
-                                        database.</li>
-                                    <li>If verified, you can log in to access
-                                        your <strong>Voter Dashboard</strong> or
-                                        <strong>Admin Dashboard</strong> based
-                                        on your selected role.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Admin Role -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree"
-                                aria-expanded="false"
-                                aria-controls="collapseThree">
-                                Admin Role
-                            </button>
-                        </h2>
-                        <div id="collapseThree"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingThree"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Admins must provide a valid
-                                        <strong>Admin ID</strong> during
-                                        registration.</li>
-                                    <li>Once logged in, admins can:
-                                        <ul>
-                                            <li>Create elections for various
-                                                types.</li>
-                                            <li>Add candidates to
-                                                elections.</li>
-                                            <li>Specify start and end dates for
-                                                elections to maintain
-                                                timelines.</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Voter Role -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour"
-                                aria-expanded="false"
-                                aria-controls="collapseFour">
-                                Voter Role
-                            </button>
-                        </h2>
-                        <div id="collapseFour"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingFour"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Upon logging in, voters are redirected
-                                        to their <strong>Voter
-                                            Dashboard</strong>, where elections
-                                        are categorized into:
-                                        <ul>
-                                            <li><strong>Ongoing
-                                                    Elections:</strong>
-                                                Elections currently active and
-                                                open for voting.</li>
-                                            <li><strong>Expired
-                                                    Elections:</strong>
-                                                Elections that have concluded,
-                                                where results are
-                                                displayed.</li>
-                                        </ul>
-                                    </li>
-                                    <li>Voters only see elections matching their
-                                        selected election type.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Casting Your Vote -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFive">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFive"
-                                aria-expanded="false"
-                                aria-controls="collapseFive">
-                                Casting Your Vote
-                            </button>
-                        </h2>
-                        <div id="collapseFive"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingFive"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Click on the <strong>Vote Now</strong>
-                                        button next to an ongoing election to
-                                        proceed to the voting page.</li>
-                                    <li>On the voting page, you’ll see the list
-                                        of candidates with their names, photos,
-                                        and live vote counts.</li>
-                                    <li>Select your preferred candidate and
-                                        submit your vote.</li>
-                                    <li>Votes are recorded anonymously, ensuring
-                                        voter privacy.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Vote Restrictions -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingSix">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSix"
-                                aria-expanded="false"
-                                aria-controls="collapseSix">
-                                Vote Restrictions
-                            </button>
-                        </h2>
-                        <div id="collapseSix"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingSix"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Once you’ve cast your vote for a
-                                        specific election, you cannot vote again
-                                        for that election.</li>
-                                    <li>If you attempt to vote again, a message
-                                        will inform you:
-                                        <strong>"You already voted."</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Multiple Elections -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingSeven">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven"
-                                aria-expanded="false"
-                                aria-controls="collapseSeven">
-                                Multiple Elections
-                            </button>
-                        </h2>
-                        <div id="collapseSeven"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingSeven"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>Each election type (e.g., School/College
-                                        Level, Local Level, Organizational
-                                        Level) may host multiple elections.</li>
-                                    <li>For example, under
-                                        <strong>School/College Level</strong>,
-                                        you could vote in elections like:
-                                        <ul>
-                                            <li>Students' Union Election</li>
-                                            <li>Teachers' Union Election</li>
-                                            <li>Monitor Election</li>
-                                        </ul>
-                                    </li>
-                                    <li>You can vote in all elections within
-                                        your election type, but only once per
-                                        election.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Election Results -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingEight">
-                            <button class="accordion-button collapsed"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseEight"
-                                aria-expanded="false"
-                                aria-controls="collapseEight">
-                                Election Results
-                            </button>
-                        </h2>
-                        <div id="collapseEight"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="headingEight"
-                            data-bs-parent="#howItWorksAccordion">
-                            <div class="accordion-body">
-                                <ul>
-                                    <li>After an election concludes, election
-                                        results are displayed in the
-                                        <strong>Expired Elections</strong>
-                                        section.</li>
-                                    <li>Results announce the winner of the
-                                        election.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-        <footer class="bg-dark text-white text-center py-3">
-            <div class="container">
-                <p>&copy; 2024 MeroVote. All rights reserved.</p>
-                <p>Contact us at: <a href="mailto:info@votingportal.com"
-                        class="text-light">info@votingportal.com</a></p>
+          <!-- Verification and Login -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseTwo"
+                aria-expanded="false"
+                aria-controls="collapseTwo"
+              >
+                Verification and Login
+              </button>
+            </h2>
+            <div
+              id="collapseTwo"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingTwo"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    After submitting your registration form, your details are
+                    cross-checked with the database.
+                  </li>
+                  <li>
+                    If verified, you can log in to access your
+                    <strong>Voter Dashboard</strong> or
+                    <strong>Admin Dashboard</strong> based on your selected
+                    role.
+                  </li>
+                </ul>
+              </div>
             </div>
-        </footer>
+          </div>
 
-        <!-- Bootstrap JavaScript Libraries -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"></script>
+          <!-- Admin Role -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseThree"
+                aria-expanded="false"
+                aria-controls="collapseThree"
+              >
+                Admin Role
+              </button>
+            </h2>
+            <div
+              id="collapseThree"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingThree"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    Admins must provide a valid <strong>Admin ID</strong> during
+                    registration.
+                  </li>
+                  <li>
+                    Once logged in, admins can:
+                    <ul>
+                      <li>Create elections for various types.</li>
+                      <li>Add candidates to elections.</li>
+                      <li>
+                        Specify start and end dates for elections to maintain
+                        timelines.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-            crossorigin="anonymous"></script>
-    </body>
+          <!-- Voter Role -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseFour"
+                aria-expanded="false"
+                aria-controls="collapseFour"
+              >
+                Voter Role
+              </button>
+            </h2>
+            <div
+              id="collapseFour"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingFour"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    Upon logging in, voters are redirected to their
+                    <strong>Voter Dashboard</strong>, where elections are
+                    categorized into:
+                    <ul>
+                      <li>
+                        <strong>Ongoing Elections:</strong> Elections currently
+                        active and open for voting.
+                      </li>
+                      <li>
+                        <strong>Expired Elections:</strong> Elections that have
+                        concluded, where results are displayed.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    Voters only see elections matching their selected election
+                    type.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
 
+          <!-- Casting Your Vote -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseFive"
+                aria-expanded="false"
+                aria-controls="collapseFive"
+              >
+                Casting Your Vote
+              </button>
+            </h2>
+            <div
+              id="collapseFive"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingFive"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    Click on the <strong>Vote Now</strong> button next to an
+                    ongoing election to proceed to the voting page.
+                  </li>
+                  <li>
+                    On the voting page, you’ll see the list of candidates with
+                    their names, photos, and live vote counts.
+                  </li>
+                  <li>Select your preferred candidate and submit your vote.</li>
+                  <li>
+                    Votes are recorded anonymously, ensuring voter privacy.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vote Restrictions -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSix">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseSix"
+                aria-expanded="false"
+                aria-controls="collapseSix"
+              >
+                Vote Restrictions
+              </button>
+            </h2>
+            <div
+              id="collapseSix"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingSix"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    Once you’ve cast your vote for a specific election, you
+                    cannot vote again for that election.
+                  </li>
+                  <li>
+                    If you attempt to vote again, a message will inform you:
+                    <strong>"You already voted."</strong>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multiple Elections -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSeven">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseSeven"
+                aria-expanded="false"
+                aria-controls="collapseSeven"
+              >
+                Multiple Elections
+              </button>
+            </h2>
+            <div
+              id="collapseSeven"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingSeven"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    Each election type (e.g., School/College Level, Local Level,
+                    Organizational Level) may host multiple elections.
+                  </li>
+                  <li>
+                    For example, under <strong>School/College Level</strong>,
+                    you could vote in elections like:
+                    <ul>
+                      <li>Students' Union Election</li>
+                      <li>Teachers' Union Election</li>
+                      <li>Monitor Election</li>
+                    </ul>
+                  </li>
+                  <li>
+                    You can vote in all elections within your election type, but
+                    only once per election.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Election Results -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingEight">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseEight"
+                aria-expanded="false"
+                aria-controls="collapseEight"
+              >
+                Election Results
+              </button>
+            </h2>
+            <div
+              id="collapseEight"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingEight"
+              data-bs-parent="#howItWorksAccordion"
+            >
+              <div class="accordion-body">
+                <ul>
+                  <li>
+                    After an election concludes, election results are displayed
+                    in the
+                    <strong>Expired Elections</strong>
+                    section.
+                  </li>
+                  <li>Results announce the winner of the election.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3">
+      <div class="container">
+        <p>&copy; 2024 MeroVote. All rights reserved.</p>
+        <p>
+          Contact us at:
+          <a href="mailto:info@votingportal.com" class="text-light"
+            >info@votingportal.com</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
