@@ -122,6 +122,9 @@ ob_end_flush();
                         <li class="nav-item">
                             <a class="nav-link" href="../index.html#how">How It Works</a>
                         </li>
+                        <li class = 'nav-item'>
+                            <a class = 'nav-link' href = 'feedback.php'>Feedback</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="all-elections.php">Elections</a>
                         </li>

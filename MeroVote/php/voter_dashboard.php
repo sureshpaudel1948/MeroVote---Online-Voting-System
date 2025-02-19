@@ -160,6 +160,9 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <a class = 'nav-link' href = 'voter_login.php'>Login</a>
 </li>
 <li class = 'nav-item'>
+<a class = 'nav-link' href = 'feedback.php'>Feedback</a>
+</li>
+<li class = 'nav-item'>
 <a class = 'nav-link' href = '../index.html#how'>How It Works</a>
 </li>
 <li class = 'nav-item'>
@@ -174,15 +177,14 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 </nav>
 </header>
 
-<main class = 'container mt-4'>
+<main class = 'container mt-5'>
 <h1 class = 'text-center text-primary mb-4'>
-Welcome, Voter!
+Welcome, <span class = 'fw-bold'>Voter!</span>
 </h1>
 
-<!-- Voter Panel -->
-<div id = 'userPanel' class = 'mt-5'>
-<!-- Ongoing Elections -->
-<h2 class = 'text-success mb-3'>Ongoing Elections</h2>
+<!-- Ongoing Elections Section -->
+<section class = 'mt-4'>
+<h2 class = 'text-success mb-3 text-center'>Ongoing Elections</h2>
 <div id = 'ongoingElections' class = 'row'>
 <?php if ( !empty( $ongoingElections ) ): ?>
 <?php foreach ( $ongoingElections as $election ): ?>
@@ -195,12 +197,10 @@ Welcome, Voter!
 <div class = 'card-body'>
 <h5 class = 'card-title'><?php echo htmlspecialchars( $election[ 'name' ] );
 ?></h5>
-<p class = 'card-text'>Participate in this election and make your vote count!</p>
-
+<p class = 'card-text'>Participate and make your vote count!</p>
 <a href = "vote.php?election_id=<?php echo urlencode($election['name']); ?>"
 
 class = 'btn btn-primary w-100'>Vote Now</a>
-
 </div>
 </div>
 </div>
@@ -213,24 +213,19 @@ class = 'btn btn-primary w-100'>Vote Now</a>
 <?php endif;
 ?>
 </div>
+</section>
 
-<!-- Expired Elections -->
-<h2 class = 'text-danger mt-5 mb-3'>Expired Elections</h2>
+<!-- Expired Elections Section -->
+<section class = 'mt-5'>
+<h2 class = 'text-danger mb-3 text-center'>Expired Elections</h2>
 <div id = 'expiredElections' class = 'row'>
 <?php if ( !empty( $expiredElections ) ): ?>
-<?php
-// Initialize a tracking array to ensure no duplicate elections are displayed
-$renderedElections = [];
+<?php $renderedElections = [];
 ?>
 <?php foreach ( $expiredElections as $election ): ?>
-<?php
-// Check if this election has already been rendered
-if ( in_array( $election[ 'id' ], $renderedElections ) ) {
-    continue;
-    // Skip duplicate elections
-}
-$renderedElections[] = $election[ 'id' ];
-// Mark election as rendered
+<?php if ( in_array( $election[ 'id' ], $renderedElections ) ) continue;
+?>
+<?php $renderedElections[] = $election[ 'id' ];
 ?>
 <div class = 'col-md-4 mb-4'>
 <div class = 'card shadow-sm border-danger'>
@@ -241,23 +236,20 @@ $renderedElections[] = $election[ 'id' ];
 <div class = 'card-body'>
 <h5 class = 'card-title'><?php echo htmlspecialchars( $election[ 'name' ] );
 ?></h5>
-<p class = 'card-text'>
-<small>Ended on: <?php echo htmlspecialchars( $election[ 'end_date' ] );
-?></small>
-</p>
+<p class = 'card-text'><small>Ended on: <?php echo htmlspecialchars( $election[ 'end_date' ] );
+?></small></p>
 
-<!-- Winner Details -->
+<!-- Winner Section -->
 <div class = 'winner-details text-center mt-3'>
 <h6 class = 'text-success'><strong>Winner:</strong>
 <?php echo htmlspecialchars( $election[ 'winner_name' ] );
-?></h6>
+?>
+</h6>
 <img src = "<?php echo htmlspecialchars($election['winner_image']); ?>"
 alt = 'Winner Image' class = 'rounded-circle'
-style = 'width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a745;'>
-<p class = 'mt-2'>Votes:
-<strong><?php echo htmlspecialchars( $election[ 'winner_votes' ] );
-?></strong>
-</p>
+style = 'width: 100px; height: 100px; object-fit: cover;'>
+<p class = 'mt-2'>Votes: <strong><?php echo htmlspecialchars( $election[ 'winner_votes' ] );
+?></strong></p>
 </div>
 </div>
 </div>
@@ -271,46 +263,8 @@ style = 'width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a7
 <?php endif;
 ?>
 </div>
-
-</div>
-
+</section>
 </main>
-<div class = 'extra'>
-<!-- Feedback Form -->
-<div class = 'feedback mt-5'>
-<h2 class = 'text-center text-info mb-4'>We Value Your Feedback!</h2>
-
-<!-- Success/Error Messages -->
-<?php if ( isset( $feedbackSuccess ) ): ?>
-<div class = 'alert alert-success text-center'><?php echo $feedbackSuccess;
-?></div>
-<?php elseif ( isset( $feedbackError ) ): ?>
-<div class = 'alert alert-danger text-center'><?php echo $feedbackError;
-?></div>
-<?php endif;
-?>
-
-<form method = 'POST' action = '' class = 'shadow p-4 rounded bg-light'>
-<div class = 'form-group mb-3'>
-<label for = 'name' class = 'form-label'>Your Name</label>
-<input type = 'text' name = 'name' id = 'name' class = 'form-control' placeholder = 'Enter your name' required>
-</div>
-
-<div class = 'form-group mb-3'>
-<label for = 'feedback' class = 'form-label'>Your Feedback</label>
-<textarea name = 'feedback' id = 'feedback' class = 'form-control' rows = '4' placeholder = 'Share your thoughts here...' required></textarea>
-</div>
-
-<div class = 'form-group mb-4'>
-<label for = 'address' class = 'form-label'>Your Address</label>
-<input type = 'text' name = 'address' id = 'address' class = 'form-control' placeholder = 'Enter your address' required>
-</div>
-
-<button type = 'submit' name = 'submit_feedback' class = 'btn btn-primary w-100'>Submit Feedback</button>
-</form>
-</div>
-
-</div>
 
 <footer class = 'bg-dark text-white text-center py-3'>
 <div class = 'container'>
