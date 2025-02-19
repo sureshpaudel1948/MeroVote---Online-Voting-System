@@ -213,7 +213,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <!-- Navbar Items -->
 <ul class = 'navbar-nav ms-auto mb-2 mb-lg-0'>
 <li class = 'nav-item'>
-<a class = 'nav-link active' aria-current = 'page' href = 'register.php'>Home</a>
+<a class = 'nav-link active' aria-current = 'page' href = '../index.html'>Home</a>
 </li>
 <li class = 'nav-item'>
 <a class = 'nav-link' href = '../index.html#how'>How It Works</a>
@@ -427,50 +427,46 @@ onclick = "togglePasswordVisibility('confirm-password', 'togglePasswordIcon2')">
 
 </main>
 
-<!-- Add JavaScript for password matching and visibility -->
+
 <script>
 // Toggle password visibility for both password fields
 
-function togglePasswordVisibility( fieldId, iconId ) {
-    const passwordField = document.getElementById( fieldId );
-    const icon = document.querySelector( `#$ {
-        iconId}
-        i` );
+ // Toggle password visibility for both password fields
+ function togglePasswordVisibility(fieldId, iconId) {
+        const passwordField = document.getElementById(fieldId);
+        const icon = document.getElementById(iconId).querySelector('i');
 
-        if ( passwordField.type === 'password' ) {
+        if (passwordField.type === 'password') {
             passwordField.type = 'text';
-            icon.classList.replace( 'fa-eye', 'fa-eye-slash' );
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
         } else {
             passwordField.type = 'password';
-            icon.classList.replace( 'fa-eye-slash', 'fa-eye' );
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }
 
     // Validate form: Check if passwords match
-
     function validateForm() {
-        const phoneNumber = document.getElementById( 'phone_number' ).value;
-        const password = document.getElementById( 'password' ).value;
-        const confirmPassword = document.getElementById( 'confirm-password' ).value;
+        const phoneNumber = document.getElementById('phone_number').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
 
-        // Validate phone number format ( 10 digits )
-        const phoneRegex = /^[ 0-9 ] {
-            10}
-            $/;
-            if ( !phoneRegex.test( phoneNumber ) ) {
-                showModal( 'Error', 'Invalid phone number. Please enter a 10-digit number.' );
-                return false;
-            }
-
-            // Validate password match
-            if ( password !== confirmPassword ) {
-                showModal( 'Error', 'Passwords do not match.' );
-                return false;
-            }
-
-            return true;
-            // Form is valid
+        // Validate phone number format (10 digits)
+        const phoneRegex = /^\d{10}$/; 
+        if (!phoneRegex.test(phoneNumber)) {
+            showModal('Error', 'Invalid phone number. Please enter a 10-digit number.');
+            return false;
         }
+
+        // Validate password match
+        if (password !== confirmPassword) {
+            showModal('Error', 'Passwords do not match.');
+            return false;
+        }
+
+        return true; // Form is valid
+    }
+
 
         function toggleRoleFields() {
             const role = document.getElementById( 'role' ).value;

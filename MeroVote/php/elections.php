@@ -263,6 +263,10 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
 </main>
 
 <style>
+.row .card-body {
+    background-color: transparent !important;
+}
+
 .card-header {
     font-size: 1.2rem;
     font-weight: bold;
