@@ -15,16 +15,32 @@ $modalType = isset($_SESSION['msg_type']) ? $_SESSION['msg_type'] : '';
 unset($_SESSION['message']); // Remove the message after displaying it
 unset($_SESSION['msg_type']); // Remove the type after displaying it
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Handle election creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['election_name'])) {
     $election_type = $_POST['election_type']; // Fetch election type from the dropdown
     $election_name = htmlspecialchars($_POST['election_name']);
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
+    $start_time = $_POST['start_time'];
+    $end_time = $_POST['end_time'];
+
+     // Ensure start time is before end time
+     if (strtotime($start_time) >= strtotime($end_time)) {
+        $_SESSION['message'] = "Start time must be before end time.";
+        $_SESSION['msg_type'] = "danger";
+        header('Location: elections.php');
+        exit();
+    }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO elections (election_type, name, start_date, end_date) VALUES (?, ?, ?, ?)");
-        if ($stmt->execute([$election_type, $election_name, $start_date, $end_date])) {
+          // Debug: Check received POST data
+        // echo '<pre>'; print_r($_POST); echo '</pre>'; exit();
+        $stmt = $pdo->prepare("INSERT INTO elections (election_type, name, start_date, end_date, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)");
+        if ($stmt->execute([$election_type, $election_name, $start_date, $end_date, $start_time, $end_time])) {
             $_SESSION['message'] = "Election created successfully!";
             $_SESSION['msg_type'] = "success";
         } else {
@@ -43,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['election_name'])) {
 // Handle candidate addition
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
     $candidate_name = htmlspecialchars($_POST['candidate_name']);
-    $election_id = $_POST['election_id']; // This currently holds the ID of the election
+    $election_id = $_POST['election_id']; // Correct field name
     $photo = $_FILES['photo'];
 
     if ($photo['error'] !== UPLOAD_ERR_OK) {
@@ -54,35 +70,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
     }
 
     try {
-        // Fetch the election name based on the provided ID
-        $stmt = $pdo->prepare("SELECT name FROM elections WHERE id = ?");
+        // Fetch the election name using the provided election ID
+        $stmt = $pdo->prepare("SELECT id, name FROM elections WHERE id = ?");
         $stmt->execute([$election_id]);
-        $election_name = $stmt->fetchColumn();
+        $election = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$election_name) {
+        if (!$election) {
             $_SESSION['message'] = "Invalid election ID.";
             $_SESSION['msg_type'] = "danger";
             header('Location: elections.php');
             exit();
         }
 
+        $election_id = $election['id']; // Ensure elect_no is stored correctly
+        $election_name = $election['name'];
+
         // Handle photo upload
         $photoName = time() . '_' . basename($photo['name']);
         $targetDir = 'candidates_photos/';
         $targetFile = $targetDir . $photoName;
 
-        // Ensure the upload directory exists
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
 
-        // Validate file type
         $allowedTypes = ['image/jpeg', 'image/png'];
         if (in_array($photo['type'], $allowedTypes)) {
             if (move_uploaded_file($photo['tmp_name'], $targetFile)) {
-                // Insert the candidate into the database
-                $stmt = $pdo->prepare("INSERT INTO candidates (name, photo, election_id, created_at) VALUES (?, ?, ?, NOW())");
-                if ($stmt->execute([$candidate_name, $targetFile, $election_name])) {
+                $stmt = $pdo->prepare("INSERT INTO candidates (name, photo, election_name, elect_no, created_at) VALUES (?, ?, ?, ?, NOW())");
+                if ($stmt->execute([$candidate_name, $targetFile, $election_name, $election_id])) {
                     $_SESSION['message'] = "Candidate added successfully!";
                     $_SESSION['msg_type'] = "success";
                 } else {
@@ -198,6 +214,16 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
                                 <input type="date" name="end_date" id="endDate" class="form-control" required>
                             </div>
                         </div>
+                        <div class="row">
+    <div class="col-md-6 mb-3">
+        <label for="startTime" class="form-label">Start Time</label>
+        <input type="time" name="start_time" id="startTime" class="form-control" required>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="endTime" class="form-label">End Time</label>
+        <input type="time" name="end_time" id="endTime" class="form-control" required>
+    </div>
+</div>
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-plus-circle"></i> Create Election
                         </button>
@@ -235,7 +261,7 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
                             <label for="photo" class="form-label">Upload Candidate Photo</label>
                             <input type="file" name="photo" id="photo" class="form-control" accept="image/jpeg, image/png" required>
                         </div>
-                        <button type="submit" class="btn btn-success w-100">
+                        <button type="submit" class="btn btn-success w-100">    
                             <i class="bi bi-plus-circle"></i> Add Candidate
                         </button>
                     </form>

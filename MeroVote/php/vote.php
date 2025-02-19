@@ -2,9 +2,8 @@
 session_start();
 
 // Check if user is logged in
-if ( !isset( $_SESSION[ 'user_id' ] ) ) {
-    header( 'Location: ./voter_login.php' );
-    // Redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ./voter_login.php');
     exit();
 }
 
@@ -12,112 +11,137 @@ if ( !isset( $_SESSION[ 'user_id' ] ) ) {
 include 'db_config.php';
 
 // Get election ID from query parameter
-$electionId = $_GET[ 'election_id' ] ?? null;
+$electionId = $_GET['election_id'] ?? null;
 
-if ( !$electionId ) {
-    die( 'Election ID not specified.' );
+if (!$electionId) {
+    die('Election ID not specified.');
 }
 
 // Function to generate a hashed voter ID for anonymity
-
-function generateVoterHash( $user_id, $election_id ) {
-    return hash( 'sha256', trim( $user_id ) . '_' . trim( $election_id ) . '_AngAd' );
+function generateVoterHash($user_id, $election_id) {
+    return hash('sha256', trim($user_id) . '_' . trim($election_id) . '_AngAd');
 }
 
-// Fetch candidates for the election
+// Fetch candidates for the election (Fixed: changed election_id to elect_no)
 try {
-    $stmt = $pdo->prepare( 'SELECT id, name, photo FROM candidates WHERE election_id = :election_id' );
-    $stmt->execute( [ 'election_id' => $electionId ] );
-    $candidates = $stmt->fetchAll( PDO::FETCH_ASSOC );
+    $stmt = $pdo->prepare('SELECT id, name, photo FROM candidates WHERE elect_no = :election_id');
+    $stmt->execute(['election_id' => $electionId]);
+    $candidates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if ( empty( $candidates ) ) {
-        die( 'No candidates found for this election.' );
+    if (empty($candidates)) {
+        die('No candidates found for this election.');
     }
-} catch ( PDOException $e ) {
-    die( 'Error fetching candidates: ' . $e->getMessage() );
+} catch (PDOException $e) {
+    die('Error fetching candidates: ' . $e->getMessage());
 }
+
 
 // Fetch live vote counts for the election
 $voteCounts = [];
 try {
-    $voteStmt = $pdo->prepare( "
+    $voteStmt = $pdo->prepare("
         SELECT c.id AS candidate_id, c.name AS candidate_name, COUNT(v.id) AS vote_count
         FROM votes v
         INNER JOIN candidates c ON v.candidate_id = c.id
         WHERE v.election_id = :election_id
         GROUP BY c.id, c.name
-    " );
-    $voteStmt->execute( [ 'election_id' => $electionId ] );
-    $voteCounts = $voteStmt->fetchAll( PDO::FETCH_ASSOC );
-} catch ( PDOException $e ) {
-    die( 'Error fetching vote counts: ' . $e->getMessage() );
+    ");
+    $voteStmt->execute(['election_id' => $electionId]);
+    $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die('Error fetching vote counts: ' . $e->getMessage());
 }
 
 // Handle voting logic
-if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
-    $candidateId = $_POST[ 'candidate' ] ?? null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $candidateId = $_POST['candidate'] ?? null;
+    $current_time = date('H:i:s');
 
-    if ( $candidateId ) {
+    // Fetch start and end time of election (Fixed: changed election_id to id)
+    $stmt = $pdo->prepare("SELECT start_time, end_time FROM elections WHERE id = :election_id");
+    $stmt->bindParam(':election_id', $electionId, PDO::PARAM_INT);
+    $stmt->execute();
+    $election = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$election) {
+        $_SESSION['message'] = "Election details not found.";
+        $_SESSION['msg_type'] = "danger";
+        header('Location: vote.php?election_id=' . $electionId);
+        exit();
+    }
+
+    // Validate if the current time falls within the voting period
+    if ($current_time < $election['start_time'] || $current_time > $election['end_time']) {
+        $_SESSION['message'] = "Voting is allowed only between " . $election['start_time'] . " and " . $election['end_time'];
+        $_SESSION['msg_type'] = "warning";
+        header('Location: vote.php?election_id=' . $electionId);
+        exit();
+    }
+
+    if ($candidateId) {
         try {
             // Validate if the selected candidate exists for the given election
-            $stmt = $pdo->prepare( "
+            $stmt = $pdo->prepare("
                 SELECT id, name FROM candidates 
-                WHERE id = :candidate_id AND election_id = :election_id
-            " );
-            $stmt->execute( [
+                WHERE id = :candidate_id AND elect_no = :election_id
+            ");
+            $stmt->execute([
                 'candidate_id' => $candidateId,
                 'election_id' => $electionId
-            ] );
-            $candidate = $stmt->fetch( PDO::FETCH_ASSOC );
+            ]);
+            $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ( !$candidate ) {
-                $modalType = 'danger';
-                $modalMessage = 'Invalid candidate selected.';
+            if (!$candidate) {
+                $_SESSION['message'] = "Invalid candidate selected.";
+                $_SESSION['msg_type'] = "danger";
             } else {
                 // Generate anonymous voter hash
-                $voterHash = generateVoterHash( $_SESSION[ 'user_id' ], $electionId );
-                // echo 'Generated Hash: ' . $voterHash;
+                $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
 
                 // Check if the user has already voted in this election
-                $stmt = $pdo->prepare( "
+                $stmt = $pdo->prepare("
                     SELECT COUNT(*) FROM votes 
                     WHERE hashed_user_id = :hashed_user_id AND election_id = :election_id
-                " );
-                $stmt->execute( [
+                ");
+                $stmt->execute([
                     'hashed_user_id' => $voterHash,
                     'election_id' => $electionId
-                ] );
+                ]);
                 $voteCount = $stmt->fetchColumn();
 
-                if ( $voteCount > 0 ) {
-                    $modalType = 'warning';
-                    $modalMessage = 'You have already voted in this election.';
+                if ($voteCount > 0) {
+                    $_SESSION['message'] = "You have already voted in this election.";
+                    $_SESSION['msg_type'] = "warning";
                 } else {
                     // Insert the vote anonymously
-                    $stmt = $pdo->prepare( "
+                    $stmt = $pdo->prepare("
                         INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, election_id) 
                         VALUES (:hashed_user_id, :candidate_id, :candidate_name, :election_id)
-                    " );
-                    $stmt->execute( [
+                    ");
+                    $stmt->execute([
                         'hashed_user_id' => $voterHash,
-                        'candidate_id' => $candidate[ 'id' ],
-                        'candidate_name' => $candidate[ 'name' ],
+                        'candidate_id' => $candidate['id'],
+                        'candidate_name' => $candidate['name'],
                         'election_id' => $electionId
-                    ] );
-                    $modalType = 'success';
-                    $modalMessage = 'Vote successfully submitted!';
+                    ]);
+                    $_SESSION['message'] = "Vote successfully submitted!";
+                    $_SESSION['msg_type'] = "success";
                 }
             }
-        } catch ( PDOException $e ) {
-            $modalType = 'danger';
-            $modalMessage = 'Error submitting vote: ' . htmlspecialchars( $e->getMessage() );
+        } catch (PDOException $e) {
+            $_SESSION['message'] = "Error submitting vote: " . htmlspecialchars($e->getMessage());
+            $_SESSION['msg_type'] = "danger";
         }
     } else {
-        $modalType = 'warning';
-        $modalMessage = 'Please select a candidate.';
+        $_SESSION['message'] = "Please select a candidate.";
+        $_SESSION['msg_type'] = "warning";
     }
+
+    header('Location: vote.php?election_id=' . $electionId);
+    exit();
 }
 ?>
+
 
 <!doctype html>
 <html lang = 'en'>

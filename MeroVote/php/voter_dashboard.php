@@ -198,7 +198,7 @@ Welcome, <span class = 'fw-bold'>Voter!</span>
 <h5 class = 'card-title'><?php echo htmlspecialchars( $election[ 'name' ] );
 ?></h5>
 <p class = 'card-text'>Participate and make your vote count!</p>
-<a href = "vote.php?election_id=<?php echo urlencode($election['name']); ?>"
+<a href = "vote.php?election_id=<?php echo urlencode($election['id']); ?>"
 
 class = 'btn btn-primary w-100'>Vote Now</a>
 </div>
