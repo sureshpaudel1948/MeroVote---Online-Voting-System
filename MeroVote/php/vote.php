@@ -1,5 +1,15 @@
 <?php
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Debug block (remove or comment out after testing)
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     echo "Form submitted!<br>";
+//     echo "Received candidate ID: " . ($_POST['candidate'] ?? 'Not provided') . "<br>";
+//     echo "Received election ID (from POST): " . ($_POST['election_id'] ?? 'Not provided') . "<br>";
+//     // exit();
+// }
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -10,9 +20,8 @@ if (!isset($_SESSION['user_id'])) {
 // Include database configuration
 include 'db_config.php';
 
-// Get election ID from query parameter
-$electionId = $_GET['election_id'] ?? null;
-
+// Get election ID from POST if available, else from GET
+$electionId = $_POST['election_id'] ?? $_GET['election_id'] ?? null;
 if (!$electionId) {
     die('Election ID not specified.');
 }
@@ -22,12 +31,11 @@ function generateVoterHash($user_id, $election_id) {
     return hash('sha256', trim($user_id) . '_' . trim($election_id) . '_AngAd');
 }
 
-// Fetch candidates for the election (Fixed: changed election_id to elect_no)
+// Fetch candidates for the election (using elect_no which stores elections.id)
 try {
     $stmt = $pdo->prepare('SELECT id, name, photo FROM candidates WHERE elect_no = :election_id');
     $stmt->execute(['election_id' => $electionId]);
     $candidates = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     if (empty($candidates)) {
         die('No candidates found for this election.');
     }
@@ -35,18 +43,22 @@ try {
     die('Error fetching candidates: ' . $e->getMessage());
 }
 
-
 // Fetch live vote counts for the election
 $voteCounts = [];
 try {
+    // Retrieve the election name from the elections table (votes.election stores the election's name)
+    $stmt = $pdo->prepare("SELECT name FROM elections WHERE id = :election_id");
+    $stmt->execute(['election_id' => $electionId]);
+    $electionName = $stmt->fetchColumn();
+    
     $voteStmt = $pdo->prepare("
         SELECT c.id AS candidate_id, c.name AS candidate_name, COUNT(v.id) AS vote_count
         FROM votes v
         INNER JOIN candidates c ON v.candidate_id = c.id
-        WHERE v.election_id = :election_id
+        WHERE v.election = :election_name
         GROUP BY c.id, c.name
     ");
-    $voteStmt->execute(['election_id' => $electionId]);
+    $voteStmt->execute(['election_name' => $electionName]);
     $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die('Error fetching vote counts: ' . $e->getMessage());
@@ -57,12 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $candidateId = $_POST['candidate'] ?? null;
     $current_time = date('H:i:s');
 
-    // Fetch start and end time of election (Fixed: changed election_id to id)
-    $stmt = $pdo->prepare("SELECT start_time, end_time FROM elections WHERE id = :election_id");
+    // Fetch start and end time of election using elections.id
+    $stmt = $pdo->prepare("SELECT start_time, end_time, name FROM elections WHERE id = :election_id");
     $stmt->bindParam(':election_id', $electionId, PDO::PARAM_INT);
     $stmt->execute();
     $election = $stmt->fetch(PDO::FETCH_ASSOC);
-
     if (!$election) {
         $_SESSION['message'] = "Election details not found.";
         $_SESSION['msg_type'] = "danger";
@@ -83,14 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Validate if the selected candidate exists for the given election
             $stmt = $pdo->prepare("
                 SELECT id, name FROM candidates 
-                WHERE id = :candidate_id AND elect_no = :election_id
+                WHERE id = :cand_id AND elect_no = :election_id
             ");
             $stmt->execute([
-                'candidate_id' => $candidateId,
+                'cand_id' => $candidateId,
                 'election_id' => $electionId
             ]);
             $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
-
             if (!$candidate) {
                 $_SESSION['message'] = "Invalid candidate selected.";
                 $_SESSION['msg_type'] = "danger";
@@ -98,31 +108,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Generate anonymous voter hash
                 $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
 
-                // Check if the user has already voted in this election
+                // Check if the user has already voted in this election (using election name in votes table)
                 $stmt = $pdo->prepare("
                     SELECT COUNT(*) FROM votes 
-                    WHERE hashed_user_id = :hashed_user_id AND election_id = :election_id
+                    WHERE hashed_user_id = :hashed_user_id AND election = :election_name
                 ");
                 $stmt->execute([
                     'hashed_user_id' => $voterHash,
-                    'election_id' => $electionId
+                    'election_name' => $election['name']
                 ]);
                 $voteCount = $stmt->fetchColumn();
-
                 if ($voteCount > 0) {
                     $_SESSION['message'] = "You have already voted in this election.";
                     $_SESSION['msg_type'] = "warning";
                 } else {
                     // Insert the vote anonymously
                     $stmt = $pdo->prepare("
-                        INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, election_id) 
-                        VALUES (:hashed_user_id, :candidate_id, :candidate_name, :election_id)
+                        INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, election) 
+                        VALUES (:hashed_user_id, :candidate_id, :candidate_name, :election_name)
                     ");
                     $stmt->execute([
                         'hashed_user_id' => $voterHash,
                         'candidate_id' => $candidate['id'],
                         'candidate_name' => $candidate['name'],
-                        'election_id' => $electionId
+                        'election_name' => $election['name']
                     ]);
                     $_SESSION['message'] = "Vote successfully submitted!";
                     $_SESSION['msg_type'] = "success";
@@ -136,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['message'] = "Please select a candidate.";
         $_SESSION['msg_type'] = "warning";
     }
-
     header('Location: vote.php?election_id=' . $electionId);
     exit();
 }
@@ -358,97 +366,105 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 </div>
 </nav>
 </header>
-<div class = 'container mt-5'>
-<h1 class = 'text-center text-primary mb-4'>Vote for Your Candidate</h1>
-<form method = 'post'>
-<div class = 'row justify-content-center'>
-<?php foreach ( $candidates as $candidate ): ?>
-<div class = 'col-md-4 mb-4'>
-<div class = 'card shadow-sm candidate-card'>
-<div class = 'card-body text-center'>
-<input class = 'form-check-input d-none' type = 'radio' name = 'candidate'
-id = "candidate<?php echo $candidate['id']; ?>" value = "<?php echo $candidate['id']; ?>">
-<label class = 'form-check-label d-flex flex-column align-items-center'
-for = "candidate<?php echo $candidate['id']; ?>">
-<img src = "<?php echo htmlspecialchars($candidate['photo']); ?>" alt = 'Candidate Photo'
-
-class = 'candidate-photo img-thumbnail mb-3'>
-<strong
-
-class = 'candidate-name'><?php echo htmlspecialchars( $candidate[ 'name' ] );
-?></strong>
-</label>
-</div>
-</div>
-<!-- Display live vote counts -->
-<h6 class = 'text-primary mt-3'>Live Vote Count:</h6>
-<ul class = 'list-group live-vote-count mb-3'>
-<?php
-// Initialize `found` flag to false
-$found = false;
-
-foreach ( $voteCounts as $vote ) {
-    // Check if the current vote's candidate_id matches the candidate's id
-    if ( isset( $vote[ 'candidate_id' ] ) && $vote[ 'candidate_id' ] == $candidate[ 'id' ] ) {
-        $found = true;
-        echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
-        echo "<div class='vote-details d-flex align-items-center'>";
-        echo "<span class='fw-bold'>" . htmlspecialchars( $candidate[ 'name' ] ) . '</span>';
-        // Show candidate's name
-                                    echo "</div>";
-                                    echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
-                                    echo "</li>";
-                                }
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">Vote for Your Candidate</h1>
+    <form method="post" action="vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
+        <!-- Hidden field to pass election ID in POST data -->
+        <input type="hidden" name="election_id" value="<?php echo htmlspecialchars($electionId); ?>">
+        <div class="row justify-content-center">
+            <?php foreach ($candidates as $candidate): ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm candidate-card">
+                        <div class="card-body text-center">
+                            <input 
+                                class="form-check-input d-none" 
+                                type="radio" 
+                                name="candidate" 
+                                id="candidate<?php echo $candidate['id']; ?>" 
+                                value="<?php echo $candidate['id']; ?>" 
+                                required
+                            >
+                            <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
+                                   for="candidate<?php echo $candidate['id']; ?>">
+                                <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
+                                     alt="Candidate Photo" 
+                                     class="candidate-photo img-thumbnail mb-3">
+                                <strong class="candidate-name">
+                                    <?php echo htmlspecialchars($candidate['name']); ?>
+                                </strong>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Display live vote counts -->
+                    <h6 class="text-primary mt-3">Live Vote Count:</h6>
+                    <ul class="list-group live-vote-count mb-3">
+                        <?php
+                        $found = false;
+                        foreach ($voteCounts as $vote) {
+                            if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
+                                $found = true;
+                                echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
+                                echo "<div class='vote-details d-flex align-items-center'>";
+                                echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
+                                echo "</div>";
+                                echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
+                                echo "</li>";
                             }
-
-                            // If no matching vote is found, display "No votes yet."
-                            if (!$found) {
-                                echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
-                            }
-                            ?>
+                        }
+                        if (!$found) {
+                            echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
+                        }
+                        ?>
                     </ul>
-
-
                 </div>
-                <?php endforeach; ?>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
-            </div>
-        </form>
-        <!-- Feedback Modal -->
-        <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-<?= $modalType ?>">
-                        <h5 class="modal-title text-white"><?= ucfirst($modalType) ?> Message</h5>
-                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <p><?= $modalMessage ?></p>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-<?= $modalType ?>" data-bs-dismiss="modal">Close</button>
-                    </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="text-center">
+            <button type="submit" name="vote_submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
+        </div>
+    </form>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>">
+                    <h5 class="modal-title text-white"><?php echo ucfirst($_SESSION['msg_type'] ?? ''); ?> Message</h5>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p><?php echo $_SESSION['message'] ?? ''; ?></p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-
-
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        <?php if (!empty($modalMessage)): ?>
-        var feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal' ) );
-        feedbackModal.show();
-        <?php endif;
-        ?>
-    }
-);
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($_SESSION['message'])): ?>
+    var feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+    feedbackModal.show();
+    <?php 
+        // Clear message after showing modal
+        unset($_SESSION['message']);
+        unset($_SESSION['msg_type']);
+    endif; 
+    ?>
+});
+
+// Enable label selection functionality for radio buttons
+document.querySelectorAll('.candidate-label').forEach(label => {
+    label.addEventListener('click', function() {
+        let radioInput = this.previousElementSibling;
+        if (radioInput) {
+            radioInput.checked = true;
+        }
+    });
+});
 </script>
-
 </body>
-
 </html>
