@@ -1,15 +1,7 @@
-<?php
+<?php 
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-// Debug block (remove or comment out after testing)
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     echo "Form submitted!<br>";
-//     echo "Received candidate ID: " . ($_POST['candidate'] ?? 'Not provided') . "<br>";
-//     echo "Received election ID (from POST): " . ($_POST['election_id'] ?? 'Not provided') . "<br>";
-//     // exit();
-// }
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -17,21 +9,17 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Include database configuration
 include 'db_config.php';
 
-// Get election ID from POST if available, else from GET
 $electionId = $_POST['election_id'] ?? $_GET['election_id'] ?? null;
 if (!$electionId) {
     die('Election ID not specified.');
 }
 
-// Function to generate a hashed voter ID for anonymity
 function generateVoterHash($user_id, $election_id) {
     return hash('sha256', trim($user_id) . '_' . trim($election_id) . '_AngAd');
 }
 
-// Fetch candidates for the election along with their position
 try {
     $stmt = $pdo->prepare('SELECT id, name, photo, candidate_position FROM candidates WHERE elect_no = :election_id');
     $stmt->execute(['election_id' => $electionId]);
@@ -42,7 +30,7 @@ try {
 } catch (PDOException $e) {
     die('Error fetching candidates: ' . $e->getMessage());
 }
-// Fetch live vote counts for the election
+
 $voteCounts = [];
 try {
     $stmt = $pdo->prepare("SELECT name FROM elections WHERE id = :election_id");
@@ -62,88 +50,92 @@ try {
     die('Error fetching vote counts: ' . $e->getMessage());
 }
 
-// Handle voting logic
+date_default_timezone_set('Asia/Kathmandu');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $candidateId = $_POST['candidate'] ?? null;
     $current_time = date('H:i:s');
 
-    // Fetch start and end time of election using elections.id
     $stmt = $pdo->prepare("SELECT start_time, end_time, name FROM elections WHERE id = :election_id");
     $stmt->bindParam(':election_id', $electionId, PDO::PARAM_INT);
     $stmt->execute();
     $election = $stmt->fetch(PDO::FETCH_ASSOC);
+    
     if (!$election) {
         $_SESSION['message'] = "Election details not found.";
         $_SESSION['msg_type'] = "danger";
-        header('Location: vote.php?election_id=' . $electionId);
-        exit();
-    }
+        $_SESSION['show_modal'] = true;
+    } else {
+        $start_time = (new DateTime($election['start_time']))->format('H:i:s');
+        $end_time = (new DateTime($election['end_time']))->format('H:i:s');
 
-    // Validate if the current time falls within the voting period
-    if ($current_time < $election['start_time'] || $current_time > $election['end_time']) {
-        $_SESSION['message'] = "Voting is allowed only between " . $election['start_time'] . " and " . $election['end_time'];
-        $_SESSION['msg_type'] = "warning";
-        header('Location: vote.php?election_id=' . $electionId);
-        exit();
-    }
-
-    if ($candidateId) {
-        try {
-            // Validate selected candidate
-            $stmt = $pdo->prepare("
-                SELECT id, name, candidate_position FROM candidates 
-                WHERE id = :cand_id AND elect_no = :election_id
-            ");
-            $stmt->execute([
-                'cand_id' => $candidateId,
-                'election_id' => $electionId
-            ]);
-            $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$candidate) {
-                $_SESSION['message'] = "Invalid candidate selected.";
-                $_SESSION['msg_type'] = "danger";
-            } else {
-                // Generate anonymous voter hash
-                $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
-
-                // Check if the user has already voted in this election (using election name in votes table)
+        if ($current_time < $start_time || $current_time > $end_time) {
+            $_SESSION['message'] = "Voting is allowed only between " . $start_time . " and " . $end_time;
+            $_SESSION['msg_type'] = "warning";
+            $_SESSION['show_modal'] = true;
+        } elseif ($candidateId) {
+            try {
                 $stmt = $pdo->prepare("
-                    SELECT COUNT(*) FROM votes 
-                    WHERE hashed_user_id = :hashed_user_id AND election = :election_name
+                    SELECT id, name, candidate_position FROM candidates 
+                    WHERE id = :cand_id AND elect_no = :election_id
                 ");
                 $stmt->execute([
-                    'hashed_user_id' => $voterHash,
-                    'election_name' => $election['name']
+                    'cand_id' => $candidateId,
+                    'election_id' => $electionId
                 ]);
-                $voteCount = $stmt->fetchColumn();
-                if ($voteCount > 0) {
-                    $_SESSION['message'] = "You have already voted in this election.";
-                    $_SESSION['msg_type'] = "warning";
+                $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$candidate) {
+                    $_SESSION['message'] = "Invalid candidate selected.";
+                    $_SESSION['msg_type'] = "danger";
+                    $_SESSION['show_modal'] = true;
                 } else {
-                    // Insert the vote anonymously
+                    $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
+
                     $stmt = $pdo->prepare("
-                        INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, candidate_position, election) 
-                        VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)
+                        SELECT COUNT(*) FROM votes 
+                        WHERE hashed_user_id = :hashed_user_id AND election = :election_name
                     ");
                     $stmt->execute([
                         'hashed_user_id' => $voterHash,
-                        'candidate_id' => $candidate['id'],
-                        'candidate_name' => $candidate['name'],
-                        'candidate_position' => $candidate['candidate_position'],
                         'election_name' => $election['name']
                     ]);
-                    $_SESSION['message'] = "Vote successfully submitted!";
-                    $_SESSION['msg_type'] = "success";
+                    $voteCount = $stmt->fetchColumn();
+
+                    if ($voteCount > 0) {
+                        $_SESSION['message'] = "You have already voted in this election.";
+                        $_SESSION['msg_type'] = "warning";
+                        $_SESSION['show_modal'] = true;
+                    } else {
+                        $stmt = $pdo->prepare("
+                            INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, candidate_position, election) 
+                            VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)
+                        ");
+                        $stmt->execute([
+                            'hashed_user_id' => $voterHash,
+                            'candidate_id' => $candidate['id'],
+                            'candidate_name' => $candidate['name'],
+                            'candidate_position' => $candidate['candidate_position'],
+                            'election_name' => $election['name']
+                        ]);
+                        
+                        $_SESSION['message'] = "Vote successfully submitted!";
+                        $_SESSION['msg_type'] = "success";
+                        $_SESSION['show_modal'] = true;
+                    }
                 }
+            } catch (PDOException $e) {
+                $_SESSION['message'] = "Error submitting vote: " . htmlspecialchars($e->getMessage());
+                $_SESSION['msg_type'] = "danger";
+                $_SESSION['show_modal'] = true;
             }
-        } catch (PDOException $e) {
-            $_SESSION['message'] = "Error submitting vote: " . htmlspecialchars($e->getMessage());
-            $_SESSION['msg_type'] = "danger";
+        } else {
+            $_SESSION['message'] = "Please select a candidate.";
+            $_SESSION['msg_type'] = "warning";
+            $_SESSION['show_modal'] = true;
         }
-    } else {
-        $_SESSION['message'] = "Please select a candidate.";
-        $_SESSION['msg_type'] = "warning";
     }
+
     header('Location: vote.php?election_id=' . $electionId);
     exit();
 }
@@ -428,7 +420,8 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
     </form>
 
     <!-- Feedback Modal -->
-    <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">
+    <?php if (!empty($_SESSION['message'])): ?>
+    <div id="feedbackModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>">
@@ -439,26 +432,36 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
                     <p><?php echo $_SESSION['message'] ?? ''; ?></p>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>" data-bs-dismiss="modal" onclick="hideModal()">Close</button>
                 </div>
             </div>
         </div>
     </div>
+    <?php 
+        // Clear session message after displaying modal
+        unset($_SESSION['message']);
+        unset($_SESSION['msg_type']);
+    endif; 
+    ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($_SESSION['message'])): ?>
-    var feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal'));
-    feedbackModal.show();
-    <?php 
-        // Clear message after showing modal
-        unset($_SESSION['message']);
-        unset($_SESSION['msg_type']);
-    endif; 
-    ?>
+    var modal = document.getElementById('feedbackModal');
+    if (modal) {
+        var feedbackModal = new bootstrap.Modal(modal);
+        feedbackModal.show();
+    }
 });
+
+// Hide modal and remove overlay when closed
+function hideModal() {
+    var modal = document.getElementById('feedbackModal');
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
 
 // Enable label selection functionality for radio buttons
 document.querySelectorAll('.candidate-label').forEach(label => {
@@ -471,4 +474,5 @@ document.querySelectorAll('.candidate-label').forEach(label => {
 });
 </script>
 </body>
+
 </html>
