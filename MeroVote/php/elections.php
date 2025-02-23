@@ -27,9 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['election_name'])) {
     $end_date = $_POST['end_date'];
     $start_time = $_POST['start_time'];
     $end_time = $_POST['end_time'];
+    $election_position = $_POST['election_position'];
 
-     // Ensure start time is before end time
-     if (strtotime($start_time) >= strtotime($end_time)) {
+    // Ensure start time is before end time
+    if (strtotime($start_time) >= strtotime($end_time)) {
         $_SESSION['message'] = "Start time must be before end time.";
         $_SESSION['msg_type'] = "danger";
         header('Location: elections.php');
@@ -37,10 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['election_name'])) {
     }
 
     try {
-          // Debug: Check received POST data
+        // Debug: Check received POST data
         // echo '<pre>'; print_r($_POST); echo '</pre>'; exit();
-        $stmt = $pdo->prepare("INSERT INTO elections (election_type, name, start_date, end_date, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)");
-        if ($stmt->execute([$election_type, $election_name, $start_date, $end_date, $start_time, $end_time])) {
+        $stmt = $pdo->prepare("INSERT INTO elections (election_type, name, start_date, end_date, start_time, end_time, election_position) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        if ($stmt->execute([$election_type, $election_name, $start_date, $end_date, $start_time, $end_time, $election_position])) {
             $_SESSION['message'] = "Election created successfully!";
             $_SESSION['msg_type'] = "success";
         } else {
@@ -59,8 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['election_name'])) {
 // Handle candidate addition
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
     $candidate_name = htmlspecialchars($_POST['candidate_name']);
-    $election_id = $_POST['election_id']; // Correct field name
+    // Cast the posted election ID to an integer
+    $election_id = (int) trim($_POST['election_id']);
+    $candidate_position = htmlspecialchars($_POST['candidate_position']); // New field for candidate position
     $photo = $_FILES['photo'];
+
+    if (!$election_id) {
+        $_SESSION['message'] = "Election ID is missing.";
+        $_SESSION['msg_type'] = "danger";
+        header('Location: elections.php');
+        exit();
+    }
 
     if ($photo['error'] !== UPLOAD_ERR_OK) {
         $_SESSION['message'] = "Error uploading photo. Error code: " . $photo['error'];
@@ -70,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
     }
 
     try {
-        // Fetch the election name using the provided election ID
+        // Fetch the election details using the provided election ID
         $stmt = $pdo->prepare("SELECT id, name FROM elections WHERE id = ?");
         $stmt->execute([$election_id]);
         $election = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -82,7 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
             exit();
         }
 
-        $election_id = $election['id']; // Ensure elect_no is stored correctly
+        // Set variables to use when inserting candidate
+        $election_id = $election['id']; // This is now an integer
         $election_name = $election['name'];
 
         // Handle photo upload
@@ -90,15 +101,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
         $targetDir = 'candidates_photos/';
         $targetFile = $targetDir . $photoName;
 
+        // Ensure the upload directory exists
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
 
+        // Validate file type
         $allowedTypes = ['image/jpeg', 'image/png'];
         if (in_array($photo['type'], $allowedTypes)) {
             if (move_uploaded_file($photo['tmp_name'], $targetFile)) {
-                $stmt = $pdo->prepare("INSERT INTO candidates (name, photo, election_name, elect_no, created_at) VALUES (?, ?, ?, ?, NOW())");
-                if ($stmt->execute([$candidate_name, $targetFile, $election_name, $election_id])) {
+                // Insert the candidate into the database with the new candidate_position field
+                $stmt = $pdo->prepare("INSERT INTO candidates (name, photo, election_name, candidate_position, elect_no, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+                if ($stmt->execute([$candidate_name, $targetFile, $election_name, $candidate_position, $election_id])) {
                     $_SESSION['message'] = "Candidate added successfully!";
                     $_SESSION['msg_type'] = "success";
                 } else {
@@ -122,10 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['candidate_name'])) {
     exit();
 }
 
-
 // Fetch all elections for the dropdown
-$elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+$elections = $pdo->query("SELECT id, election_type, election_position, name FROM elections ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
+
 
 
 <!doctype html>
@@ -204,6 +219,10 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
                             <label for="electionName" class="form-label">Election Name</label>
                             <input type="text" name="election_name" id="electionName" class="form-control" placeholder="e.g. Nepal Local Election 2081" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="electionPosition" class="form-label">Election Position</label>
+                            <input type="text" name="election_position" id="electionPosition" class="form-control" placeholder="e.g. Secretary" required>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="startDate" class="form-label">Start Date</label>
@@ -232,43 +251,71 @@ $elections = $pdo->query("SELECT id, election_type, name FROM elections ORDER BY
             </div>
         </div>
 
-        <!-- Add Candidate Form -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Add New Candidate</h5>
-                </div>
-                <div class="card-body">
-                    <form action="elections.php" method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="candidateName" class="form-label">Candidate Name</label>
-                            <input type="text" name="candidate_name" id="candidateName" class="form-control" placeholder="e.g. Hari Sharma" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="electionId" class="form-label">Select Election</label>
-                            <select name="election_id" id="electionId" class="form-select" required>
-                                <option value="">Select Election</option>
-                                <?php foreach ($elections as $election): ?>
-                                    <option value="<?php echo $election['id']; ?>">
-                                        <?php echo htmlspecialchars($election['election_type'] . " - " . $election['name']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label><code class="note">Please, note that the photo must be authentic.
-                            </code></label><br>
-                            <label for="photo" class="form-label">Upload Candidate Photo</label>
-                            <input type="file" name="photo" id="photo" class="form-control" accept="image/jpeg, image/png" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">    
-                            <i class="bi bi-plus-circle"></i> Add Candidate
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+       <!-- Add Candidate Form -->
+<div class="col-md-6 mb-4">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Add New Candidate</h5>
     </div>
+    <div class="card-body">
+      <form action="elections.php" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="candidateName" class="form-label">Candidate Name</label>
+          <input type="text" name="candidate_name" id="candidateName" class="form-control" placeholder="e.g. Hari Sharma" required>
+        </div>
+        <div class="mb-3">
+          <label for="electionId" class="form-label">Select Election</label>
+          <select name="election_id" id="electionId" class="form-select" required>
+            <option value="">Select Election</option>
+            <?php foreach ($elections as $election): ?>
+              <option value="<?php echo $election['id']; ?>">
+                <?php echo htmlspecialchars($election['election_type'] . " - " . $election['name']); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="candidatePosition" class="form-label">Candidate Position</label>
+          <input type="text" name="candidate_position" id="candidatePosition" class="form-control" placeholder="Candidate Position" readonly required>
+        </div>
+        <div class="mb-3">
+          <label><code class="note">Please, note that the photo must be authentic.</code></label><br>
+          <label for="photo" class="form-label">Upload Candidate Photo</label>
+          <input type="file" name="photo" id="photo" class="form-control" accept="image/jpeg, image/png" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">
+          <i class="bi bi-plus-circle"></i> Add Candidate
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Convert PHP $elections array into a JavaScript object
+  var electionsData = <?php echo json_encode($elections); ?>;
+  
+  // Get references to the election dropdown and candidate position input field
+  var electionSelect = document.getElementById("electionId");
+  var candidatePositionInput = document.getElementById("candidatePosition");
+  
+  // When the election dropdown value changes...
+  electionSelect.addEventListener("change", function() {
+    var selectedId = this.value;
+    // Find the election object with a matching id
+    var selectedElection = electionsData.find(function(election) {
+      return election.id == selectedId;
+    });
+    // If found and election_position exists, update the candidate position field; otherwise clear it.
+    if (selectedElection && selectedElection.election_position) {
+      candidatePositionInput.value = selectedElection.election_position;
+    } else {
+      candidatePositionInput.value = "";
+    }
+  });
+});
+</script>
 
     <!-- Feedback Modal -->
     <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog">

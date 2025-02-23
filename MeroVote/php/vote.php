@@ -31,9 +31,9 @@ function generateVoterHash($user_id, $election_id) {
     return hash('sha256', trim($user_id) . '_' . trim($election_id) . '_AngAd');
 }
 
-// Fetch candidates for the election (using elect_no which stores elections.id)
+// Fetch candidates for the election along with their position
 try {
-    $stmt = $pdo->prepare('SELECT id, name, photo FROM candidates WHERE elect_no = :election_id');
+    $stmt = $pdo->prepare('SELECT id, name, photo, candidate_position FROM candidates WHERE elect_no = :election_id');
     $stmt->execute(['election_id' => $electionId]);
     $candidates = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (empty($candidates)) {
@@ -42,21 +42,19 @@ try {
 } catch (PDOException $e) {
     die('Error fetching candidates: ' . $e->getMessage());
 }
-
 // Fetch live vote counts for the election
 $voteCounts = [];
 try {
-    // Retrieve the election name from the elections table (votes.election stores the election's name)
     $stmt = $pdo->prepare("SELECT name FROM elections WHERE id = :election_id");
     $stmt->execute(['election_id' => $electionId]);
     $electionName = $stmt->fetchColumn();
     
     $voteStmt = $pdo->prepare("
-        SELECT c.id AS candidate_id, c.name AS candidate_name, COUNT(v.id) AS vote_count
+        SELECT c.id AS candidate_id, c.name AS candidate_name, c.candidate_position, COUNT(v.id) AS vote_count
         FROM votes v
         INNER JOIN candidates c ON v.candidate_id = c.id
         WHERE v.election = :election_name
-        GROUP BY c.id, c.name
+        GROUP BY c.id, c.name, c.candidate_position
     ");
     $voteStmt->execute(['election_name' => $electionName]);
     $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -91,9 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($candidateId) {
         try {
-            // Validate if the selected candidate exists for the given election
+            // Validate selected candidate
             $stmt = $pdo->prepare("
-                SELECT id, name FROM candidates 
+                SELECT id, name, candidate_position FROM candidates 
                 WHERE id = :cand_id AND elect_no = :election_id
             ");
             $stmt->execute([
@@ -124,13 +122,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     // Insert the vote anonymously
                     $stmt = $pdo->prepare("
-                        INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, election) 
-                        VALUES (:hashed_user_id, :candidate_id, :candidate_name, :election_name)
+                        INSERT INTO votes (hashed_user_id, candidate_id, candidate_name, candidate_position, election) 
+                        VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)
                     ");
                     $stmt->execute([
                         'hashed_user_id' => $voterHash,
                         'candidate_id' => $candidate['id'],
                         'candidate_name' => $candidate['name'],
+                        'candidate_position' => $candidate['candidate_position'],
                         'election_name' => $election['name']
                     ]);
                     $_SESSION['message'] = "Vote successfully submitted!";
@@ -392,6 +391,10 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
                                 <strong class="candidate-name">
                                     <?php echo htmlspecialchars($candidate['name']); ?>
                                 </strong>
+                                <!-- Display candidate position -->
+                                <span class="badge bg-secondary mt-2">
+                                    <?php echo htmlspecialchars($candidate['candidate_position']); ?>
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -442,6 +445,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
