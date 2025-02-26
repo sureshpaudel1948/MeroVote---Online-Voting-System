@@ -4,6 +4,13 @@ include 'db_config.php';
 
 $error_message = "";
 
+// If this is a fresh GET request (and not a POST for sending or verifying OTP), clear OTP-related session variables
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    unset($_SESSION['otp_sent']);
+    unset($_SESSION['otp_mobile']);
+    unset($_SESSION['otp_token']);
+}
+
 // Enhanced logging function
 function logToFile($message) {
     $logFile = 'sms_api.log';
