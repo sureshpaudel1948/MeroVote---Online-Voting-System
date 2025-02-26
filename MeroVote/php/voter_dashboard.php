@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ./voter_login.php');
+    header('Location: ./otp-api.php');
     exit();
 }
 

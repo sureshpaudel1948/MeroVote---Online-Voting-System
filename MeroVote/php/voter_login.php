@@ -33,7 +33,7 @@ if (!empty($_POST['student_id'])) {
         $_SESSION['user_type'] = 'college';
         $_SESSION['user_identifier'] = trim($user['student_id']);  // Trim identifier
         $_SESSION['user_role'] = 'School/College Level Election'; 
-        header('Location: voter_dashboard.php');
+        header('Location: otp-api.php');
         exit();
     }
 }
@@ -50,7 +50,7 @@ if (!empty($_POST['local_id'])) {
         $_SESSION['user_type'] = 'local';
         $_SESSION['user_identifier'] = trim($user['local_id']);  // Trim identifier
         $_SESSION['user_role'] = 'Local Level Election'; 
-        header('Location: voter_dashboard.php');
+        header('Location: otp-api.php');
         exit();
     }
 }
@@ -67,7 +67,7 @@ if (!empty($_POST['employee_id'])) {
         $_SESSION['user_type'] = 'org';
         $_SESSION['user_identifier'] = trim($user['employee_id']);  // Trim identifier
         $_SESSION['user_role'] = 'Organizational Level Election'; 
-        header('Location: voter_dashboard.php');
+        header('Location: otp-api.php');
         exit();
     }
 }
