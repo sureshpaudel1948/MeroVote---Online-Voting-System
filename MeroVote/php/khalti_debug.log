@@ -1,0 +1,2 @@
+[2025-02-26 10:15:42] verifyOTP Request: {"public_key":"test_public_key_eba4d1f2b1614473b5534d9fe1877fde","token":"bE5FEKoefXQXsphSw7HyFY","confirmation_code":"938505","transaction_pin":"2055"}
+[2025-02-26 10:15:43] verifyOTP Response (HTTP Code 400): {"detail":"Transaction has already been confirmed.","error_key":"already_confirmed"}
