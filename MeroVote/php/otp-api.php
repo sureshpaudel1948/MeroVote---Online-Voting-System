@@ -95,7 +95,7 @@ function verifyOTP($inputOtp) {
 // Handle OTP Request
 if (isset($_POST['send_otp'])) {
     $mobile = preg_replace('/\D/', '', $_POST['mobile']);
-    if (strlen($mobile) == 10 && substr($mobile, 0, 2) == '98') {
+    if (strlen($mobile) == 10 && substr($mobile, 0, 2)) {
         $result = sendOTP($mobile);
         if ($result['success']) {
             $_SESSION['otp_mobile'] = $mobile;
@@ -105,7 +105,7 @@ if (isset($_POST['send_otp'])) {
             $error_message = "<span style='color:red'>Error: {$result['message']}</span>";
         }
     } else {
-        $error_message = "<span style='color:red'>Invalid mobile number. Use 98XXXXXXXX.</span>";
+        $error_message = "<span style='color:red'>Invalid mobile number. Use 9XXXXXXXXX.</span>";
     }
 }
 
@@ -147,7 +147,7 @@ logToFile("Session Status: " . print_r($_SESSION, true));
     <?php if (!isset($_SESSION["otp_sent"])) { ?>
         <form method="post">
             <label>Enter Mobile Number:</label>
-            <input type="text" name="mobile" pattern="98\d{8}" placeholder="98XXXXXXXX" required>
+            <input type="text" name="mobile" pattern="d{10}" placeholder="9XXXXXXXX" required>
             <button type="submit" name="send_otp">Send OTP</button>
         </form>
     <?php } else { ?>
