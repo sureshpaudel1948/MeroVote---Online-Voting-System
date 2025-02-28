@@ -1,7 +1,7 @@
 <?php
 session_start();
 if ( !isset( $_SESSION[ 'user_id' ] ) ) {
-    header( 'Location: ./otp-api.php' );
+    header( 'Location: ./voter_login.php' );
     exit();
 }
 
@@ -10,14 +10,14 @@ include 'db_config.php';
 $user_id = $_SESSION[ 'user_id' ];
 $user_role = $_SESSION[ 'user_role' ];
 
-// Role-based filtering of election types
+// Role-based filtering of election types ( for group voting )
 $allowedElectionType = '';
-if ( $user_role == 'School/College Level Election' ) {
-    $allowedElectionType = 'School/College Level Election';
-} elseif ( $user_role == 'Local Level Election' ) {
-    $allowedElectionType = 'Local Level Election';
-} elseif ( $user_role == 'Organizational Level Election' ) {
-    $allowedElectionType = 'Organizational Level Election';
+if ( $user_role == 'School/College Level Election-Group' ) {
+    $allowedElectionType = 'School/College Level Election-Group';
+} elseif ( $user_role == 'Local Level Election-Group' ) {
+    $allowedElectionType = 'Local Level Election-Group';
+} elseif ( $user_role == 'Organizational Level Election-Group' ) {
+    $allowedElectionType = 'Organizational Level Election-Group';
 }
 
 if ( empty( $allowedElectionType ) ) {
@@ -29,40 +29,48 @@ $expiredElections = [];
 $currentDate = date( 'Y-m-d' );
 
 try {
-    // Fetch all elections along with election_position
+    // Fetch all elections from elections_group for the given group election type
     $stmt = $pdo->prepare( "
-        SELECT id, election_type, name, election_position, start_date, end_date
-        FROM elections
+        SELECT id, election_type, name, start_date, end_date, start_time, end_time, 
+               panel1_pos1, panel1_pos2, panel1_pos3, panel1_pos4, 
+               panel2_pos1, panel2_pos2, panel2_pos3, panel2_pos4
+        FROM elections_group
         WHERE election_type = :election_type
         ORDER BY start_date ASC
     " );
     $stmt->execute( [ 'election_type' => $allowedElectionType ] );
 
     $processedExpiredElections = [];
-    // Array to track processed election IDs
-
+    // To track expired election IDs
     while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
-        // Include election position when processing elections
+        // Build an election data array from available fields
         $electionData = [
             'id' => $row[ 'id' ],
             'election_type' => $row[ 'election_type' ],
             'name' => $row[ 'name' ],
-            'election_position' => $row[ 'election_position' ],
             'start_date' => $row[ 'start_date' ],
-            'end_date' => $row[ 'end_date' ]
+            'end_date' => $row[ 'end_date' ],
+            'start_time' => $row[ 'start_time' ],
+            'end_time' => $row[ 'end_time' ],
+            // Panel 1 positions
+            'panel1_pos1' => $row[ 'panel1_pos1' ],
+            'panel1_pos2' => $row[ 'panel1_pos2' ],
+            'panel1_pos3' => $row[ 'panel1_pos3' ],
+            'panel1_pos4' => $row[ 'panel1_pos4' ],
+            // Panel 2 positions
+            'panel2_pos1' => $row[ 'panel2_pos1' ],
+            'panel2_pos2' => $row[ 'panel2_pos2' ],
+            'panel2_pos3' => $row[ 'panel2_pos3' ],
+            'panel2_pos4' => $row[ 'panel2_pos4' ]
         ];
 
-        // Separate ongoing and expired elections
+        // Separate ongoing and expired elections based on the dates
         if ( $row[ 'start_date' ] <= $currentDate && $row[ 'end_date' ] >= $currentDate ) {
             $ongoingElections[] = $electionData;
-            // Ongoing elections
         } elseif ( $row[ 'end_date' ] < $currentDate ) {
-            // Check if this expired election has already been processed
             if ( !in_array( $row[ 'id' ], $processedExpiredElections ) ) {
                 $expiredElections[] = $electionData;
-                // Add to expired elections
                 $processedExpiredElections[] = $row[ 'id' ];
-                // Track processed election ID
             }
         }
     }
@@ -80,7 +88,7 @@ try {
                 c.name AS candidate_name, 
                 c.photo AS candidate_image,     
                 COUNT(v.id) AS total_votes
-            FROM candidates c
+            FROM candidates_group c
             LEFT JOIN votes v 
                 ON v.candidate_id = c.id AND v.election = :election_name
             WHERE c.election_name = :election_name
@@ -177,9 +185,9 @@ Welcome, <span class = 'fw-bold'>Voter!</span>
 <h5 class = 'card-title'><?php echo htmlspecialchars( $election[ 'name' ] );
 ?></h5>
 <p class = 'card-text'>Participate and make your vote count!</p>
-<a href = "vote.php?election_id=<?php echo urlencode($election['id']); ?>"
-
-class = 'btn btn-primary w-100'>Vote Now</a>
+<a href = "vote.php?election_id=<?php echo urlencode($election['id']); ?>" class = 'btn btn-primary w-100'>
+Vote Now
+</a>
 </div>
 </div>
 </div>
@@ -194,7 +202,6 @@ class = 'btn btn-primary w-100'>Vote Now</a>
 </div>
 </section>
 
-<!-- Expired Elections Section -->
 <!-- Expired Elections Section -->
 <section class = 'mt-5'>
 <h2 class = 'text-danger mb-3 text-center'>Expired Elections</h2>
@@ -216,17 +223,17 @@ class = 'btn btn-primary w-100'>Vote Now</a>
 <div class = 'card-body'>
 <h5 class = 'card-title'><?php echo htmlspecialchars( $election[ 'name' ] );
 ?></h5>
-<p class = 'card-text'><small>Ended on: <?php echo htmlspecialchars( $election[ 'end_date' ] );
-?></small></p>
-
+<p class = 'card-text'>
+<small>Ended on: <?php echo htmlspecialchars( $election[ 'end_date' ] );
+?></small>
+</p>
 <!-- Winner Section -->
 <div class = 'winner-details text-center mt-3'>
 <h6 class = 'text-success'><strong>Winner:</strong>
 <?php echo htmlspecialchars( $election[ 'winner_name' ] );
 ?>
 </h6>
-<img src = "<?php echo htmlspecialchars($election['winner_image']); ?>"
-alt = 'Winner Image' class = 'rounded-circle'
+<img src = "<?php echo htmlspecialchars($election['winner_image']); ?>" alt = 'Winner Image' class = 'rounded-circle'
 style = 'width: 100px; height: 100px; object-fit: cover;'>
 <p class = 'mt-2'>Votes: <strong><?php echo htmlspecialchars( $election[ 'winner_votes' ] );
 ?></strong></p>
@@ -244,7 +251,6 @@ style = 'width: 100px; height: 100px; object-fit: cover;'>
 ?>
 </div>
 </section>
-
 </main>
 
 <footer class = 'bg-dark text-white text-center py-3'>

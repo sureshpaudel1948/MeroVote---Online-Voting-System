@@ -134,20 +134,65 @@ logToFile("Session Status: " . print_r($_SESSION, true));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel = 'stylesheet' />
+<link rel = 'stylesheet' href = '../css/styles.css' />
     <title>MeroVote OTP Verification</title>
     <link rel="stylesheet" href="../css/styles.css">
     <style>
-        .otp-container { max-width: 400px; margin: 50px auto; padding: 20px; }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; }
+        .otp-container { max-width: 400px; margin: 50px auto; padding: 20px;  opacity: 0.9;
+  border-radius: 15px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15); }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #000; }
+        button {width: 28%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 0px; background-color: #007bff !important; color: #FFFF;}
     </style>
 </head>
 <body>
+<header>
+<nav class = 'navbar navbar-expand-lg navbar-dark bg-dark'>
+<div class = 'container-fluid'>
+<!-- Brand Logo and Name -->
+<a class = 'navbar-brand d-flex align-items-center' href = 'voter_dashboard.php'>
+<img src = '../img/MeroVote-Logo.png' style = 'height: 60px; width: auto;' alt = 'MeroVote Logo' class = 'logo img-fluid me-2'>
+<span></span>
+</a>
+
+<!-- Toggler Button for Small Screens -->
+<button class = ' navbar-toggler' type = 'button' data-bs-toggle = 'collapse'
+data-bs-target = '#navbarSupportedContent' aria-controls = 'navbarSupportedContent'
+aria-expanded = 'false' aria-label = 'Toggle navigation'>
+<span class = 'navbar-toggler-icon'></span>
+</button>
+
+<!-- Navbar Content -->
+<div class = 'collapse navbar-collapse' id = 'navbarSupportedContent'>
+<!-- Navbar Items -->
+<ul class = 'navbar-nav ms-auto mb-2 mb-lg-0'>
+<li class = 'nav-item'>
+<a class = 'nav-link' href = 'voter_login.php'>Login</a>
+</li>
+<li class = 'nav-item'>
+<a class = 'nav-link' href = 'feedback.php'>Feedback</a>
+</li>
+<li class = 'nav-item'>
+<a class = 'nav-link' href = '../index.html#how'>How It Works</a>
+</li>
+<li class = 'nav-item'>
+<a class = 'nav-link' href = 'voter_dashboard.php'>Dashboard</a>
+</li>
+<li class = 'nav-item'>
+<a class = 'nav-link' href = 'logout.php'>Logout</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+</header>
 <div class="otp-container">
     <h2>OTP Verification</h2>
     <?php if (!isset($_SESSION["otp_sent"])) { ?>
         <form method="post">
             <label>Enter Mobile Number:</label>
-            <input type="text" name="mobile" pattern="d{10}" placeholder="9XXXXXXXX" required>
+            <input type="text" name="mobile" placeholder="9XXXXXXXX" required>
             <button type="submit" name="send_otp">Send OTP</button>
         </form>
     <?php } else { ?>
@@ -160,5 +205,11 @@ logToFile("Session Status: " . print_r($_SESSION, true));
     <?php } ?>
     <?php if ($error_message) echo "<p>$error_message</p>"; ?>
 </div>
+<footer class = 'bg-dark text-white text-center py-3'>
+<div class = 'container'>
+<p>&copy;
+2024 Online Voting System. All rights reserved.</p>
+</div>
+</footer>
 </body>
 </html>

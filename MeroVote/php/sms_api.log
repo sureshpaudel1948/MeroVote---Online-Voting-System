@@ -647,3 +647,458 @@
 
 [2025-02-27 02:24:15] Verifying OTP. Input: 251999, Stored: 251999
 [2025-02-27 02:24:15] OTP verification successful.
+[2025-02-27 02:53:31] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:54:20] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:55:09] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:55:19] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:55:21] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:55:45] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:55:54] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:56:06] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:57:42] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:57:56] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:58:05] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 02:58:22] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:01:19] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:02:34] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:03:01] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:04:01] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:04:32] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:06:59] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:07:08] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:52:34] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+)
+
+[2025-02-27 03:52:40] Generated OTP: 530252 for mobile: 9826170721
+[2025-02-27 03:52:41] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 530252","mobile":"9826170721"}
+[2025-02-27 03:52:41] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-02-27 03:52:41] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [admin_id] => A-1005
+    [show_modal] => 1
+    [otp] => 530252
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-27 03:52:58] Verifying OTP. Input: 530252, Stored: 530252
+[2025-02-27 03:52:58] OTP verification successful.
+[2025-02-27 12:30:48] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+)
+
+[2025-02-27 12:31:00] Generated OTP: 230505 for mobile: 9826170721
+[2025-02-27 12:31:00] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 230505","mobile":"9826170721"}
+[2025-02-27 12:31:00] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-02-27 12:31:00] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [otp] => 230505
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-27 12:31:32] Verifying OTP. Input: 767958, Stored: 230505
+[2025-02-27 12:31:32] OTP verification failed. Attempt: 1
+[2025-02-27 12:31:32] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [otp] => 230505
+    [otp_attempts] => 1
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-27 12:31:39] Verifying OTP. Input: 837379, Stored: 230505
+[2025-02-27 12:31:39] OTP verification failed. Attempt: 2
+[2025-02-27 12:31:39] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [otp] => 230505
+    [otp_attempts] => 2
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-27 12:32:06] Verifying OTP. Input: 230505, Stored: 230505
+[2025-02-27 12:32:06] OTP verification successful.
+[2025-02-27 12:33:20] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [show_modal] => 1
+    [admin_id] => A-1005
+)
+
+[2025-02-27 12:33:23] Generated OTP: 335466 for mobile: 9826170721
+[2025-02-27 12:33:24] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 335466","mobile":"9826170721"}
+[2025-02-27 12:33:24] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-02-27 12:33:24] Session Status: Array
+(
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [show_modal] => 1
+    [admin_id] => A-1005
+    [otp] => 335466
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-27 12:33:32] Verifying OTP. Input: 335466, Stored: 335466
+[2025-02-27 12:33:32] OTP verification successful.
+[2025-02-27 12:37:13] Session Status: Array
+(
+    [user_id] => 17
+    [user_type] => local
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [show_modal] => 1
+    [admin_id] => A-1005
+)
+
+[2025-02-27 12:37:16] Generated OTP: 757737 for mobile: 9840760417
+[2025-02-27 12:37:17] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 757737","mobile":"9840760417"}
+[2025-02-27 12:37:17] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-02-27 12:37:17] Session Status: Array
+(
+    [user_id] => 17
+    [user_type] => local
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [show_modal] => 1
+    [admin_id] => A-1005
+    [otp] => 757737
+    [otp_attempts] => 0
+    [otp_mobile] => 9840760417
+    [otp_sent] => 1
+)
+
+[2025-02-27 12:37:39] Verifying OTP. Input: 757737, Stored: 757737
+[2025-02-27 12:37:39] OTP verification successful.
+[2025-02-28 12:30:58] Session Status: Array
+(
+    [user_id] => 1
+    [admin_id] => A-1005
+    [user_type] => college
+    [user_identifier] => 2077-001
+    [user_role] => School/College Level Election
+)
+
+[2025-02-28 12:31:23] Generated OTP: 126267 for mobile: 9826170721
+[2025-02-28 12:31:24] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 126267","mobile":"9826170721"}
+[2025-02-28 12:31:24] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-02-28 12:31:24] Session Status: Array
+(
+    [user_id] => 1
+    [admin_id] => A-1005
+    [user_type] => college
+    [user_identifier] => 2077-001
+    [user_role] => School/College Level Election
+    [otp] => 126267
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-28 12:31:34] Verifying OTP. Input: 126267, Stored: 126267
+[2025-02-28 12:31:34] OTP verification successful.
+[2025-02-28 13:03:14] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+)
+
+[2025-02-28 13:04:40] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+)
+
+[2025-02-28 13:06:36] Generated OTP: 166312 for mobile: 9826170721
+[2025-02-28 13:06:37] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 166312","mobile":"9826170721"}
+[2025-02-28 13:06:37] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-02-28 13:06:37] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+    [otp] => 166312
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-02-28 13:06:45] Verifying OTP. Input: 166312, Stored: 166312
+[2025-02-28 13:06:45] OTP verification successful.
+[2025-02-28 14:01:04] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+)
+
+[2025-02-28 14:44:18] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [loggedin] => 1
+)
+
+[2025-02-28 14:44:31] Session Status: Array
+(
+    [user_id] => 1
+    [admin_id] => A-1005
+    [user_type] => college
+    [user_identifier] => 2077-001
+    [user_role] => School/College Level Election
+    [loggedin] => 1
+)
+
+[2025-02-28 23:03:22] Session Status: Array
+(
+)
+

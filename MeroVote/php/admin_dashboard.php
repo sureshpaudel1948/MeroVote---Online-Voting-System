@@ -29,9 +29,14 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'delete_election'
     }
 }
 
-// Handle Redirect to Create
+// Handle Redirect to Create New Election based on category selection
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'redirect_election' ] ) ) {
-    header( 'Location: ./elections.php' );
+    $election_category = isset( $_POST[ 'election_category' ] ) ? $_POST[ 'election_category' ] : 'individual';
+    if ( $election_category === 'group' ) {
+        header( 'Location: ./group-elections.php' );
+    } else {
+        header( 'Location: ./elections.php' );
+    }
     exit();
 }
 ?>
@@ -72,7 +77,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <a class = 'nav-link active' href = 'admin_dashboard.php'>Dashboard</a>
 </li>
 <li class = 'nav-item'>
-<a class = 'nav-link text-danger' href = '../index.html'>Logout</a>
+<a class = 'nav-link text-danger' href = 'logout.php'>Logout</a>
 </li>
 </ul>
 </div>
@@ -86,6 +91,11 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <div class = 'd-flex justify-content-between mb-3'>
 <h2 class = 'text-secondary'>📋 Manage Elections</h2>
 <form method = 'POST'>
+<!-- New dropdown for election category -->
+<select name = 'election_category' class = 'form-select d-inline-block w-auto me-2'>
+<option value = 'individual' selected>Individual</option>
+<option value = 'group'>Group</option>
+</select>
 <button type = 'submit' name = 'redirect_election' class = 'btn btn-success'>➕ Create New Election</button>
 </form>
 </div>

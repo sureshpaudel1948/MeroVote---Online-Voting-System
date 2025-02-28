@@ -21,64 +21,126 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values
     $phone_number = sanitize_input($_POST['phone-number']);
     $password = sanitize_input($_POST['password']);
-// Check if `student_id` is provided for college users
-if (!empty($_POST['student_id'])) {
-    $student_id = sanitize_input($_POST['student_id']);
-    $stmt = $pdo->prepare("SELECT * FROM users_college WHERE phone_number = ? AND student_id = ?");
-    $stmt->execute([$phone_number, $student_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $electionType = isset($_POST['election-type']) ? sanitize_input($_POST['election-type']) : '';
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = trim($user['id']);  // Trim extra spaces
-        $_SESSION['user_type'] = 'college';
-        $_SESSION['user_identifier'] = trim($user['student_id']);  // Trim identifier
-        $_SESSION['user_role'] = 'School/College Level Election'; 
-        header('Location: otp-api.php');
-        exit();
+    // Use a switch block based on the selected election type
+    switch ($electionType) {
+        case 'college':
+            // Normal School/College login
+            if (!empty($_POST['student_id'])) {
+                $student_id = sanitize_input($_POST['student_id']);
+                $stmt = $pdo->prepare("SELECT * FROM users_college WHERE phone_number = ? AND student_id = ?");
+                $stmt->execute([$phone_number, $student_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = trim($user['id']);
+                    $_SESSION['user_type'] = 'college';
+                    $_SESSION['user_identifier'] = trim($user['student_id']);
+                    $_SESSION['user_role'] = 'School/College Level Election';
+                    header('Location: otp-api.php');
+                    exit();
+                }
+            }
+            break;
+        case 'college-grp':
+            // Group School/College login
+            if (!empty($_POST['student_id'])) {
+                $student_id = sanitize_input($_POST['student_id']);
+                $stmt = $pdo->prepare("SELECT * FROM users_college WHERE phone_number = ? AND student_id = ?");
+                $stmt->execute([$phone_number, $student_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = trim($user['id']);
+                    $_SESSION['user_type'] = 'college-grp';
+                    $_SESSION['user_identifier'] = trim($user['student_id']);
+                    $_SESSION['user_role'] = 'School/College Level Election-Group';
+                    header('Location: voter_grp_dashboard.php');
+                    exit();
+                }
+            }
+            break;
+        case 'local':
+            // Normal Local login
+            if (!empty($_POST['local_id'])) {
+                $local_id = sanitize_input($_POST['local_id']);
+                $stmt = $pdo->prepare("SELECT * FROM users_local WHERE phone_number = ? AND local_id = ?");
+                $stmt->execute([$phone_number, $local_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = trim($user['id']);
+                    $_SESSION['user_type'] = 'local';
+                    $_SESSION['user_identifier'] = trim($user['local_id']);
+                    $_SESSION['user_role'] = 'Local Level Election';
+                    header('Location: otp-api.php');
+                    exit();
+                }
+            }
+            break;
+        case 'local-grp':
+            // Group Local login
+            if (!empty($_POST['local_id'])) {
+                $local_id = sanitize_input($_POST['local_id']);
+                $stmt = $pdo->prepare("SELECT * FROM users_local WHERE phone_number = ? AND local_id = ?");
+                $stmt->execute([$phone_number, $local_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = trim($user['id']);
+                    $_SESSION['user_type'] = 'local-grp';
+                    $_SESSION['user_identifier'] = trim($user['local_id']);
+                    $_SESSION['user_role'] = 'Local Level Election-Group';
+                    header('Location: voter_grp_dashboard.php');
+                    exit();
+                }
+            }
+            break;
+        case 'org':
+            // Normal Organizational login
+            if (!empty($_POST['employee_id'])) {
+                $employee_id = sanitize_input($_POST['employee_id']);
+                $stmt = $pdo->prepare("SELECT * FROM users_org WHERE phone_number = ? AND employee_id = ?");
+                $stmt->execute([$phone_number, $employee_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = trim($user['id']);
+                    $_SESSION['user_type'] = 'org';
+                    $_SESSION['user_identifier'] = trim($user['employee_id']);
+                    $_SESSION['user_role'] = 'Organizational Level Election';
+                    header('Location: otp-api.php');
+                    exit();
+                }
+            }
+            break;
+        case 'org-grp':
+            // Group Organizational login
+            if (!empty($_POST['employee_id'])) {
+                $employee_id = sanitize_input($_POST['employee_id']);
+                $stmt = $pdo->prepare("SELECT * FROM users_org WHERE phone_number = ? AND employee_id = ?");
+                $stmt->execute([$phone_number, $employee_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = trim($user['id']);
+                    $_SESSION['user_type'] = 'org-grp';
+                    $_SESSION['user_identifier'] = trim($user['employee_id']);
+                    $_SESSION['user_role'] = 'Organizational Level Election-Group';
+                    header('Location: voter_grp_dashboard.php');
+                    exit();
+                }
+            }
+            break;
+        default:
+            $error_message = "Invalid election type selected.";
+            break;
     }
-}
-
-// Check if `local_id` is provided for local users
-if (!empty($_POST['local_id'])) {
-    $local_id = sanitize_input($_POST['local_id']);
-    $stmt = $pdo->prepare("SELECT * FROM users_local WHERE phone_number = ? AND local_id = ?");
-    $stmt->execute([$phone_number, $local_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = trim($user['id']);  // Trim extra spaces
-        $_SESSION['user_type'] = 'local';
-        $_SESSION['user_identifier'] = trim($user['local_id']);  // Trim identifier
-        $_SESSION['user_role'] = 'Local Level Election'; 
-        header('Location: otp-api.php');
-        exit();
+    // If no condition matched, set error message
+    if (empty($_SESSION['user_id'])) {
+        $error_message = "Invalid phone number, voter ID, or password.";
     }
-}
-
-// Check if `employee_id` is provided for organizational users
-if (!empty($_POST['employee_id'])) {
-    $employee_id = sanitize_input($_POST['employee_id']);
-    $stmt = $pdo->prepare("SELECT * FROM users_org WHERE phone_number = ? AND employee_id = ?");
-    $stmt->execute([$phone_number, $employee_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = trim($user['id']);  // Trim extra spaces
-        $_SESSION['user_type'] = 'org';
-        $_SESSION['user_identifier'] = trim($user['employee_id']);  // Trim identifier
-        $_SESSION['user_role'] = 'Organizational Level Election'; 
-        header('Location: otp-api.php');
-        exit();
-    }
-}
-
-// If none of the above conditions match, set error message
-$error_message = "Invalid phone number, voter ID, or password.";
 }
 
 // Flush output buffer
 ob_end_flush();
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -169,8 +231,11 @@ ob_end_flush();
                 <select class="form-control" id="election-type" name="election-type" onchange="toggleElectionFields()">
                     <option value="" disabled selected>Select Election Type</option>
                     <option value="college">School/College Level Election</option>
+                    <option value="college-grp">School/College Level Election-Group</option>
                     <option value="local">Local Level Election</option>
+                    <option value="local-grp">Local Level Election-Group</option>
                     <option value="org">Organizational Level Election</option>
+                    <option value="org-grp">Organizational Level Election-Group</option>
                 </select>
             </div>
 
@@ -225,6 +290,14 @@ ob_end_flush();
                 </div>
                 
             `;
+            } else if (electionType === 'college-grp') {
+                additionalFields.innerHTML = `
+                <div class="mb-3">
+                    <label for="student-id" class="form-label">Student ID</label>
+                    <input type="text" id="student_id" name="student_id" class="form-control" placeholder="Enter Student ID" required>
+                </div>
+                
+            `;
             } else if (electionType === 'local') {
                 additionalFields.innerHTML = `
                 <div class="mb-3">
@@ -232,7 +305,21 @@ ob_end_flush();
                     <input type="text" id="local_id" name="local_id" class="form-control" placeholder="Enter Local ID" required>
                 </div>
             `;
+        } else if (electionType === 'local-grp') {
+                additionalFields.innerHTML = `
+                <div class="mb-3">
+                    <label for="local-id" class="form-label">Local ID</label>
+                    <input type="text" id="local_id" name="local_id" class="form-control" placeholder="Enter Local ID" required>
+                </div>
+            `;
             } else if (electionType === 'org') {
+                additionalFields.innerHTML = `
+                <div class="mb-3">
+                    <label for="employee-id" class="form-label">Employee ID</label>
+                    <input type="text" id="employee_id" name="employee_id" class="form-control" placeholder="Enter Employee ID" required>
+                </div>
+            `;
+        } else if (electionType === 'org-grp') {
                 additionalFields.innerHTML = `
                 <div class="mb-3">
                     <label for="employee-id" class="form-label">Employee ID</label>
