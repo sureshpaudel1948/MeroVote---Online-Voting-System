@@ -89,7 +89,7 @@ try {
                 c.photo AS candidate_image,     
                 COUNT(v.id) AS total_votes
             FROM candidates_group c
-            LEFT JOIN votes v 
+            LEFT JOIN votes_group v 
                 ON v.candidate_id = c.id AND v.election = :election_name
             WHERE c.election_name = :election_name
             GROUP BY c.id, c.name, c.photo
@@ -153,7 +153,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <a class = 'nav-link' href = '../index.html#how'>How It Works</a>
 </li>
 <li class = 'nav-item'>
-<a class = 'nav-link' href = 'voter_dashboard.php'>Dashboard</a>
+<a class = 'nav-link' href = 'voter_grp_dashboard.php'>Dashboard</a>
 </li>
 <li class = 'nav-item'>
 <a class = 'nav-link' href = 'logout.php'>Logout</a>
@@ -185,7 +185,8 @@ Welcome, <span class = 'fw-bold'>Voter!</span>
 <h5 class = 'card-title'><?php echo htmlspecialchars( $election[ 'name' ] );
 ?></h5>
 <p class = 'card-text'>Participate and make your vote count!</p>
-<a href = "vote.php?election_id=<?php echo urlencode($election['id']); ?>" class = 'btn btn-primary w-100'>
+<!-- ( Optional ) Insert a note about panel details if desired -->
+<a href = "group_vote.php?election_id=<?php echo urlencode($election['id']); ?>" class = 'btn btn-primary w-100'>
 Vote Now
 </a>
 </div>
