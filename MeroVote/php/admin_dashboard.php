@@ -20,20 +20,26 @@ try {
 // Fetch group elections
 $groupElections = [];
 try {
-    $stmt = $pdo->query( 'SELECT id, election_type, name, start_date, end_date, start_time, end_time, 
-               panel1_pos1, panel1_pos2, panel1_pos3, panel1_pos4, 
-               panel2_pos1, panel2_pos2, panel2_pos3, panel2_pos4 
+    $stmt = $pdo->query( 'SELECT id, election_type, name, start_date, end_date, start_time, end_time, panel1_pos1, panel1_pos2, panel1_pos3, panel1_pos4, 
+               panel2_pos1, panel2_pos2, panel2_pos3, panel2_pos4, 
+               panel1_pos5, panel1_pos6, panel1_pos7, panel1_pos8, 
+               panel2_pos5, panel2_pos6, panel2_pos7, panel2_pos8, 
+               panel3_pos1, panel3_pos2, panel3_pos3, panel3_pos4, panel3_pos5, panel3_pos6, panel3_pos7, panel3_pos8, 
+               panel4_pos1, panel4_pos2, panel4_pos3, panel4_pos4, panel4_pos5, panel4_pos6, panel4_pos7, panel4_pos8
         FROM elections_group ORDER BY start_date DESC' );
     $groupElections = $stmt->fetchAll( PDO::FETCH_ASSOC );
 } catch ( PDOException $e ) {
     die( 'Error fetching group elections: ' . $e->getMessage() );
 }
 
-// Merge both arrays
-$mergedElections = array_merge($individualElections, $groupElections);
 
-// (Optional) Sort by start_date descending
-usort($mergedElections, function($a, $b) {
+// (Optional) Sort by start_date descending - Group Elections
+usort($groupElections, function($a, $b) {
+    return strtotime($b['start_date']) - strtotime($a['start_date']);
+});
+
+// (Optional) Sort by start_date descending - Individual Elections
+usort($individualElections, function($a, $b) {
     return strtotime($b['start_date']) - strtotime($a['start_date']);
 });
 
@@ -134,7 +140,8 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
         </form>
     </div>
 
-    <!-- Elections Table -->
+    <!-- Individual Elections Table -->
+    <h4 class="text-primary mb-4" style="text-align:center; font-weight:500;  ">Individual Elections</h4>
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
@@ -146,8 +153,8 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($mergedElections)): ?>
-                <?php foreach ($mergedElections as $election): ?>
+            <?php if (!empty($individualElections)): ?>
+                <?php foreach ($individualElections as $election): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($election['election_type']); ?></td>
                         <td><?php echo htmlspecialchars($election['name']); ?></td>
@@ -159,8 +166,45 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 
                             <form method="POST" class="d-inline-block">
                                 <input type="hidden" name="election_id" value="<?php echo $election['id']; ?>">
-                                <!-- Include a hidden field indicating election table type if needed -->
-                                <input type="hidden" name="election_table" value="<?php echo (strpos($election['election_type'], 'Group') !== false) ? 'group' : 'individual'; ?>">
+                                <button type="submit" name="delete_election" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this election?')">🗑️ Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No elections found.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+
+      <!-- Group Elections Table -->
+      <h4 class="text-primary mb-4" style="text-align:center; font-weight:500;">Group Elections</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Election Type</th>
+                <th scope="col">Election Name</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($groupElections)): ?>
+                <?php foreach ($groupElections as $election): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($election['election_type']); ?></td>
+                        <td><?php echo htmlspecialchars($election['name']); ?></td>
+                        <td><?php echo htmlspecialchars($election['start_date']); ?></td>
+                        <td><?php echo htmlspecialchars($election['end_date']); ?></td>
+                        <td class="action-btns">
+                            <!-- Use a conditional if needed to redirect to the proper edit page -->
+                            <a href="edit_group-election.php?id=<?php echo $election['id']; ?>&type=<?php echo urlencode($election['election_type']); ?>" class="btn btn-warning btn-sm">✏️ Edit</a>
+
+                            <form method="POST" class="d-inline-block">
+                                <input type="hidden" name="election_id" value="<?php echo $election['id']; ?>">
                                 <button type="submit" name="delete_election" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this election?')">🗑️ Delete</button>
                             </form>
                         </td>

@@ -390,126 +390,129 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 </nav>
 </header>
 <div class="container mt-5">
-    <h1 class="text-center text-primary mb-4">Vote for Your Candidate</h1>
-    <p class="text-center text-muted">Please select exactly 4 candidates (each from a different position) from any panel or both panels.</p>
-    <form method="post" action="group_vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
-      <!-- Hidden field to pass election ID -->
-      <input type="hidden" name="election_id" value="<?php echo htmlspecialchars($electionId); ?>">
-      
-      <!-- Panel 1 Section -->
-      <h2 class="panel-title">Panel 1</h2>
-      <div class="row">
-        <?php 
-          // Filter candidates for Panel 1
-          $panel1Candidates = array_filter($candidates, function($c) {
-            return strtolower(trim($c['panel'])) === 'panel 1';
-          });
-          if (!empty($panel1Candidates)):
-            foreach ($panel1Candidates as $candidate): ?>
-              <div class="col-md-4 mb-4">
-                <div class="card shadow-sm candidate-card">
-                  <div class="card-body text-center">
-                    <input class="form-check-input" type="checkbox" name="candidate[]" 
-                           id="candidate<?php echo $candidate['id']; ?>" 
-                           value="<?php echo $candidate['id']; ?>">
-                    <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
-                           for="candidate<?php echo $candidate['id']; ?>">
-                      <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
-                           alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
-                      <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
-                      <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
-                    </label>
-                  </div>
+  <h1 class="text-center text-primary mb-4">Vote for Your Candidate</h1>
+  <p class="text-center text-muted">
+    Please select exactly 4 candidates (each from a different position) from any panel or both panels.
+  </p>
+  <form method="post" action="group_vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
+    <!-- Hidden field to pass election ID -->
+    <input type="hidden" name="election_id" value="<?php echo htmlspecialchars($electionId); ?>">
+    
+    <!-- Panel 1 Section -->
+    <h2 class="panel-title">Panel 1</h2>
+    <div class="row">
+      <?php 
+        // Filter candidates for Panel 1
+        $panel1Candidates = array_filter($candidates, function($c) {
+          return strtolower(trim($c['panel'])) === 'panel 1';
+        });
+        if (!empty($panel1Candidates)):
+          foreach ($panel1Candidates as $candidate): ?>
+            <div class="col-md-4 mb-4">
+              <div class="card shadow-sm candidate-card" style="cursor: pointer;">
+                <div class="card-body text-center">
+                  <input class="form-check-input" type="checkbox" name="candidate[]" 
+                         id="candidate<?php echo $candidate['id']; ?>" 
+                         value="<?php echo $candidate['id']; ?>">
+                  <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
+                         for="candidate<?php echo $candidate['id']; ?>">
+                    <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
+                         alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
+                    <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
+                    <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
+                  </label>
                 </div>
-                <!-- Live Vote Count for this candidate -->
-                <h6 class="text-primary mt-3">Live Vote Count:</h6>
-                <ul class="list-group live-vote-count mb-3">
-                  <?php
-                  $found = false;
-                  foreach ($voteCounts as $vote) {
-                      if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
-                          $found = true;
-                          echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
-                          echo "<div class='vote-details d-flex align-items-center'>";
-                          echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
-                          echo "</div>";
-                          echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
-                          echo "</li>";
-                      }
-                  }
-                  if (!$found) {
-                      echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
-                  }
-                  ?>
-                </ul>
               </div>
-            <?php endforeach;
-          else: ?>
-            <div class="col-12 text-center">
-              <p class="alert alert-warning">No candidates available in Panel 1.</p>
+              <!-- Live Vote Count for this candidate -->
+              <h6 class="text-primary mt-3">Live Vote Count:</h6>
+              <ul class="list-group live-vote-count mb-3">
+                <?php
+                $found = false;
+                foreach ($voteCounts as $vote) {
+                    if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
+                        $found = true;
+                        echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
+                        echo "<div class='vote-details d-flex align-items-center'>";
+                        echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
+                        echo "</div>";
+                        echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
+                        echo "</li>";
+                    }
+                }
+                if (!$found) {
+                    echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
+                }
+                ?>
+              </ul>
             </div>
-        <?php endif; ?>
-      </div>
-      
-      <!-- Panel 2 Section -->
-      <h2 class="panel-title">Panel 2</h2>
-      <div class="row">
-        <?php 
-          // Filter candidates for Panel 2
-          $panel2Candidates = array_filter($candidates, function($c) {
-            return strtolower(trim($c['panel'])) === 'panel 2';
-          });
-          if (!empty($panel2Candidates)):
-            foreach ($panel2Candidates as $candidate): ?>
-              <div class="col-md-4 mb-4">
-                <div class="card shadow-sm candidate-card">
-                  <div class="card-body text-center">
-                    <input class="form-check-input" type="checkbox" name="candidate[]" 
-                           id="candidate<?php echo $candidate['id']; ?>" 
-                           value="<?php echo $candidate['id']; ?>">
-                    <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
-                           for="candidate<?php echo $candidate['id']; ?>">
-                      <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
-                           alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
-                      <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
-                      <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
-                    </label>
-                  </div>
+          <?php endforeach;
+        else: ?>
+          <div class="col-12 text-center">
+            <p class="alert alert-warning">No candidates available in Panel 1.</p>
+          </div>
+      <?php endif; ?>
+    </div>
+    
+    <!-- Panel 2 Section -->
+    <h2 class="panel-title">Panel 2</h2>
+    <div class="row">
+      <?php 
+        // Filter candidates for Panel 2
+        $panel2Candidates = array_filter($candidates, function($c) {
+          return strtolower(trim($c['panel'])) === 'panel 2';
+        });
+        if (!empty($panel2Candidates)):
+          foreach ($panel2Candidates as $candidate): ?>
+            <div class="col-md-4 mb-4 ">
+              <div class="card shadow-sm candidate-card" style="cursor: pointer;">
+                <div class="card-body text-center">
+                  <input class="form-check-input" type="checkbox" name="candidate[]" 
+                         id="candidate<?php echo $candidate['id']; ?>" 
+                         value="<?php echo $candidate['id']; ?>">
+                  <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
+                         for="candidate<?php echo $candidate['id']; ?>">
+                    <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
+                         alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
+                    <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
+                    <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
+                  </label>
                 </div>
-                <!-- Live Vote Count for this candidate -->
-                <h6 class="text-primary mt-3">Live Vote Count:</h6>
-                <ul class="list-group live-vote-count mb-3">
-                  <?php
-                  $found = false;
-                  foreach ($voteCounts as $vote) {
-                      if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
-                          $found = true;
-                          echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
-                          echo "<div class='vote-details d-flex align-items-center'>";
-                          echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
-                          echo "</div>";
-                          echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
-                          echo "</li>";
-                      }
-                  }
-                  if (!$found) {
-                      echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
-                  }
-                  ?>
-                </ul>
               </div>
-            <?php endforeach;
-          else: ?>
-            <div class="col-12 text-center">
-              <p class="alert alert-warning">No candidates available in Panel 2.</p>
+              <!-- Live Vote Count for this candidate -->
+              <h6 class="text-primary mt-3">Live Vote Count:</h6>
+              <ul class="list-group live-vote-count mb-3">
+                <?php
+                $found = false;
+                foreach ($voteCounts as $vote) {
+                    if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
+                        $found = true;
+                        echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
+                        echo "<div class='vote-details d-flex align-items-center'>";
+                        echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
+                        echo "</div>";
+                        echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
+                        echo "</li>";
+                    }
+                }
+                if (!$found) {
+                    echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
+                }
+                ?>
+              </ul>
             </div>
-        <?php endif; ?>
-      </div>
-      
-      <div class="text-center">
-        <button type="submit" name="vote_submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
-      </div>
-    </form>
+          <?php endforeach;
+        else: ?>
+          <div class="col-12 text-center">
+            <p class="alert alert-warning">No candidates available in Panel 2.</p>
+          </div>
+      <?php endif; ?>
+    </div>
+    
+    <div class="text-center">
+      <button type="submit" name="vote_submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
+    </div>
+  </form>
+</div>
 
 
      <!-- Feedback Modal -->
@@ -555,15 +558,21 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
       }
     }
 
-    // Enable label selection functionality for checkboxes (toggle checked state on click)
-    document.querySelectorAll('.candidate-label').forEach(label => {
-      label.addEventListener('click', function() {
-        let checkboxInput = this.previousElementSibling;
-        if (checkboxInput) {
-          checkboxInput.checked = !checkboxInput.checked;
-        }
-      });
+   // Make the entire candidate card clickable
+   document.addEventListener('DOMContentLoaded', function() {
+    // Make the entire candidate card clickable
+    document.querySelectorAll('.candidate-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Prevent toggling if clicking on an interactive element (like the checkbox itself)
+            if (e.target.tagName.toLowerCase() === 'input') return;
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                // Toggle the checkbox state
+                checkbox.checked = !checkbox.checked;
+            }
+        });
     });
+});
   </script>
 </body>
 

@@ -15,32 +15,19 @@ if ( !isset( $_GET[ 'id' ] ) || empty( $_GET[ 'id' ] ) ) {
     header( 'Location: elections.php' );
     exit();
 }
-
+    
 $election_id = intval( $_GET[ 'id' ] );
-// Determine election type: default to individual if not specified.
-$type = isset( $_GET[ 'type' ] ) && $_GET[ 'type' ] === 'group' ? 'group' : 'individual';
 
-// Fetch the election details from the correct table
-if ( $type === 'group' ) {
-    $stmt = $pdo->prepare( 'SELECT * FROM elections_group WHERE id = ?' );
-    $stmt->execute( [ $election_id ] );
-    $election = $stmt->fetch( PDO::FETCH_ASSOC );
-    if ( !$election ) {
-        $_SESSION[ 'message' ] = 'Group election not found.';
-        $_SESSION[ 'msg_type' ] = 'danger';
-        header( 'Location: group-elections.php' );
-        exit();
-    }
-} else {
-    $stmt = $pdo->prepare( 'SELECT * FROM elections WHERE id = ?' );
-    $stmt->execute( [ $election_id ] );
-    $election = $stmt->fetch( PDO::FETCH_ASSOC );
-    if ( !$election ) {
-        $_SESSION[ 'message' ] = 'Election not found.';
-        $_SESSION[ 'msg_type' ] = 'danger';
-        header( 'Location: elections.php' );
-        exit();
-    }
+// Fetch the election details from the Elections table
+
+$stmt = $pdo->prepare( 'SELECT * FROM elections WHERE id = ?' );
+$stmt->execute( [ $election_id ] );
+$election = $stmt->fetch( PDO::FETCH_ASSOC );
+if ( !$election ) {
+    $_SESSION[ 'message' ] = 'Election not found.';
+    $_SESSION[ 'msg_type' ] = 'danger';
+    header( 'Location: elections.php' );
+    exit();
 }
 
 // Handle election update
@@ -61,54 +48,9 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'update_election'
     }
 
     try {
-        if ( $type === 'group' ) {
-            // For group elections, include the panel positions.
-            $panel1_pos1 = $_POST[ 'panel1_pos1' ];
-            $panel1_pos2 = $_POST[ 'panel1_pos2' ];
-            $panel1_pos3 = $_POST[ 'panel1_pos3' ];
-            $panel1_pos4 = $_POST[ 'panel1_pos4' ];
-            $panel2_pos1 = $_POST[ 'panel2_pos1' ];
-            $panel2_pos2 = $_POST[ 'panel2_pos2' ];
-            $panel2_pos3 = $_POST[ 'panel2_pos3' ];
-            $panel2_pos4 = $_POST[ 'panel2_pos4' ];
-
-            $stmt = $pdo->prepare( "UPDATE elections_group SET 
-                election_type = ?, 
-                name = ?, 
-                start_date = ?, 
-                end_date = ?, 
-                start_time = ?, 
-                end_time = ?, 
-                panel1_pos1 = ?, 
-                panel1_pos2 = ?, 
-                panel1_pos3 = ?, 
-                panel1_pos4 = ?, 
-                panel2_pos1 = ?, 
-                panel2_pos2 = ?, 
-                panel2_pos3 = ?, 
-                panel2_pos4 = ? 
-                WHERE id = ?" );
-            $stmt->execute( [
-                $election_type,
-                $election_name,
-                $start_date,
-                $end_date,
-                $start_time,
-                $end_time,
-                $panel1_pos1,
-                $panel1_pos2,
-                $panel1_pos3,
-                $panel1_pos4,
-                $panel2_pos1,
-                $panel2_pos2,
-                $panel2_pos3,
-                $panel2_pos4,
-                $election_id
-            ] );
-        } else {
-            // For individual elections, update election_position.
-            $election_position = $_POST[ 'election_position' ];
-            $stmt = $pdo->prepare( "UPDATE elections SET 
+        // For individual elections, update election_position.
+        $election_position = $_POST[ 'election_position' ];
+        $stmt = $pdo->prepare( "UPDATE elections SET 
                 election_type = ?, 
                 name = ?, 
                 start_date = ?, 
@@ -117,17 +59,17 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'update_election'
                 end_time = ?, 
                 election_position = ? 
                 WHERE id = ?" );
-            $stmt->execute( [
-                $election_type,
-                $election_name,
-                $start_date,
-                $end_date,
-                $start_time,
-                $end_time,
-                $election_position,
-                $election_id
-            ] );
-        }
+        $stmt->execute( [
+            $election_type,
+            $election_name,
+            $start_date,
+            $end_date,
+            $start_time,
+            $end_time,
+            $election_position,
+            $election_id
+        ] );
+
         $_SESSION[ 'message' ] = 'Election updated successfully!';
         $_SESSION[ 'msg_type' ] = 'success';
     } catch( PDOException $e ) {
@@ -135,7 +77,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'update_election'
         $_SESSION[ 'msg_type' ] = 'danger';
     }
 
-    header( 'Location: ' . ( $type === 'group' ? 'group-elections.php' : 'elections.php' ) );
+    header( ' Location: ./elections.php ' );
     exit();
 }
 ?>
@@ -200,28 +142,13 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <label class = 'form-label'>Election Name</label>
 <input type = 'text' class = 'form-control' name = 'election_name' value = "<?php echo htmlspecialchars($election['name']); ?>" required>
 </div>
-<?php if ( stripos( $election[ 'election_type' ], 'group' ) !== false ): ?>
-<!-- Group Election: display panel positions -->
-<?php for ( $panel = 1; $panel <= 2; $panel++ ): ?>
-<?php for ( $position = 1; $position <= 4; $position++ ): ?>
-<div class = 'mb-3'>
-<label class = 'form-label'>Panel <?php echo $panel;
-?> Position <?php echo $position;
-?></label>
-<input type = 'text' class = 'form-control' name = 'panel<?php echo $panel; ?>_pos<?php echo $position; ?>' value = "<?php echo htmlspecialchars($election['panel' . $panel . '_pos' . $position]); ?>" required>
-</div>
-<?php endfor;
-?>
-<?php endfor;
-?>
-<?php else: ?>
-<!-- Individual Election: display election_position -->
+
+<!-- Individual Election -->
 <div class = 'mb-3'>
 <label for = 'electionPosition' class = 'form-label'>Election Position</label>
 <input type = 'text' class = 'form-control' name = 'election_position' value = "<?php echo htmlspecialchars($election['election_position']); ?>" required>
 </div>
-<?php endif;
-?>
+
 <div class = 'mb-3'>
 <label for = 'startDate' class = 'form-label'>Start Date</label>
 <input type = 'date' class = 'form-control' name = 'start_date' value = "<?php echo htmlspecialchars($election['start_date']); ?>" required>
@@ -240,7 +167,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 </div>
 <div class = 'text-center'>
 <button type = 'submit' name = 'update_election' class = 'btn btn-success'>Update Election</button>
-<a href = "<?php echo (stripos($election['election_type'], 'group') !== false) ? 'group-elections.php' : 'elections.php'; ?>" class = 'btn btn-secondary'>Cancel</a>
+<a href="elections.php" class="btn btn-secondary">Cancel</a>
 </div>
 </form>
 </div>

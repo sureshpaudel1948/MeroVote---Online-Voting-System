@@ -203,6 +203,12 @@ h1 {
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+h4 {
+  font-size: 1.7rem;
+  font-weight: 500;
+  text-shadow: 2px 4px 5px rgba(0, 0, 0, 0.1);
+}
+
 .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 12px;

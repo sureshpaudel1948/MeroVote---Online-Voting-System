@@ -31,9 +31,12 @@ $currentDate = date( 'Y-m-d' );
 try {
     // Fetch all elections from elections_group for the given group election type
     $stmt = $pdo->prepare( "
-        SELECT id, election_type, name, start_date, end_date, start_time, end_time, 
-               panel1_pos1, panel1_pos2, panel1_pos3, panel1_pos4, 
-               panel2_pos1, panel2_pos2, panel2_pos3, panel2_pos4
+        SELECT id, election_type, name, start_date, end_date, start_time, end_time, panel1_pos1, panel1_pos2, panel1_pos3, panel1_pos4, 
+               panel2_pos1, panel2_pos2, panel2_pos3, panel2_pos4, 
+               panel1_pos5, panel1_pos6, panel1_pos7, panel1_pos8, 
+               panel2_pos5, panel2_pos6, panel2_pos7, panel2_pos8, 
+               panel3_pos1, panel3_pos2, panel3_pos3, panel3_pos4, panel3_pos5, panel3_pos6, panel3_pos7, panel3_pos8, 
+               panel4_pos1, panel4_pos2, panel4_pos3, panel4_pos4, panel4_pos5, panel4_pos6, panel4_pos7, panel4_pos8
         FROM elections_group
         WHERE election_type = :election_type
         ORDER BY start_date ASC
@@ -57,11 +60,37 @@ try {
             'panel1_pos2' => $row[ 'panel1_pos2' ],
             'panel1_pos3' => $row[ 'panel1_pos3' ],
             'panel1_pos4' => $row[ 'panel1_pos4' ],
+            'panel1_pos5' => $row[ 'panel1_pos5' ],
+            'panel1_pos6' => $row[ 'panel1_pos6' ],
+            'panel1_pos7' => $row[ 'panel1_pos7' ],
+            'panel1_pos8' => $row[ 'panel1_pos8' ],
             // Panel 2 positions
             'panel2_pos1' => $row[ 'panel2_pos1' ],
             'panel2_pos2' => $row[ 'panel2_pos2' ],
             'panel2_pos3' => $row[ 'panel2_pos3' ],
-            'panel2_pos4' => $row[ 'panel2_pos4' ]
+            'panel2_pos4' => $row[ 'panel2_pos4' ],
+            'panel2_pos5' => $row[ 'panel2_pos5' ],
+            'panel2_pos6' => $row[ 'panel2_pos6' ],
+            'panel2_pos7' => $row[ 'panel2_pos7' ],
+            'panel2_pos8' => $row[ 'panel2_pos8' ],
+            // Panel 3 positions
+            'panel3_pos1' => $row[ 'panel3_pos1' ],
+            'panel3_pos2' => $row[ 'panel3_pos2' ],
+            'panel3_pos3' => $row[ 'panel3_pos3' ],
+            'panel3_pos4' => $row[ 'panel3_pos4' ],
+            'panel3_pos5' => $row[ 'panel3_pos5' ],
+            'panel3_pos6' => $row[ 'panel3_pos6' ],
+            'panel3_pos7' => $row[ 'panel3_pos7' ],
+            'panel3_pos8' => $row[ 'panel3_pos8' ],
+            // Panel 4 positions
+            'panel4_pos1' => $row[ 'panel4_pos1' ],
+            'panel4_pos2' => $row[ 'panel4_pos2' ],
+            'panel4_pos3' => $row[ 'panel4_pos3' ],
+            'panel4_pos4' => $row[ 'panel4_pos4' ],
+            'panel4_pos5' => $row[ 'panel4_pos5' ],
+            'panel4_pos6' => $row[ 'panel4_pos6' ],
+            'panel4_pos7' => $row[ 'panel4_pos7' ],
+            'panel4_pos8' => $row[ 'panel4_pos8' ],
         ];
 
         // Separate ongoing and expired elections based on the dates
