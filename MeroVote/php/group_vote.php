@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    if (count($candidateIds) !== 4) {
+    if (count($candidateIds) !== $totalAllowedPositions) {
         $_SESSION['message'] = "Please select all candidates.";
         $_SESSION['msg_type'] = "warning";
         header('Location: group_vote.php?election_id=' . $electionId);
@@ -106,35 +106,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
     }
-    
     $totalAllowedPositions = (int) $election['total_positions'];
-    
+
     $selectedPositions = [];
     $candidateDetails = [];
     
+    // Fetch all selected candidates
     foreach ($candidateIds as $candId) {
-        $stmt = $pdo->prepare("SELECT id, name, candidate_position FROM candidates_group WHERE id = :cand_id AND elect_no = :election_id");
+        $stmt = $pdo->prepare("SELECT id, name, candidate_position, panel FROM candidates_group WHERE id = :cand_id AND elect_no = :election_id");
         $stmt->execute(['cand_id' => $candId, 'election_id' => $electionId]);
         $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
+    
         if (!$candidate) {
             continue;
         }
+    
+        // Track selected candidate positions
         $selectedPositions[] = $candidate['candidate_position'];
         $candidateDetails[] = $candidate;
     }
     
-    if (count(array_unique($selectedPositions)) !== count($candidateIds)) {
-        $_SESSION['message'] = "Please select candidates for different positions.";
+    // Ensure voter selects candidates for all available positions and no duplicates exist
+    if (count(array_unique($selectedPositions)) !== count($selectedPositions)) {
+        $_SESSION['message'] = "You cannot select multiple candidates for the same position, even across different panels.";
         $_SESSION['msg_type'] = "warning";
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
     }
     
+    // Ensure the voter selects the exact number of unique positions required
+    if (count(array_unique($selectedPositions)) !== $totalAllowedPositions) {
+        $_SESSION['message'] = "Please select a candidate for each unique position across any panel.";
+        $_SESSION['msg_type'] = "warning";
+        header('Location: group_vote.php?election_id=' . $electionId);
+        exit();
+    }
+    
+    // Process vote submission
     try {
         foreach ($candidateDetails as $candidate) {
-            $stmtInsert = $pdo->prepare("INSERT INTO votes_group (hashed_user_id, candidate_id, candidate_name, candidate_position, election) VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)");
-            $stmtInsert->execute(['hashed_user_id' => $voterHash, 'candidate_id' => $candidate['id'], 'candidate_name' => $candidate['name'], 'candidate_position' => $candidate['candidate_position'], 'election_name' => $election['name']]);
+            $stmtInsert = $pdo->prepare("INSERT INTO votes_group (hashed_user_id, candidate_id, candidate_name, candidate_position, election) 
+                                         VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)");
+            $stmtInsert->execute([
+                'hashed_user_id' => $voterHash,
+                'candidate_id' => $candidate['id'],
+                'candidate_name' => $candidate['name'],
+                'candidate_position' => $candidate['candidate_position'],
+                'election_name' => $election['name']
+            ]);
         }
+    
         $_SESSION['message'] = "Vote successfully submitted!";
         $_SESSION['msg_type'] = "success";
     } catch (PDOException $e) {
@@ -144,6 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     header('Location: group_vote.php?election_id=' . $electionId);
     exit();
+    
 }
 ?>
 
@@ -375,9 +397,12 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
   <p class="text-center text-muted">
     Please select candidates (each from a different position) from any panel.
   </p>
-  <form method="post" action="group_vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
+  
+  <form id="voteForm" method="post" action="group_vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
     <input type="hidden" name="election_id" value="<?php echo htmlspecialchars($electionId); ?>">
-    
+    <input type="hidden" id="total_positions" value="<?php echo (int) $election['total_positions']; ?>">
+
+
     <?php 
       $panels = array_unique(array_column($candidates, 'panel'));
       foreach ($panels as $panel):
@@ -395,9 +420,10 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
           <div class="col-md-4 mb-4">
             <div class="card shadow-sm candidate-card" style="cursor: pointer;">
               <div class="card-body text-center">
-                <input class="form-check-input" type="checkbox" name="candidate[]" 
+                <input class="form-check-input candidate-checkbox" type="checkbox" name="candidate[]" 
                        id="candidate<?php echo $candidate['id']; ?>" 
-                       value="<?php echo $candidate['id']; ?>">
+                       value="<?php echo $candidate['id']; ?>" 
+                       data-position="<?php echo htmlspecialchars($candidate['candidate_position']); ?>">
                 <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
                        for="candidate<?php echo $candidate['id']; ?>">
                   <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
@@ -407,7 +433,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
                 </label>
               </div>
             </div>
-            
+
             <h6 class="text-primary mt-3">Live Vote Count:</h6>
             <ul class="list-group live-vote-count mb-3">
               <?php
@@ -436,13 +462,12 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
         <?php endif; ?>
       </div>
     <?php endforeach; ?>
-    
+
     <div class="text-center">
-      <button type="submit" name="vote_submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
+      <button type="submit" id="submitVoteBtn" class="btn btn-success mt-4 px-5">Submit Vote</button>
     </div>
   </form>
 </div>
-
 
         <!-- Feedback Modal -->
         <?php if (!empty($_SESSION['message'])): ?>
@@ -473,46 +498,76 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var modal = document.getElementById('feedbackModal');
-      if (modal) {
-        var feedbackModal = new bootstrap.Modal(modal);
-        feedbackModal.show();
-      }
-    });
-
-    // Hide modal properly when closed
-    function hideModal() {
-      var modalElement = document.getElementById('feedbackModal');
-      if (modalElement) {
-        var modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-          modalInstance.hide();
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = document.getElementById('feedbackModal');
+        if (modal) {
+            var feedbackModal = new bootstrap.Modal(modal);
+            feedbackModal.show();
         }
-      }
-    }
 
-    // Make the entire candidate card clickable
-    document.addEventListener('DOMContentLoaded', function() {
+        // Unique Vote Selection Of Candidates
+        const form = document.getElementById("voteForm");
+        const checkboxes = document.querySelectorAll(".candidate-checkbox");
+
+        form.addEventListener("submit", function (event) {
+            let selectedPositions = new Set();
+            let selectedCandidates = [];
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    let position = checkbox.getAttribute("data-position");
+                    if (selectedPositions.has(position)) {
+                        showModal("Error", "You cannot select multiple candidates for the same position.");
+                        event.preventDefault();
+                        return;
+                    }
+                    selectedPositions.add(position);
+                    selectedCandidates.push(checkbox);
+                }
+            });
+
+            // Ensure all required positions are selected
+            let requiredPositions = parseInt(document.getElementById("total_positions").value, 10);
+            if (selectedPositions.size !== requiredPositions) {
+                showModal("Error", "Please select a candidate for each required position.");
+                event.preventDefault();
+            }
+        });
+
+        // Make the entire candidate card clickable
         document.querySelectorAll('.candidate-card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                // Prevent toggling if clicking on an interactive element (like the checkbox itself)
+            card.addEventListener('click', function (e) {
                 if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'label') return;
-                
+
                 const checkbox = card.querySelector('input[type="checkbox"]');
                 if (checkbox) {
                     checkbox.checked = !checkbox.checked;
-
-                    // Optional: Add active styling when selected
-                    if (checkbox.checked) {
-                        card.classList.add('selected');
-                    } else {
-                        card.classList.remove('selected');
-                    }
+                    card.classList.toggle('selected', checkbox.checked);
                 }
             });
         });
     });
-  </script>
+
+    // Hide modal properly when closed
+    function hideModal() {
+        var modalElement = document.getElementById('feedbackModal');
+        if (modalElement) {
+            var modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+    }
+
+    // Display Error Modal
+    function showModal(title, message) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMessage').innerText = message;
+        var modalElement = new bootstrap.Modal(document.getElementById('feedbackModal'));
+        modalElement.show();
+    }
+</script>
+
+
 </body>
 </html>
