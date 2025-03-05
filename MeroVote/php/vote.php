@@ -136,6 +136,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if ($_SESSION['msg_type'] === "success") {
+        $phone_number = $_SESSION['phone-number'] ?? null;
+        if ($phone_number) {
+            $message = "Dear voter, thanks for casting your vote through MeroVote!";
+            include 'otp-api.php'; // Ensure this path is correct
+            $smsResult = sendSMS($phone_number, $message);
+            if (!$smsResult['success']) {
+                // Log the error or handle it as needed
+                logToFile("SMS Error: " . $smsResult['message']);
+            }
+        } else {
+            logToFile("Mobile number not found in session.");
+        }
+    }
+    
+
     header('Location: vote.php?election_id=' . $electionId);
     exit();
 }
