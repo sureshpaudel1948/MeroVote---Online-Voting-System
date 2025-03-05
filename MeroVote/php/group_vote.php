@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -39,7 +39,11 @@ try {
     $stmt->execute(['election_id' => $electionId]);
     $electionName = $stmt->fetchColumn();
     
-    $voteStmt = $pdo->prepare("SELECT c.id AS candidate_id, c.name AS candidate_name, c.candidate_position, COUNT(v.id) AS vote_count FROM votes_group v INNER JOIN candidates_group c ON v.candidate_id = c.id WHERE v.election = :election_name GROUP BY c.id, c.name, c.candidate_position");
+    $voteStmt = $pdo->prepare("SELECT c.id AS candidate_id, c.name AS candidate_name, c.candidate_position, COUNT(v.id) AS vote_count 
+                               FROM votes_group v 
+                               INNER JOIN candidates_group c ON v.candidate_id = c.id 
+                               WHERE v.election = :election_name 
+                               GROUP BY c.id, c.name, c.candidate_position");
     $voteStmt->execute(['election_name' => $electionName]);
     $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -47,6 +51,15 @@ try {
 }
 
 date_default_timezone_set('Asia/Kathmandu');
+
+// For GET requests (and in case POST hasn't computed totalPositions), compute it from candidates_group:
+$stmt = $pdo->prepare("SELECT DISTINCT candidate_position FROM candidates_group WHERE elect_no = :election_id");
+$stmt->execute(['election_id' => $electionId]);
+$uniquePositionsArray = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$totalPositions = count($uniquePositionsArray);
+if ($totalPositions === 0) {
+    die('No candidate positions found for this election.');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $candidateIds = $_POST['candidate'] ?? [];
@@ -57,15 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    if (count($candidateIds) !== $totalAllowedPositions) {
-        $_SESSION['message'] = "Please select all candidates.";
-        $_SESSION['msg_type'] = "warning";
-        header('Location: group_vote.php?election_id=' . $electionId);
-        exit();
-    }
-    
     $current_time = date('H:i:s');
     
+    // Fetch election details
     $stmt = $pdo->prepare("SELECT start_time, end_time, name FROM elections_group WHERE id = :election_id");
     $stmt->execute(['election_id' => $electionId]);
     $election = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -97,21 +104,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    $stmt = $pdo->prepare("SELECT total_positions FROM elections WHERE id = :election_id");
-    $stmt->execute(['election_id' => $electionId]);
-    $election = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$election) {
-        $_SESSION['message'] = "Invalid election.";
-        $_SESSION['msg_type'] = "danger";
+    // Validation: The voter must select exactly $totalPositions candidates.
+    if (count($candidateIds) !== $totalPositions) {
+        $_SESSION['message'] = "Please select exactly " . $totalPositions . " candidates.";
+        $_SESSION['msg_type'] = "warning";
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
     }
-    $totalAllowedPositions = (int) $election['total_positions'];
 
     $selectedPositions = [];
     $candidateDetails = [];
     
-    // Fetch all selected candidates
+    // Fetch details for each selected candidate
     foreach ($candidateIds as $candId) {
         $stmt = $pdo->prepare("SELECT id, name, candidate_position, panel FROM candidates_group WHERE id = :cand_id AND elect_no = :election_id");
         $stmt->execute(['cand_id' => $candId, 'election_id' => $electionId]);
@@ -126,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $candidateDetails[] = $candidate;
     }
     
-    // Ensure voter selects candidates for all available positions and no duplicates exist
+    // Ensure no duplicate positions are selected
     if (count(array_unique($selectedPositions)) !== count($selectedPositions)) {
         $_SESSION['message'] = "You cannot select multiple candidates for the same position, even across different panels.";
         $_SESSION['msg_type'] = "warning";
@@ -134,10 +138,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // Ensure the voter selects the exact number of unique positions required
-    if (count(array_unique($selectedPositions)) !== $totalAllowedPositions) {
-        $_SESSION['message'] = "Please select a candidate for each unique position across any panel.";
-        $_SESSION['msg_type'] = "warning";
+    // Ensure the voter selects exactly the number of unique positions required
+    if (count(array_unique($selectedPositions)) !== $totalPositions) {
+        $_SESSION['message'] = 'You must select ' . $totalPositions . ' unique positions.';
+        $_SESSION['msg_type'] = 'warning';
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
     }
@@ -147,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($candidateDetails as $candidate) {
             $stmtInsert = $pdo->prepare("INSERT INTO votes_group (hashed_user_id, candidate_id, candidate_name, candidate_position, election) 
                                          VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)");
-            $stmtInsert->execute([
+            $stmtInsert->execute([ 
                 'hashed_user_id' => $voterHash,
                 'candidate_id' => $candidate['id'],
                 'candidate_name' => $candidate['name'],
@@ -165,18 +169,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     header('Location: group_vote.php?election_id=' . $electionId);
     exit();
-    
 }
 ?>
 
 
 <!doctype html>
-<html lang = 'en'>
-
+<html lang="en">
 <head>
-<title>Vote Now - MeroVote</title>
-<link href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel = 'stylesheet' />
-<link rel = 'stylesheet' href = '../css/styles.css' />
+  <meta charset="UTF-8">
+  <title>Vote Now - MeroVote</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <!-- Brand Logo and Name -->
+      <a class="navbar-brand d-flex align-items-center" href="voter_dashboard.php">
+        <img src="../img/MeroVote-Logo.png" style="height: 60px; width: auto;" alt="Logo" class="logo img-fluid me-2">
+        <span></span>
+      </a>
+      <!-- Toggler Button for Small Screens -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Navbar Content -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Navbar Items -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html#how">How It Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="feedback.php">Feedback</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="voter_grp_dashboard.php">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="logout.php">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
 <style>
 body {
     background-color: #f8f9fa;
@@ -352,46 +392,6 @@ footer a:hover {
     text-decoration: underline;
 }
 </style>
-</head>
-
-<body>
-<header>
-<nav class = 'navbar navbar-expand-lg navbar-dark bg-dark'>
-<div class = 'container-fluid'>
-<!-- Brand Logo and Name -->
-<a class = 'navbar-brand d-flex align-items-center' href = 'voter_dashboard.php'>
-<img src = '../img/MeroVote-Logo.png' style = 'height: 60px; width: auto;' alt = 'Logo' class = 'logo img-fluid me-2'>
-<span></span>
-</a>
-
-<!-- Toggler Button for Small Screens -->
-<button class = ' navbar-toggler' type = 'button' data-bs-toggle = 'collapse'
-data-bs-target = '#navbarSupportedContent' aria-controls = 'navbarSupportedContent'
-aria-expanded = 'false' aria-label = 'Toggle navigation'>
-<span class = 'navbar-toggler-icon'></span>
-</button>
-
-<!-- Navbar Content -->
-<div class = 'collapse navbar-collapse' id = 'navbarSupportedContent'>
-<!-- Navbar Items -->
-<ul class = 'navbar-nav ms-auto mb-2 mb-lg-0'>
-<li class = 'nav-item'>
-<a class = 'nav-link' href = '../index.html#how'>How It Works</a>
-</li>
-<li class = 'nav-item'>
-<a class = 'nav-link' href = 'feedback.php'>Feedback</a>
-</li>
-<li class = 'nav-item'>
-<a class = 'nav-link' href = 'voter_grp_dashboard.php'>Dashboard</a>
-</li>
-<li class = 'nav-item'>
-<a class = 'nav-link' href = 'logout.php'>Logout</a>
-</li>
-</ul>
-</div>
-</div>
-</nav>
-</header>
 <div class="container mt-5">
   <h1 class="text-center text-primary mb-4">Vote for Your Candidate</h1>
   <p class="text-center text-muted">
@@ -400,10 +400,11 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
   
   <form id="voteForm" method="post" action="group_vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
     <input type="hidden" name="election_id" value="<?php echo htmlspecialchars($electionId); ?>">
-    <input type="hidden" id="total_positions" value="<?php echo (int) $election['total_positions']; ?>">
-
+    <!-- Use computed totalPositions -->
+    <input type="hidden" id="total_positions" value="<?php echo (int)$totalPositions; ?>">
 
     <?php 
+      // Group candidates by panel
       $panels = array_unique(array_column($candidates, 'panel'));
       foreach ($panels as $panel):
     ?>
@@ -423,7 +424,8 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
                 <input class="form-check-input candidate-checkbox" type="checkbox" name="candidate[]" 
                        id="candidate<?php echo $candidate['id']; ?>" 
                        value="<?php echo $candidate['id']; ?>" 
-                       data-position="<?php echo htmlspecialchars($candidate['candidate_position']); ?>">
+                       data-position="<?php echo htmlspecialchars($candidate['candidate_position']); ?>"
+                       data-panel="<?php echo htmlspecialchars($candidate['panel']); ?>">
                 <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
                        for="candidate<?php echo $candidate['id']; ?>">
                   <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
@@ -469,105 +471,92 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
   </form>
 </div>
 
-        <!-- Feedback Modal -->
-        <?php if (!empty($_SESSION['message'])): ?>
-      <div id="feedbackModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header bg-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>">
-              <h5 class="modal-title text-white"><?php echo ucfirst($_SESSION['msg_type'] ?? ''); ?> Message</h5>
-              <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close" onclick="hideModal()"></button>
-            </div>
-            <div class="modal-body text-center">
-              <p><?php echo $_SESSION['message'] ?? ''; ?></p>
-            </div>
-            <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>" data-bs-dismiss="modal" onclick="hideModal()">Close</button>
-            </div>
-          </div>
-        </div>
+<!-- Feedback Modal (always in DOM) -->
+<div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-show-modal="<?php echo !empty($_SESSION['message']) ? 'true' : 'false'; ?>">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>">
+        <h5 class="modal-title text-white">
+          <?php echo isset($_SESSION['msg_type']) ? ucfirst($_SESSION['msg_type']) : 'Message'; ?>
+        </h5>
+        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-
-      <?php 
-        // Clear session message after displaying modal
-        unset($_SESSION['message']);
-        unset($_SESSION['msg_type']);
-      ?>
-    <?php endif; ?>
+      <div class="modal-body text-center">
+        <p><?php echo $_SESSION['message'] ?? ''; ?></p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-<?php echo $_SESSION['msg_type'] ?? 'warning'; ?>" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
   </div>
+</div>
+<?php 
+// Clear session message after displaying modal
+if(isset($_SESSION['message'])) {
+    unset($_SESSION['message']);
+    unset($_SESSION['msg_type']);
+}
+?>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var modal = document.getElementById('feedbackModal');
-        if (modal) {
-            var feedbackModal = new bootstrap.Modal(modal);
-            feedbackModal.show();
-        }
+<!-- Load Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Unique Vote Selection Of Candidates
-        const form = document.getElementById("voteForm");
-        const checkboxes = document.querySelectorAll(".candidate-checkbox");
-
-        form.addEventListener("submit", function (event) {
-            let selectedPositions = new Set();
-            let selectedCandidates = [];
-
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    let position = checkbox.getAttribute("data-position");
-                    if (selectedPositions.has(position)) {
-                        showModal("Error", "You cannot select multiple candidates for the same position.");
-                        event.preventDefault();
-                        return;
-                    }
-                    selectedPositions.add(position);
-                    selectedCandidates.push(checkbox);
-                }
-            });
-
-            // Ensure all required positions are selected
-            let requiredPositions = parseInt(document.getElementById("total_positions").value, 10);
-            if (selectedPositions.size !== requiredPositions) {
-                showModal("Error", "Please select a candidate for each required position.");
-                event.preventDefault();
+<!-- Custom Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Only auto-show the modal if data-show-modal is "true"
+    var modal = document.getElementById('feedbackModal');
+    if (modal && modal.getAttribute('data-show-modal') === 'true') {
+        var feedbackModal = new bootstrap.Modal(modal);
+        feedbackModal.show();
+    }
+    
+    // Make candidate cards clickable
+    document.querySelectorAll('.candidate-card').forEach(card => {
+        card.addEventListener('click', function (e) {
+            if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'label') return;
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                card.classList.toggle('selected', checkbox.checked);
             }
-        });
-
-        // Make the entire candidate card clickable
-        document.querySelectorAll('.candidate-card').forEach(card => {
-            card.addEventListener('click', function (e) {
-                if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'label') return;
-
-                const checkbox = card.querySelector('input[type="checkbox"]');
-                if (checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                    card.classList.toggle('selected', checkbox.checked);
-                }
-            });
         });
     });
+});
 
-    // Hide modal properly when closed
-    function hideModal() {
-        var modalElement = document.getElementById('feedbackModal');
-        if (modalElement) {
-            var modalInstance = bootstrap.Modal.getInstance(modalElement);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
-        }
-    }
+// Validate unique candidate positions on form submission
+document.getElementById('voteForm').addEventListener('submit', function(event) {
+    const selectedCandidates = document.querySelectorAll('.candidate-checkbox:checked');
+    const selectedPositions = [];
+    
+    selectedCandidates.forEach(function(candidate) {
+        const position = candidate.getAttribute('data-position');
+        selectedPositions.push(position);
+    });
 
-    // Display Error Modal
-    function showModal(title, message) {
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = message;
-        var modalElement = new bootstrap.Modal(document.getElementById('feedbackModal'));
-        modalElement.show();
+    const uniquePositions = [...new Set(selectedPositions)];
+    const totalPositions = document.getElementById('total_positions').value;
+
+    if (uniquePositions.length !== parseInt(totalPositions)) {
+        event.preventDefault();
+        showModal('Warning', 'You must select ' + totalPositions + ' unique positions.');
     }
+});
+
+// Function to display the modal with given title and message
+function showModal(title, message) {
+    var modalElement = document.getElementById('feedbackModal');
+    if (modalElement) {
+        var modalInstance = new bootstrap.Modal(modalElement);
+        document.querySelector('.modal-title').innerText = title;
+        document.querySelector('.modal-body p').innerText = message;
+        modalInstance.show();
+    } else {
+        console.error('Modal element not found.');
+    }
+}
 </script>
-
-
 </body>
 </html>
