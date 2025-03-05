@@ -6,9 +6,7 @@ ob_start();
 include 'db_config.php';
 include 'utils.php';
 
-// Start session
-session_start();
-$_SESSION['phone-number'] = $phone_number; // Ensure $mobileNumber is sanitized and validated
+
 
 
 // Initialize variables for form input and error message
@@ -17,6 +15,10 @@ $student_id = '';
 $local_id = '';
 $employee_id = '';
 $error_message = '';
+
+// Start session
+session_start();
+$_SESSION['phone-number'] = $phone_number; // Ensure $mobileNumber is sanitized and validated
 
 // Handle the login form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
