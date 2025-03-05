@@ -317,38 +317,45 @@ $existingCandidates = $pdo->query("SELECT election_name, panel, candidate_positi
               </div>
             </div>
             <hr>
-            <!-- Extra Panels (Panel 3 and Panel 4) -->
-            <div id="extraPanels" style="display:none;">
-              <!-- Panel 3 Positions -->
-              <h5 class="text-center">Panel 3 Positions</h5>
-              <div id="panel3Positions">
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <label for="panel3_pos1" class="form-label">Position 1</label>
-                    <input type="text" name="panel3_pos1" id="panel3_pos1" class="form-control" placeholder="e.g. Mayor">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="panel3_pos2" class="form-label">Position 2</label>
-                    <input type="text" name="panel3_pos2" id="panel3_pos2" class="form-control" placeholder="e.g. Sub-Mayor">
-                  </div>
-                </div>
-              </div>
-              <!-- Panel 4 Positions -->
-              <h5 class="text-center">Panel 4 Positions</h5>
-              <div id="panel4Positions">
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <label for="panel4_pos1" class="form-label">Position 1</label>
-                    <input type="text" name="panel4_pos1" id="panel4_pos1" class="form-control" placeholder="e.g. Mayor">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="panel4_pos2" class="form-label">Position 2</label>
-                    <input type="text" name="panel4_pos2" id="panel4_pos2" class="form-control" placeholder="e.g. Sub-Mayor">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm mt-2" id="addPanelsBtn">Add More Panels</button>
+           <!-- Extra Panels (Panel 3 and Panel 4) - Initially Hidden -->
+<div id="panel3Container" style="display:none;">
+  <h5 class="text-center">Panel 3 Positions</h5>
+  <div id="panel3Positions">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="panel3_pos1" class="form-label">Position 1</label>
+        <input type="text" name="panel3_pos1" id="panel3_pos1" class="form-control" placeholder="e.g. Mayor">
+      </div>
+      <div class="col-md-6">
+        <label for="panel3_pos2" class="form-label">Position 2</label>
+        <input type="text" name="panel3_pos2" id="panel3_pos2" class="form-control" placeholder="e.g. Sub-Mayor">
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-secondary btn-sm" id="addPanel3PosBtn">Add More Positions (Panel 3 & 4)</button>
+</div>
+
+
+<div id="panel4Container" style="display:none;">
+  <h5 class="text-center">Panel 4 Positions</h5>
+  <div id="panel4Positions">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="panel4_pos1" class="form-label">Position 1</label>
+        <input type="text" name="panel4_pos1" id="panel4_pos1" class="form-control" placeholder="e.g. Mayor">
+      </div>
+      <div class="col-md-6">
+        <label for="panel4_pos2" class="form-label">Position 2</label>
+        <input type="text" name="panel4_pos2" id="panel4_pos2" class="form-control" placeholder="e.g. Sub-Mayor">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Buttons -->
+
+<button type="button" class="btn btn-secondary btn-sm mt-2" id="addPanelsBtn">Add More Panels</button>
+
             <hr>
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -515,54 +522,49 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
     // Functions to add more positions and panels
-    document.addEventListener("DOMContentLoaded", function(){
-      // Button to add one extra position to Panel 1 and Panel 2
-      var addPanelPositionsBtn = document.getElementById("addPanel1PosBtn");
-      addPanelPositionsBtn.addEventListener("click", function(){
-        // Maximum allowed positions per panel is 8
-        var panel1Container = document.getElementById("panel1Positions");
-        var panel2Container = document.getElementById("panel2Positions");
-
-        // Count current positions for Panel 1 (we assume each row has two inputs)
-        var currentPanel1Inputs = panel1Container.querySelectorAll("input[type='text']").length;
-        if (currentPanel1Inputs < 8) {
-          // Add a new row with two extra positions (one for Panel 1 and one for Panel 2)
-          var newRow1 = document.createElement("div");
-          newRow1.className = "row mb-3";
-          newRow1.innerHTML = `
-            <div class="col-md-6">
-              <label class="form-label">Position ${currentPanel1Inputs + 1}</label>
-              <input type="text" name="panel1_pos${currentPanel1Inputs + 1}" class="form-control" placeholder="Extra Position">
-            </div>
-          `;
-          panel1Container.appendChild(newRow1);
-
-          var currentPanel2Inputs = document.getElementById("panel2Positions").querySelectorAll("input[type='text']").length;
-          var newRow2 = document.createElement("div");
-          newRow2.className = "row mb-3";
-          newRow2.innerHTML = `
-            <div class="col-md-6">
-              <label class="form-label">Position ${currentPanel2Inputs + 1}</label>
-              <input type="text" name="panel2_pos${currentPanel2Inputs + 1}" class="form-control" placeholder="Extra Position">
-            </div>
-          `;
-          document.getElementById("panel2Positions").appendChild(newRow2);
+    document.addEventListener("DOMContentLoaded", function() {
+    // Function to add positions dynamically
+    function addPosition(panelContainer, panelNumber) {
+        var currentInputs = panelContainer.querySelectorAll("input[type='text']").length;
+        if (currentInputs < 8) {
+            var newRow = document.createElement("div");
+            newRow.className = "row mb-3";
+            newRow.innerHTML = `
+                <div class="col-md-6">
+                    <label class="form-label">Position ${currentInputs + 1}</label>
+                    <input type="text" name="panel${panelNumber}_pos${currentInputs + 1}" class="form-control" placeholder="Extra Position">
+                </div>
+            `;
+            panelContainer.appendChild(newRow);
         } else {
-          alert("Maximum positions reached for Panel 1 and Panel 2.");
+            alert(`Maximum positions reached for Panel ${panelNumber}.`);
         }
-      });
-      
-      // Button to add extra panels (Panel 3 and Panel 4) if not already shown
-      var addPanelsBtn = document.getElementById("addPanelsBtn");
-      addPanelsBtn.addEventListener("click", function(){
-        var extraPanelsDiv = document.getElementById("extraPanels");
-        if (extraPanelsDiv.style.display === "none") {
-          extraPanelsDiv.style.display = "block";
-        } else {
-          alert("Extra panels already added.");
-        }
-      });
+    }
+
+    // Add positions for Panel 1 & 2
+    document.getElementById("addPanel1PosBtn").addEventListener("click", function() {
+        addPosition(document.getElementById("panel1Positions"), 1);
+        addPosition(document.getElementById("panel2Positions"), 2);
     });
+
+    // Add positions for Panel 3 & 4
+    document.getElementById("addPanel3PosBtn").addEventListener("click", function() {
+        addPosition(document.getElementById("panel3Positions"), 3);
+        addPosition(document.getElementById("panel4Positions"), 4);
+    });
+
+    // Function to add one panel at a time
+    var currentPanel = 2; // Default panels are 1 & 2
+    document.getElementById("addPanelsBtn").addEventListener("click", function() {
+        if (currentPanel < 4) {
+            currentPanel++;
+            document.getElementById(`panel${currentPanel}Container`).style.display = "block";
+        } else {
+            alert("All panels are already added.");
+        }
+    });
+});
+
   </script>
   
   <!-- Feedback Modal -->

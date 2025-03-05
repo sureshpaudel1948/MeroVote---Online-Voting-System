@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -39,13 +39,7 @@ try {
     $stmt->execute(['election_id' => $electionId]);
     $electionName = $stmt->fetchColumn();
     
-    $voteStmt = $pdo->prepare("
-        SELECT c.id AS candidate_id, c.name AS candidate_name, c.candidate_position, COUNT(v.id) AS vote_count
-        FROM votes_group v
-        INNER JOIN candidates_group c ON v.candidate_id = c.id
-        WHERE v.election = :election_name
-        GROUP BY c.id, c.name, c.candidate_position
-    ");
+    $voteStmt = $pdo->prepare("SELECT c.id AS candidate_id, c.name AS candidate_name, c.candidate_position, COUNT(v.id) AS vote_count FROM votes_group v INNER JOIN candidates_group c ON v.candidate_id = c.id WHERE v.election = :election_name GROUP BY c.id, c.name, c.candidate_position");
     $voteStmt->execute(['election_name' => $electionName]);
     $voteCounts = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -55,7 +49,6 @@ try {
 date_default_timezone_set('Asia/Kathmandu');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve candidate IDs as an array (make sure your HTML form uses name="candidate[]" for multi-select)
     $candidateIds = $_POST['candidate'] ?? [];
     if (!is_array($candidateIds)) {
         $_SESSION['message'] = "Please select candidates properly.";
@@ -64,9 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // Ensure exactly 4 candidates are selected
     if (count($candidateIds) !== 4) {
-        $_SESSION['message'] = "Please select exactly 4 candidates.";
+        $_SESSION['message'] = "Please select all candidates.";
         $_SESSION['msg_type'] = "warning";
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
@@ -74,10 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $current_time = date('H:i:s');
     
-    // Fetch election details
     $stmt = $pdo->prepare("SELECT start_time, end_time, name FROM elections_group WHERE id = :election_id");
-    $stmt->bindParam(':election_id', $electionId, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt->execute(['election_id' => $electionId]);
     $election = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$election) {
         $_SESSION['message'] = "Election details not found.";
@@ -96,69 +86,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // Generate the voter hash
     $voterHash = generateVoterHash($_SESSION['user_id'], $electionId);
     
-    // Check if the voter has already voted in this group election
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM votes_group WHERE hashed_user_id = :hashed_user_id AND election = :election_name");
-    $stmt->execute([
-        'hashed_user_id' => $voterHash,
-        'election_name' => $election['name']
-    ]);
-    $existingVoteCount = $stmt->fetchColumn();
-    if ($existingVoteCount > 0) {
+    $stmt->execute(['hashed_user_id' => $voterHash, 'election_name' => $election['name']]);
+    if ($stmt->fetchColumn() > 0) {
         $_SESSION['message'] = "You have already voted in this election.";
         $_SESSION['msg_type'] = "warning";
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
     }
     
-    // Process selected candidates and ensure unique candidate positions
+    $stmt = $pdo->prepare("SELECT total_positions FROM elections WHERE id = :election_id");
+    $stmt->execute(['election_id' => $electionId]);
+    $election = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$election) {
+        $_SESSION['message'] = "Invalid election.";
+        $_SESSION['msg_type'] = "danger";
+        header('Location: group_vote.php?election_id=' . $electionId);
+        exit();
+    }
+    
+    $totalAllowedPositions = (int) $election['total_positions'];
+    
     $selectedPositions = [];
     $candidateDetails = [];
+    
     foreach ($candidateIds as $candId) {
         $stmt = $pdo->prepare("SELECT id, name, candidate_position FROM candidates_group WHERE id = :cand_id AND elect_no = :election_id");
-        $stmt->execute([
-            'cand_id' => $candId,
-            'election_id' => $electionId
-        ]);
+        $stmt->execute(['cand_id' => $candId, 'election_id' => $electionId]);
         $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$candidate) {
-            $_SESSION['message'] = "Invalid candidate selected.";
-            $_SESSION['msg_type'] = "danger";
-            header('Location: group_vote.php?election_id=' . $electionId);
-            exit();
+            continue;
         }
         $selectedPositions[] = $candidate['candidate_position'];
         $candidateDetails[] = $candidate;
     }
     
-    if (count(array_unique($selectedPositions)) !== 4) {
-        $_SESSION['message'] = "Please select candidates for 4 different positions.";
+    if (count(array_unique($selectedPositions)) !== count($candidateIds)) {
+        $_SESSION['message'] = "Please select candidates for different positions.";
         $_SESSION['msg_type'] = "warning";
         header('Location: group_vote.php?election_id=' . $electionId);
         exit();
     }
     
-    // Insert a vote record for each selected candidate
     try {
         foreach ($candidateDetails as $candidate) {
             $stmtInsert = $pdo->prepare("INSERT INTO votes_group (hashed_user_id, candidate_id, candidate_name, candidate_position, election) VALUES (:hashed_user_id, :candidate_id, :candidate_name, :candidate_position, :election_name)");
-            $stmtInsert->execute([
-                'hashed_user_id' => $voterHash,
-                'candidate_id' => $candidate['id'],
-                'candidate_name' => $candidate['name'],
-                'candidate_position' => $candidate['candidate_position'],
-                'election_name' => $election['name']
-            ]);
+            $stmtInsert->execute(['hashed_user_id' => $voterHash, 'candidate_id' => $candidate['id'], 'candidate_name' => $candidate['name'], 'candidate_position' => $candidate['candidate_position'], 'election_name' => $election['name']]);
         }
         $_SESSION['message'] = "Vote successfully submitted!";
         $_SESSION['msg_type'] = "success";
-        $_SESSION['show_modal'] = true;
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error submitting vote: " . htmlspecialchars($e->getMessage());
         $_SESSION['msg_type'] = "danger";
-        $_SESSION['show_modal'] = true;
     }
     
     header('Location: group_vote.php?election_id=' . $electionId);
@@ -392,121 +373,69 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <div class="container mt-5">
   <h1 class="text-center text-primary mb-4">Vote for Your Candidate</h1>
   <p class="text-center text-muted">
-    Please select exactly 4 candidates (each from a different position) from any panel or both panels.
+    Please select candidates (each from a different position) from any panel.
   </p>
   <form method="post" action="group_vote.php?election_id=<?php echo htmlspecialchars($electionId); ?>">
-    <!-- Hidden field to pass election ID -->
     <input type="hidden" name="election_id" value="<?php echo htmlspecialchars($electionId); ?>">
     
-    <!-- Panel 1 Section -->
-    <h2 class="panel-title">Panel 1</h2>
-    <div class="row">
-      <?php 
-        // Filter candidates for Panel 1
-        $panel1Candidates = array_filter($candidates, function($c) {
-          return strtolower(trim($c['panel'])) === 'panel 1';
-        });
-        if (!empty($panel1Candidates)):
-          foreach ($panel1Candidates as $candidate): ?>
-            <div class="col-md-4 mb-4">
-              <div class="card shadow-sm candidate-card" style="cursor: pointer;">
-                <div class="card-body text-center">
-                  <input class="form-check-input" type="checkbox" name="candidate[]" 
-                         id="candidate<?php echo $candidate['id']; ?>" 
-                         value="<?php echo $candidate['id']; ?>">
-                  <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
-                         for="candidate<?php echo $candidate['id']; ?>">
-                    <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
-                         alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
-                    <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
-                    <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
-                  </label>
-                </div>
+    <?php 
+      $panels = array_unique(array_column($candidates, 'panel'));
+      foreach ($panels as $panel):
+    ?>
+      <h2 class="panel-title"><?php echo htmlspecialchars($panel); ?></h2>
+      <div class="row">
+        <?php 
+          $panelCandidates = array_filter($candidates, function($c) use ($panel) {
+            return strtolower(trim($c['panel'])) === strtolower(trim($panel));
+          });
+          
+          if (!empty($panelCandidates)):
+            foreach ($panelCandidates as $candidate):
+        ?>
+          <div class="col-md-4 mb-4">
+            <div class="card shadow-sm candidate-card" style="cursor: pointer;">
+              <div class="card-body text-center">
+                <input class="form-check-input" type="checkbox" name="candidate[]" 
+                       id="candidate<?php echo $candidate['id']; ?>" 
+                       value="<?php echo $candidate['id']; ?>">
+                <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
+                       for="candidate<?php echo $candidate['id']; ?>">
+                  <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
+                       alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
+                  <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
+                  <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
+                </label>
               </div>
-              <!-- Live Vote Count for this candidate -->
-              <h6 class="text-primary mt-3">Live Vote Count:</h6>
-              <ul class="list-group live-vote-count mb-3">
-                <?php
-                $found = false;
-                foreach ($voteCounts as $vote) {
-                    if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
-                        $found = true;
-                        echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
-                        echo "<div class='vote-details d-flex align-items-center'>";
-                        echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
-                        echo "</div>";
-                        echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
-                        echo "</li>";
-                    }
-                }
-                if (!$found) {
-                    echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
-                }
-                ?>
-              </ul>
             </div>
-          <?php endforeach;
-        else: ?>
-          <div class="col-12 text-center">
-            <p class="alert alert-warning">No candidates available in Panel 1.</p>
+            
+            <h6 class="text-primary mt-3">Live Vote Count:</h6>
+            <ul class="list-group live-vote-count mb-3">
+              <?php
+              $found = false;
+              foreach ($voteCounts as $vote) {
+                  if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
+                      $found = true;
+                      echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
+                      echo "<div class='vote-details d-flex align-items-center'>";
+                      echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
+                      echo "</div>";
+                      echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
+                      echo "</li>";
+                  }
+              }
+              if (!$found) {
+                  echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
+              }
+              ?>
+            </ul>
           </div>
-      <?php endif; ?>
-    </div>
-    
-    <!-- Panel 2 Section -->
-    <h2 class="panel-title">Panel 2</h2>
-    <div class="row">
-      <?php 
-        // Filter candidates for Panel 2
-        $panel2Candidates = array_filter($candidates, function($c) {
-          return strtolower(trim($c['panel'])) === 'panel 2';
-        });
-        if (!empty($panel2Candidates)):
-          foreach ($panel2Candidates as $candidate): ?>
-            <div class="col-md-4 mb-4 ">
-              <div class="card shadow-sm candidate-card" style="cursor: pointer;">
-                <div class="card-body text-center">
-                  <input class="form-check-input" type="checkbox" name="candidate[]" 
-                         id="candidate<?php echo $candidate['id']; ?>" 
-                         value="<?php echo $candidate['id']; ?>">
-                  <label class="form-check-label d-flex flex-column align-items-center candidate-label" 
-                         for="candidate<?php echo $candidate['id']; ?>">
-                    <img src="<?php echo htmlspecialchars($candidate['photo']); ?>" 
-                         alt="Candidate Photo" class="candidate-photo img-thumbnail mb-3">
-                    <strong class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></strong>
-                    <span class="badge bg-secondary mt-2"><?php echo htmlspecialchars($candidate['candidate_position']); ?></span>
-                  </label>
-                </div>
-              </div>
-              <!-- Live Vote Count for this candidate -->
-              <h6 class="text-primary mt-3">Live Vote Count:</h6>
-              <ul class="list-group live-vote-count mb-3">
-                <?php
-                $found = false;
-                foreach ($voteCounts as $vote) {
-                    if (isset($vote['candidate_id']) && $vote['candidate_id'] == $candidate['id']) {
-                        $found = true;
-                        echo "<li class='list-group-item d-flex justify-content-between align-items-center'>";
-                        echo "<div class='vote-details d-flex align-items-center'>";
-                        echo "<span class='fw-bold'>" . htmlspecialchars($candidate['name']) . "</span>";
-                        echo "</div>";
-                        echo "<span class='badge bg-success vote-badge'>" . htmlspecialchars($vote['vote_count']) . "</span>";
-                        echo "</li>";
-                    }
-                }
-                if (!$found) {
-                    echo "<li class='list-group-item text-muted text-center'>No votes yet.</li>";
-                }
-                ?>
-              </ul>
-            </div>
-          <?php endforeach;
-        else: ?>
+        <?php endforeach; else: ?>
           <div class="col-12 text-center">
-            <p class="alert alert-warning">No candidates available in Panel 2.</p>
+            <p class="alert alert-warning">No candidates available in <?php echo htmlspecialchars($panel); ?>.</p>
           </div>
-      <?php endif; ?>
-    </div>
+        <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
     
     <div class="text-center">
       <button type="submit" name="vote_submit" class="btn btn-success mt-4 px-5">Submit Vote</button>
@@ -515,8 +444,8 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 </div>
 
 
-     <!-- Feedback Modal -->
-     <?php if (!empty($_SESSION['message'])): ?>
+        <!-- Feedback Modal -->
+        <?php if (!empty($_SESSION['message'])): ?>
       <div id="feedbackModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -533,11 +462,13 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
           </div>
         </div>
       </div>
+
       <?php 
         // Clear session message after displaying modal
         unset($_SESSION['message']);
         unset($_SESSION['msg_type']);
-      endif; ?>
+      ?>
+    <?php endif; ?>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -550,30 +481,38 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
       }
     });
 
-    // Hide modal and remove overlay when closed
+    // Hide modal properly when closed
     function hideModal() {
-      var modal = document.getElementById('feedbackModal');
-      if (modal) {
-        modal.style.display = "none";
+      var modalElement = document.getElementById('feedbackModal');
+      if (modalElement) {
+        var modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
       }
     }
 
-   // Make the entire candidate card clickable
-   document.addEventListener('DOMContentLoaded', function() {
     // Make the entire candidate card clickable
-    document.querySelectorAll('.candidate-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Prevent toggling if clicking on an interactive element (like the checkbox itself)
-            if (e.target.tagName.toLowerCase() === 'input') return;
-            const checkbox = card.querySelector('input[type="checkbox"]');
-            if (checkbox) {
-                // Toggle the checkbox state
-                checkbox.checked = !checkbox.checked;
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.candidate-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Prevent toggling if clicking on an interactive element (like the checkbox itself)
+                if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'label') return;
+                
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+
+                    // Optional: Add active styling when selected
+                    if (checkbox.checked) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                }
+            });
         });
     });
-});
   </script>
 </body>
-
 </html>
