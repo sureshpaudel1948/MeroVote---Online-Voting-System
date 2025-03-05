@@ -116,7 +116,12 @@ if (isset($_POST['verify_otp'])) {
         $result = verifyOTP($otp);
         if ($result['success']) {
             $_SESSION['loggedin'] = true;
-            header('Location: voter_dashboard.php');
+            // Check if admin is logged in; if so, redirect to admin_dashboard.php, else voter_dashboard.php
+            if (isset($_SESSION['admin_id'])) {
+                header('Location: admin_dashboard.php');
+            } else {
+                header('Location: voter_dashboard.php');
+            }
             exit();
         } else {
             $error_message = "<span style='color:red'>{$result['message']}</span>";
@@ -127,6 +132,7 @@ if (isset($_POST['verify_otp'])) {
 }
 
 logToFile("Session Status: " . print_r($_SESSION, true));
+
 ?>
 
 <!DOCTYPE html>

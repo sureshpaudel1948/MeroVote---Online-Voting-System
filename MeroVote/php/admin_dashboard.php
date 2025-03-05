@@ -1,7 +1,7 @@
 <?php
 session_start();
-if ( !isset( $_SESSION[ 'user_id' ] ) ) {
-    header( 'Location: ./admin_login.php' );
+if ( !isset( $_SESSION[ 'admin_id' ] ) ) {
+    header( 'Location: ./otp-api.php' );
     exit();
 }
 

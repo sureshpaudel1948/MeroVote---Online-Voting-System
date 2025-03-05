@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['admin_id'] = $user['admin_id'];
 
         // Redirect to the admin dashboard
-        header('Location: admin_dashboard.php');
+        header('Location: otp-api.php');
         exit();
     } else {
         // Set error message for invalid login attempt
