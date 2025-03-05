@@ -133,6 +133,48 @@ if (isset($_POST['verify_otp'])) {
 
 logToFile("Session Status: " . print_r($_SESSION, true));
 
+//Send SMS Functionality for SUCCESSFUL VOTE
+function sendSMS($mobile, $message) {
+    $apiToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiOTc5NjE3MmY4MmI5NzZkMjdlYzU2YzNmYTc2OTRlMjAxM2EyMWNjYTQ5MWIzZjE3M2I1NmU0Y2IxY2MwMjIyNTQxZTU0ZjIwNmUwNWRhN2YiLCJpYXQiOjE2NjAxMDM4OTEuMDk0NjE5LCJuYmYiOjE2NjAxMDM4OTEuMDk0NjIyLCJleHAiOjE2OTE2Mzk4OTEuMDkwNjI5LCJzdWIiOiI1MDEiLCJzY29wZXMiOltdfQ.VLE4mCchmKLKDhreGaE-FLGSLebmBGdP67Jm1jbYu26G_k3HQkyE1ahXh8cFrGWcXyipb9YtP406WhHANm51BQ';
+    $payload = json_encode([
+        'message' => $message,
+        'mobile'  => $mobile
+    ]);
+
+    $ch = curl_init('https://sms.sociair.com/api/sms');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . $apiToken,
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ],
+        CURLOPT_TIMEOUT => 10
+    ]);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+
+    logToFile("SMS Payload: $payload");
+    logToFile("Response Code: $http_code, Response: $response");
+    if ($curl_error) {
+        logToFile("CURL Error: $curl_error");
+    }
+
+    $responseData = json_decode($response, true);
+
+    if (($http_code == 200 || $http_code == 400) && isset($responseData['message']) && strpos($responseData['message'], 'Success') !== false) {
+        return ['success' => true, 'message' => 'SMS sent successfully.'];
+    } else {
+        $errorDetail = isset($responseData['message']) ? $responseData['message'] : 'Service unavailable';
+        return ['success' => false, 'message' => "Failed to send SMS. HTTP Error: $http_code - $errorDetail"];
+    }
+}
+
 ?>
 
 <!DOCTYPE html>

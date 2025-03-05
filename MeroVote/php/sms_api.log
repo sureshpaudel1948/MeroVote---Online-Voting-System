@@ -1149,3 +1149,36 @@
 (
 )
 
+[2025-03-05 19:55:31] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-05 19:55:35] Generated OTP: 777231 for mobile: 9826170721
+[2025-03-05 19:55:36] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 777231","mobile":"9826170721"}
+[2025-03-05 19:55:36] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-05 19:55:36] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 777231
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-05 19:55:44] Verifying OTP. Input: 789686, Stored: 777231
+[2025-03-05 19:55:44] OTP verification failed. Attempt: 1
+[2025-03-05 19:55:44] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 777231
+    [otp_attempts] => 1
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-05 19:55:57] Verifying OTP. Input: 777231, Stored: 777231
+[2025-03-05 19:55:57] OTP verification successful.

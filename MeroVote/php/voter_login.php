@@ -8,6 +8,8 @@ include 'utils.php';
 
 // Start session
 session_start();
+$_SESSION['phone-number'] = $phone_number; // Ensure $mobileNumber is sanitized and validated
+
 
 // Initialize variables for form input and error message
 $phone_number = '';
