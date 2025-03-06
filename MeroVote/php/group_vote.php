@@ -166,23 +166,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['message'] = "Error submitting vote: " . htmlspecialchars($e->getMessage());
         $_SESSION['msg_type'] = "danger";
     }
+// After processing the vote, send a thank-you SMS to the voter
+if ($_SESSION['msg_type'] === "success") {
+  // Retrieve voter's phone number from the session
+  $phone_number = $_SESSION['phone-number'] ?? null;
+  if ($phone_number) {
+      $message = "Dear voter, thanks for casting your vote through MeroVote!";
+      // Use include_once so that otp-api.php is included only once
+      include_once 'otp-api.php'; // Ensure the path is correct
 
-    if ($_SESSION['msg_type'] === "success") {
-      $phone_number = $_SESSION['phone-number'] ?? null;
-      if ($phone_number) {
-          $message = "Dear voter, thanks for casting your vote through MeroVote!";
-          include 'otp-api.php'; // Ensure this path is correct
-          $smsResult = sendSMS($phone_number, $message);
-          if (!$smsResult['success']) {
-              // Log the error or handle it as needed
-              logToFile("SMS Error: " . $smsResult['message']);
+      // Conditionally define logToFile if it doesn't exist
+      if (!function_exists('logToFile')) {
+          function logToFile($message) {
+              $logFile = 'sms_api.log';
+              $timestamp = date('Y-m-d H:i:s');
+              $fullMessage = "[$timestamp] $message\n";
+              file_put_contents($logFile, $fullMessage, FILE_APPEND);
           }
-      } else {
-          logToFile("Mobile number not found in session.");
       }
+
+      // Call the sendSMS function (assumed to be defined in otp-api.php)
+      $smsResult = sendSMS($phone_number, $message);
+      if (!$smsResult['success']) {
+          logToFile("SMS Error: " . $smsResult['message']);
+      }
+  } else {
+      logToFile("Mobile number not found in session.");
   }
+}
   
-    
     header('Location: group_vote.php?election_id=' . $electionId);
     exit();
 }
@@ -202,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <!-- Brand Logo and Name -->
-      <a class="navbar-brand d-flex align-items-center" href="voter_dashboard.php">
+      <a class="navbar-brand d-flex align-items-center" href="../index.html">
         <img src="../img/MeroVote-Logo.png" style="height: 60px; width: auto;" alt="Logo" class="logo img-fluid me-2">
         <span></span>
       </a>

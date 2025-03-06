@@ -133,7 +133,9 @@ if (isset($_POST['verify_otp'])) {
 
 logToFile("Session Status: " . print_r($_SESSION, true));
 
-//Send SMS Functionality for SUCCESSFUL VOTE
+
+// --- SMS Sending Functionality for Thank-You SMS ---
+// This function is reused for sending OTPs as well as sending custom SMS messages
 function sendSMS($mobile, $message) {
     $apiToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiOTc5NjE3MmY4MmI5NzZkMjdlYzU2YzNmYTc2OTRlMjAxM2EyMWNjYTQ5MWIzZjE3M2I1NmU0Y2IxY2MwMjIyNTQxZTU0ZjIwNmUwNWRhN2YiLCJpYXQiOjE2NjAxMDM4OTEuMDk0NjE5LCJuYmYiOjE2NjAxMDM4OTEuMDk0NjIyLCJleHAiOjE2OTE2Mzk4OTEuMDkwNjI5LCJzdWIiOiI1MDEiLCJzY29wZXMiOltdfQ.VLE4mCchmKLKDhreGaE-FLGSLebmBGdP67Jm1jbYu26G_k3HQkyE1ahXh8cFrGWcXyipb9YtP406WhHANm51BQ';
     $payload = json_encode([
@@ -174,8 +176,8 @@ function sendSMS($mobile, $message) {
         return ['success' => false, 'message' => "Failed to send SMS. HTTP Error: $http_code - $errorDetail"];
     }
 }
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -199,7 +201,7 @@ function sendSMS($mobile, $message) {
 <nav class = 'navbar navbar-expand-lg navbar-dark bg-dark'>
 <div class = 'container-fluid'>
 <!-- Brand Logo and Name -->
-<a class = 'navbar-brand d-flex align-items-center' href = 'voter_dashboard.php'>
+<a class = 'navbar-brand d-flex align-items-center' href = '../index.html'>
 <img src = '../img/MeroVote-Logo.png' style = 'height: 60px; width: auto;' alt = 'MeroVote Logo' class = 'logo img-fluid me-2'>
 <span></span>
 </a>

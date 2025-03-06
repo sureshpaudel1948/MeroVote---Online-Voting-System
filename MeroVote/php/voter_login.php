@@ -6,9 +6,6 @@ ob_start();
 include 'db_config.php';
 include 'utils.php';
 
-
-
-
 // Initialize variables for form input and error message
 $phone_number = '';
 $student_id = '';
@@ -18,12 +15,14 @@ $error_message = '';
 
 // Start session
 session_start();
-$_SESSION['phone-number'] = $phone_number; // Ensure $mobileNumber is sanitized and validated
 
 // Handle the login form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values
     $phone_number = sanitize_input($_POST['phone-number']);
+
+    // Update session with the sanitized phone number so it can be used later for SMS notifications
+    $_SESSION['phone-number'] = $phone_number;
     $password = sanitize_input($_POST['password']);
     $electionType = isset($_POST['election-type']) ? sanitize_input($_POST['election-type']) : '';
 
@@ -166,7 +165,7 @@ ob_end_flush();
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <!-- Brand Logo and Name -->
-            <a class="navbar-brand d-flex align-items-center" href="voter_login.php">
+            <a class="navbar-brand d-flex align-items-center" href="../index.html">
                 <img src="../img/MeroVote-Logo.png" style="height: 60px; width: auto;" alt="MeroVote Logo" class="logo img-fluid me-2">
                 <span></span>
             </a>

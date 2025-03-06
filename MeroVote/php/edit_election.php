@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_election'])) {
 <nav class = 'navbar navbar-expand-lg navbar-dark bg-dark'>
 <div class = 'container-fluid'>
 <!-- Brand Logo and Name -->
-<a class = 'navbar-brand d-flex align-items-center' href = 'voter_dashboard.php'>
+<a class = 'navbar-brand d-flex align-items-center' href = '../index.html'>
 <img src = '../img/MeroVote-Logo.png' style = 'height: 60px; width: auto;' alt = 'MeroVote Logo' class = 'logo img-fluid me-2'>
 <span></span>
 </a>

@@ -95,7 +95,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'redirect_electio
 <header>
 <nav class = 'navbar navbar-expand-lg navbar-dark bg-dark'>
 <div class = 'container-fluid'>
-<a class = 'navbar-brand d-flex align-items-center' href = 'admin_dashboard.php'>
+<a class = 'navbar-brand d-flex align-items-center' href = '../index.html'>
 <img src = '../img/MeroVote-Logo.png' style = 'height: 60px;' alt = 'MeroVote Logo' class = 'me-2'>
 <span class = 'fw-bold'> </span>
 </a>
