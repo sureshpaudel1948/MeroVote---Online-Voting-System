@@ -136,22 +136,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($_SESSION['msg_type'] === "success") {
-        $phone_number = $_SESSION['phone-number'] ?? null;
-        if ($phone_number) {
-            $message = "Dear voter, thanks for casting your vote through MeroVote!";
-            include 'otp-api.php'; // Ensure this path is correct
-            $smsResult = sendSMS($phone_number, $message);
-            if (!$smsResult['success']) {
-                // Log the error or handle it as needed
-                logToFile("SMS Error: " . $smsResult['message']);
+   // After processing the vote, send a thank-you SMS to the voter
+if ($_SESSION['msg_type'] === "success") {
+    // Retrieve voter's phone number from the session
+    $phone_number = $_SESSION['phone-number'] ?? null;
+    if ($phone_number) {
+        $message = "Dear voter, thanks for casting your vote through MeroVote!";
+        // Use include_once so that otp-api.php is included only once
+        include_once 'otp-api.php'; // Ensure the path is correct
+  
+        // Conditionally define logToFile if it doesn't exist
+        if (!function_exists('logToFile')) {
+            function logToFile($message) {
+                $logFile = 'sms_api.log';
+                $timestamp = date('Y-m-d H:i:s');
+                $fullMessage = "[$timestamp] $message\n";
+                file_put_contents($logFile, $fullMessage, FILE_APPEND);
             }
-        } else {
-            logToFile("Mobile number not found in session.");
         }
+  
+        // Call the sendSMS function (assumed to be defined in otp-api.php)
+        $smsResult = sendSMS($phone_number, $message);
+        if (!$smsResult['success']) {
+            logToFile("SMS Error: " . $smsResult['message']);
+        }
+    } else {
+        logToFile("Mobile number not found in session.");
     }
+  }
     
-
     header('Location: vote.php?election_id=' . $electionId);
     exit();
 }
