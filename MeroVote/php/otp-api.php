@@ -116,10 +116,16 @@ if (isset($_POST['verify_otp'])) {
         $result = verifyOTP($otp);
         if ($result['success']) {
             $_SESSION['loggedin'] = true;
-            // Check if admin is logged in; if so, redirect to admin_dashboard.php, else voter_dashboard.php
+            // Check if admin is logged in; if so, redirect to admin_dashboard.php
             if (isset($_SESSION['admin_id'])) {
                 header('Location: admin_dashboard.php');
-            } else {
+            }
+            // If the user type indicates a group voter, redirect to voter_grp_dashboard.php
+            elseif (isset($_SESSION['user_type']) && in_array($_SESSION['user_type'], ['college-grp', 'local-grp', 'org-grp'])) {
+                header('Location: voter_grp_dashboard.php');
+            }
+            // Otherwise, redirect to the standard voter_dashboard.php
+            else {
                 header('Location: voter_dashboard.php');
             }
             exit();
@@ -130,6 +136,7 @@ if (isset($_POST['verify_otp'])) {
         $error_message = "<span style='color:red'>Enter a 6-digit OTP.</span>";
     }
 }
+
 
 logToFile("Session Status: " . print_r($_SESSION, true));
 

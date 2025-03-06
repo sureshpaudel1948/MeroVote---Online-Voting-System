@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_type'] = 'college-grp';
                     $_SESSION['user_identifier'] = trim($user['student_id']);
                     $_SESSION['user_role'] = 'School/College Level Election-Group';
-                    header('Location: voter_grp_dashboard.php');
+                    header('Location: otp-api.php');
                     exit();
                 }
             }
@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_type'] = 'local-grp';
                     $_SESSION['user_identifier'] = trim($user['local_id']);
                     $_SESSION['user_role'] = 'Local Level Election-Group';
-                    header('Location: voter_grp_dashboard.php');
+                    header('Location: otp-api.php');
                     exit();
                 }
             }
@@ -125,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_type'] = 'org-grp';
                     $_SESSION['user_identifier'] = trim($user['employee_id']);
                     $_SESSION['user_role'] = 'Organizational Level Election-Group';
-                    header('Location: voter_grp_dashboard.php');
+                    header('Location: otp-api.php');
                     exit();
                 }
             }
