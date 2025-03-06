@@ -300,7 +300,7 @@ $existingCandidates = $pdo->query("SELECT election_name, panel, candidate_positi
                 </div>
               </div>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm" id="addPanel1PosBtn">Add More Positions (Panel 1 &amp; 2)</button>
+            <button type="button" class="btn btn-primary btn-sm" id="addPanel1PosBtn">Add More Positions (Panel 1 &amp; 2)</button>
             <hr>
             <!-- Panel 2 Positions (Default 2 positions) -->
             <h5 class="text-center">Panel 2 Positions</h5>
@@ -332,8 +332,8 @@ $existingCandidates = $pdo->query("SELECT election_name, panel, candidate_positi
       </div>
     </div>
   </div>
-  <button type="button" class="btn btn-secondary btn-sm" id="addPanel3PosBtn">Add More Positions (Panel 3 & 4)</button>
-</div>
+  <button type="button" class="btn btn-primary btn-sm" id="addPanel3PosBtn">Add More Positions (Panel 3 & 4)</button>
+</div><br>
 
 
 <div id="panel4Container" style="display:none;">
@@ -354,7 +354,7 @@ $existingCandidates = $pdo->query("SELECT election_name, panel, candidate_positi
 
 <!-- Buttons -->
 
-<button type="button" class="btn btn-secondary btn-sm mt-2" id="addPanelsBtn">Add More Panels</button>
+<button type="button" class="btn btn-primary btn-sm mt-2" id="addPanelsBtn">Add More Panels</button>
 
             <hr>
             <div class="row">
