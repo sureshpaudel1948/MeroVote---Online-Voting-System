@@ -225,8 +225,12 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
 <a class = 'nav-link' href = 'all-elections.php'>Elections</a>
 </li>
 <li class = 'nav-item'>
-<a class = 'nav-link' href = 'voter_login.php'>Login</a>
+<a class = 'nav-link' href = 'voter_login.php'>Voter Login</a>
 </li>
+<li class = 'nav-item'>
+<a class = 'nav-link' href = 'admin_login.php'>Admin Login</a>
+</li>
+
 </ul>
 </div>
 </div>

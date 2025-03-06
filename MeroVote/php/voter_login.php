@@ -193,6 +193,9 @@ ob_end_flush();
                         <li class="nav-item">
                             <a class="nav-link" href="all-elections.php">Elections</a>
                         </li>
+                        <li class = 'nav-item'>
+<a class = 'nav-link' href = 'admin_login.php'>Admin Login</a>
+</li>
                         <li class="nav-item">
                             <a class="nav-link" href="register.php">Register</a>
                         </li>
