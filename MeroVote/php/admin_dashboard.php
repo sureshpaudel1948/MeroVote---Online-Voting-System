@@ -62,7 +62,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' && isset( $_POST[ 'delete_election'
     try {
         $deleteStmt = $pdo->prepare( 'DELETE FROM elections_group WHERE id = ?' );
         $deleteStmt->execute( [ $deleteId ] );
-        header( 'Location: admin_dashboard.php' );
+        header( 'Location: admin_dashboard.php' );                                  
         exit();
     } catch ( PDOException $e ) {
         die( 'Error deleting group election: ' . $e->getMessage() );
