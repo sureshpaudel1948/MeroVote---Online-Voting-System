@@ -165,9 +165,11 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
                             <a href="edit_election.php?id=<?php echo $election['id']; ?>&type=<?php echo urlencode($election['election_type']); ?>" class="btn btn-warning btn-sm">✏️ Edit</a>
 
                             <form method="POST" class="d-inline-block">
-                                <input type="hidden" name="election_id" value="<?php echo $election['id']; ?>">
-                                <button type="submit" name="delete_election" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this election?')">🗑️ Delete</button>
-                            </form>
+    <input type="hidden" name="election_id" value="<?php echo $election['id']; ?>">
+    <input type="hidden" name="election_table" value="individual">
+    <button type="submit" name="delete_election" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this election?')">🗑️ Delete</button>
+</form>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -204,9 +206,11 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
                             <a href="edit_group-election.php?id=<?php echo $election['id']; ?>&type=<?php echo urlencode($election['election_type']); ?>" class="btn btn-warning btn-sm">✏️ Edit</a>
 
                             <form method="POST" class="d-inline-block">
-                                <input type="hidden" name="election_id" value="<?php echo $election['id']; ?>">
-                                <button type="submit" name="delete_election" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this election?')">🗑️ Delete</button>
-                            </form>
+    <input type="hidden" name="election_id" value="<?php echo $election['id']; ?>">
+    <input type="hidden" name="election_table" value="group">
+    <button type="submit" name="delete_election" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this election?')">🗑️ Delete</button>
+</form>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>
