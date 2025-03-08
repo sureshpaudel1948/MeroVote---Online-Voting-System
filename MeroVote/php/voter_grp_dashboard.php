@@ -104,40 +104,48 @@ try {
         }
     }
 
-    // Process winner details for expired elections
+ // Process winner details for expired elections (Group Elections)
 foreach ($expiredElections as &$election) {
-    // Set default values for winner details
-    $election['winner_name'] = 'No Winner';
-    $election['winner_image'] = './candidates_photos/default.jpg';
-    $election['winner_votes'] = 0;
-    $election['winner_panel'] = 'N/A';
+  $electionName = $election['name'];
 
-    $electionName = $election['name'];
+  // Query to get vote totals for each candidate by their position for this election
+  $winnerStmt = $pdo->prepare("
+      SELECT 
+          c.candidate_position,
+          c.name AS candidate_name, 
+          c.photo AS candidate_image,
+          c.panel AS candidate_panel,
+          COUNT(v.id) AS total_votes
+      FROM candidates_group c
+      LEFT JOIN votes_group v 
+          ON v.candidate_id = c.id AND v.election = :election_name
+      WHERE c.election_name = :election_name
+      GROUP BY c.candidate_position, c.id, c.name, c.photo, c.panel
+      ORDER BY c.candidate_position, total_votes DESC
+  ");
+  $winnerStmt->execute(['election_name' => $electionName]);
+  $winnersData = $winnerStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $winnerStmt = $pdo->prepare("
-        SELECT 
-            c.name AS candidate_name, 
-            c.photo AS candidate_image,
-            c.panel AS candidate_panel,
-            COUNT(v.id) AS total_votes
-        FROM candidates_group c
-        LEFT JOIN votes_group v 
-            ON v.candidate_id = c.id AND v.election = :election_name
-        WHERE c.election_name = :election_name
-        GROUP BY c.id, c.name, c.photo, c.panel
-        ORDER BY total_votes DESC
-        LIMIT 1
-    ");
-    $winnerStmt->execute(['election_name' => $electionName]);
-    $winner = $winnerStmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($winner && !empty($winner['candidate_name'])) {
-        $election['winner_name'] = $winner['candidate_name'];
-        $election['winner_image'] = !empty($winner['candidate_image']) ? $winner['candidate_image'] : './candidates_photos/default.jpg';
-        $election['winner_votes'] = $winner['total_votes'] ?? 0;
-        $election['winner_panel'] = $winner['candidate_panel'] ?? 'N/A';
-    }
+  // Build an array of winners: one per candidate_position (the one with the highest votes)
+  $winners = [];
+  foreach ($winnersData as $row) {
+      $position = $row['candidate_position'];
+      // Use fallback of 0 for total_votes if not set
+      $votes = isset($row['total_votes']) ? $row['total_votes'] : 0;
+      // If not set or this candidate has higher votes, store this candidate as winner for that position.
+      if (!isset($winners[$position]) || $votes > $winners[$position]['winner_votes']) {
+          $winners[$position] = [
+              'winner_name'  => $row['candidate_name'],
+              'winner_image' => !empty($row['candidate_image']) ? $row['candidate_image'] : './candidates_photos/default.jpg',
+              'winner_votes' => $votes,
+              'winner_panel' => $row['candidate_panel']
+          ];
+      }
+  }
+  // Save winners array in the election data
+  $election['winners'] = $winners;
 }
+
 
 
 } catch ( PDOException $e ) {
@@ -240,21 +248,47 @@ Vote Now
 <!-- Expired Elections Section -->
 <section class='mt-5'>
   <h2 class='text-danger mb-3 text-center'>Expired Elections</h2>
+  <!-- Inline CSS for dynamic hover effect and improved styling -->
+  <style>
+    .winner-position {
+      transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+      padding: 45px;
+      border-radius: 8px;
+      margin: 40px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border: 1px solid #ddd;
+    }
+    .winner-position:hover {
+      background-color: #e9f5ff;
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .winner-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .winner-text {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .winner-text span.fw-bold {
+      color: #007bff;
+    }
+  </style>
   <div id='expiredElections' class='row'>
     <?php if (!empty($expiredElections)): ?>
       <?php $renderedElections = []; ?>
-      <?php 
-      $currentDate = date('Y-m-d'); // Current date for comparison
-      ?>
+      <?php $currentDate = date('Y-m-d'); // Current date for comparison ?>
       <?php foreach ($expiredElections as $election): ?>
         <?php 
-          // Skip if already rendered
+          // Skip if already rendered and only show elections that have truly ended
           if (in_array($election['id'], $renderedElections)) continue;
-          // Only display elections that have truly ended (end_date is before today)
           if ($election['end_date'] >= $currentDate) continue;
           $renderedElections[] = $election['id'];
         ?>
-        <div class='col-md-4 mb-4'>
+        <div class='col-12 mb-4'>
           <div class='card shadow-sm border-danger'>
             <div class='card-header bg-danger text-white'>
               <strong><?php echo htmlspecialchars($election['election_type']); ?></strong>
@@ -264,24 +298,29 @@ Vote Now
               <p class='card-text'>
                 <small>Ended on: <?php echo htmlspecialchars($election['end_date']); ?></small>
               </p>
-              <!-- Winner Section -->
-              <div class='winner-details text-center mt-3'>
-                <h6 class='text-success'><strong>Winner:</strong>
-                  <?php echo isset($election['winner_name']) && !empty($election['winner_name'])
-                        ? htmlspecialchars($election['winner_name'])
-                        : 'No Winner'; ?>
-                </h6>
-                <img src="<?php echo isset($election['winner_image']) && !empty($election['winner_image'])
-                              ? htmlspecialchars($election['winner_image'])
-                              : './candidates_photos/default.jpg'; ?>" 
-                     alt='Winner Image' class='rounded-circle'
-                     style='width: 100px; height: 100px; object-fit: cover;'>
-                <p class='mt-2'>Votes: <strong><?php echo isset($election['winner_votes'])
-                                                     ? htmlspecialchars($election['winner_votes'])
-                                                     : 0; ?></strong></p>
-                <p class='mt-2'>Panel: <strong><?php echo isset($election['winner_panel'])
-                                                     ? htmlspecialchars($election['winner_panel'])
-                                                     : 'N/A'; ?></strong></p>
+              <!-- Winner Section: display winners in a horizontal row -->
+              <div class='winner-details d-flex flex-wrap justify-content-center mt-3'>
+                <?php if (isset($election['winners']) && !empty($election['winners'])): ?>
+                  <?php foreach ($election['winners'] as $position => $winner): ?>
+                    <div class="winner-position text-center">
+                      <h6 class="winner-title text-success"><?php echo htmlspecialchars($position); ?></h6>
+                      <img src="<?php echo htmlspecialchars($winner['winner_image'] ?? './candidates_photos/default.jpg'); ?>" 
+                           alt="Winner Image" class="rounded-circle" 
+                           style="width: 100px; height: 100px; object-fit: cover;">
+                      <p class="winner-text mt-2">
+                        <strong><?php echo htmlspecialchars($winner['winner_name'] ?? 'No Winner'); ?></strong>
+                      </p>
+                      <p class="winner-text">
+                        <span class="fw-bold">Votes:</span> <?php echo htmlspecialchars($winner['winner_votes'] ?? 0); ?>
+                      </p>
+                      <p class="winner-text">
+                        <span class="fw-bold">Panel:</span> <?php echo htmlspecialchars($winner['winner_panel'] ?? 'N/A'); ?>
+                      </p>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p>No winner details available.</p>
+                <?php endif; ?>
               </div>
             </div>
           </div>
@@ -294,6 +333,9 @@ Vote Now
     <?php endif; ?>
   </div>
 </section>
+
+
+
 
 </main>
 
