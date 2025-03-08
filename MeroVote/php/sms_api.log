@@ -1376,3 +1376,1124 @@
     [admin_id] => A-1005
 )
 
+[2025-03-06 07:12:34] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 07:12:37] Generated OTP: 156679 for mobile: 9826170721
+[2025-03-06 07:12:38] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 156679","mobile":"9826170721"}
+[2025-03-06 07:12:38] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 07:12:38] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 156679
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 07:12:57] Verifying OTP. Input: 156679, Stored: 156679
+[2025-03-06 07:12:57] OTP verification successful.
+[2025-03-06 10:33:47] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [loggedin] => 1
+    [phone-number] => 9826170721
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+)
+
+[2025-03-06 10:33:50] Generated OTP: 740264 for mobile: 9826170721
+[2025-03-06 10:33:51] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 740264","mobile":"9826170721"}
+[2025-03-06 10:33:51] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:33:51] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [loggedin] => 1
+    [phone-number] => 9826170721
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+    [otp] => 740264
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:34:05] Verifying OTP. Input: 740264, Stored: 740264
+[2025-03-06 10:34:05] OTP verification successful.
+[2025-03-06 10:38:17] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+)
+
+[2025-03-06 10:38:20] Generated OTP: 654126 for mobile: 9826170721
+[2025-03-06 10:38:21] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 654126","mobile":"9826170721"}
+[2025-03-06 10:38:21] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:38:21] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+    [otp] => 654126
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:38:29] Verifying OTP. Input: 654126, Stored: 654126
+[2025-03-06 10:38:29] OTP verification successful.
+[2025-03-06 10:46:25] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+)
+
+[2025-03-06 10:46:30] Generated OTP: 380049 for mobile: 9826170721
+[2025-03-06 10:46:31] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 380049","mobile":"9826170721"}
+[2025-03-06 10:46:31] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:46:31] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+    [otp] => 380049
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:46:40] Verifying OTP. Input: 380049, Stored: 380049
+[2025-03-06 10:46:40] OTP verification successful.
+[2025-03-06 10:47:00] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election
+)
+
+[2025-03-06 10:47:03] Generated OTP: 823181 for mobile: 9826170721
+[2025-03-06 10:47:03] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 823181","mobile":"9826170721"}
+[2025-03-06 10:47:03] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:47:03] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election
+    [otp] => 823181
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:47:10] Verifying OTP. Input: 823181, Stored: 823181
+[2025-03-06 10:47:10] OTP verification successful.
+[2025-03-06 10:48:12] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 10:48:15] Generated OTP: 395678 for mobile: 9826170721
+[2025-03-06 10:48:16] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 395678","mobile":"9826170721"}
+[2025-03-06 10:48:16] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:48:16] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 395678
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:48:23] Verifying OTP. Input: 395678, Stored: 395678
+[2025-03-06 10:48:23] OTP verification successful.
+[2025-03-06 10:48:43] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+)
+
+[2025-03-06 10:48:46] Generated OTP: 674947 for mobile: 9826170721
+[2025-03-06 10:48:47] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 674947","mobile":"9826170721"}
+[2025-03-06 10:48:47] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:48:47] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [otp] => 674947
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:48:56] Verifying OTP. Input: 674947, Stored: 674947
+[2025-03-06 10:48:56] OTP verification successful.
+[2025-03-06 10:49:20] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org-grp
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election-Group
+)
+
+[2025-03-06 10:49:23] Generated OTP: 950122 for mobile: 9826170721
+[2025-03-06 10:49:24] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 950122","mobile":"9826170721"}
+[2025-03-06 10:49:24] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:49:24] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org-grp
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election-Group
+    [otp] => 950122
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:49:31] Verifying OTP. Input: 950122, Stored: 950122
+[2025-03-06 10:49:31] OTP verification successful.
+[2025-03-06 10:50:03] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+)
+
+[2025-03-06 10:50:06] Generated OTP: 192995 for mobile: 9826170721
+[2025-03-06 10:50:07] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 192995","mobile":"9826170721"}
+[2025-03-06 10:50:07] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:50:07] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+    [otp] => 192995
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:50:19] Verifying OTP. Input: 192995, Stored: 192995
+[2025-03-06 10:50:19] OTP verification successful.
+[2025-03-06 10:51:21] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election
+)
+
+[2025-03-06 10:51:24] Generated OTP: 378589 for mobile: 9826170721
+[2025-03-06 10:51:24] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 378589","mobile":"9826170721"}
+[2025-03-06 10:51:24] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:51:24] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election
+    [otp] => 378589
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:51:38] Verifying OTP. Input: 378589, Stored: 378589
+[2025-03-06 10:51:38] OTP verification successful.
+[2025-03-06 15:36:45] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+    [show_modal] => 1
+)
+
+[2025-03-06 15:36:46] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9826170721"}
+[2025-03-06 15:36:46] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:52:22] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 10:52:24] Generated OTP: 594166 for mobile: 9826170721
+[2025-03-06 10:52:25] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 594166","mobile":"9826170721"}
+[2025-03-06 10:52:25] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:52:25] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 594166
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:52:33] Verifying OTP. Input: 594166, Stored: 594166
+[2025-03-06 10:52:33] OTP verification successful.
+[2025-03-06 10:54:05] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [loggedin] => 1
+    [phone-number] => 9826170721
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+)
+
+[2025-03-06 10:54:08] Generated OTP: 173206 for mobile: 9826170721
+[2025-03-06 10:54:09] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 173206","mobile":"9826170721"}
+[2025-03-06 10:54:09] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:54:09] Session Status: Array
+(
+    [user_id] => 15
+    [admin_id] => A-1005
+    [loggedin] => 1
+    [phone-number] => 9826170721
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+    [otp] => 173206
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:54:15] Verifying OTP. Input: 173206, Stored: 173206
+[2025-03-06 10:54:15] OTP verification successful.
+[2025-03-06 10:54:31] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+)
+
+[2025-03-06 10:54:35] Generated OTP: 506461 for mobile: 9826170721
+[2025-03-06 10:54:36] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 506461","mobile":"9826170721"}
+[2025-03-06 10:54:36] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 10:54:36] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local-grp
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election-Group
+    [otp] => 506461
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:54:44] Verifying OTP. Input: 506461, Stored: 506461
+[2025-03-06 10:54:44] OTP verification successful.
+[2025-03-06 10:55:28] Session Status: Array
+(
+    [phone-number] => 9860394188
+    [user_id] => 19
+    [user_type] => local-grp
+    [user_identifier] => 1988-01-06
+    [user_role] => Local Level Election-Group
+)
+
+[2025-03-06 10:55:30] Generated OTP: 796573 for mobile: 9860394188
+[2025-03-06 10:55:31] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 796573","mobile":"9860394188"}
+[2025-03-06 10:55:31] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-06 10:55:31] Session Status: Array
+(
+    [phone-number] => 9860394188
+    [user_id] => 19
+    [user_type] => local-grp
+    [user_identifier] => 1988-01-06
+    [user_role] => Local Level Election-Group
+    [otp] => 796573
+    [otp_attempts] => 0
+    [otp_mobile] => 9860394188
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:55:47] Verifying OTP. Input: 796573, Stored: 796573
+[2025-03-06 10:55:47] OTP verification successful.
+[2025-03-06 10:56:32] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 17
+    [user_type] => local-grp
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election-Group
+)
+
+[2025-03-06 10:56:35] Generated OTP: 961575 for mobile: 9840760417
+[2025-03-06 10:56:35] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 961575","mobile":"9840760417"}
+[2025-03-06 10:56:35] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-06 10:56:35] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 17
+    [user_type] => local-grp
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election-Group
+    [otp] => 961575
+    [otp_attempts] => 0
+    [otp_mobile] => 9840760417
+    [otp_sent] => 1
+)
+
+[2025-03-06 10:56:47] Verifying OTP. Input: 961575, Stored: 961575
+[2025-03-06 10:56:47] OTP verification successful.
+[2025-03-06 11:09:58] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 11:10:01] Generated OTP: 168288 for mobile: 9826170721
+[2025-03-06 11:10:02] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 168288","mobile":"9826170721"}
+[2025-03-06 11:10:02] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:10:02] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 168288
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:10:15] Verifying OTP. Input: 168288, Stored: 168288
+[2025-03-06 11:10:15] OTP verification successful.
+[2025-03-06 11:12:08] Session Status: Array
+(
+    [phone-number] => 9813422097
+    [user_id] => 1
+    [user_type] => org
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election
+)
+
+[2025-03-06 11:12:11] Generated OTP: 107524 for mobile: 9813422097
+[2025-03-06 11:12:11] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 107524","mobile":"9813422097"}
+[2025-03-06 11:12:11] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:12:11] Session Status: Array
+(
+    [phone-number] => 9813422097
+    [user_id] => 1
+    [user_type] => org
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election
+    [otp] => 107524
+    [otp_attempts] => 0
+    [otp_mobile] => 9813422097
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:12:23] Verifying OTP. Input: 107524, Stored: 107524
+[2025-03-06 11:12:23] OTP verification successful.
+[2025-03-06 15:57:32] Session Status: Array
+(
+    [phone-number] => 9813422097
+    [user_id] => 1
+    [user_type] => org
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election
+    [otp_mobile] => 9813422097
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+    [show_modal] => 1
+)
+
+[2025-03-06 15:57:33] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9813422097"}
+[2025-03-06 15:57:33] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:14:37] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election
+)
+
+[2025-03-06 11:14:40] Generated OTP: 398882 for mobile: 9826170721
+[2025-03-06 11:14:41] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 398882","mobile":"9826170721"}
+[2025-03-06 11:14:41] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:14:41] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election
+    [otp] => 398882
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:14:51] Verifying OTP. Input: 398882, Stored: 398882
+[2025-03-06 11:14:51] OTP verification successful.
+[2025-03-06 15:59:55] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+    [show_modal] => 1
+)
+
+[2025-03-06 15:59:56] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9826170721"}
+[2025-03-06 15:59:56] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:15:30] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 11:15:36] Generated OTP: 731055 for mobile: 9826170721
+[2025-03-06 11:15:37] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 731055","mobile":"9826170721"}
+[2025-03-06 11:15:37] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:15:37] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 731055
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:16:03] Verifying OTP. Input: 731055, Stored: 731055
+[2025-03-06 11:16:03] OTP verification successful.
+[2025-03-06 11:17:25] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+)
+
+[2025-03-06 11:17:28] Generated OTP: 198058 for mobile: 9826170721
+[2025-03-06 11:17:29] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 198058","mobile":"9826170721"}
+[2025-03-06 11:17:29] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:17:29] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [otp] => 198058
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:17:37] Verifying OTP. Input: 198058, Stored: 198058
+[2025-03-06 11:17:37] OTP verification successful.
+[2025-03-06 16:02:49] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 15
+    [user_type] => local
+    [user_identifier] => 2007-06-19
+    [user_role] => Local Level Election
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+    [show_modal] => 1
+)
+
+[2025-03-06 16:02:49] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9826170721"}
+[2025-03-06 16:02:49] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:18:21] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 17
+    [user_type] => local
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election
+)
+
+[2025-03-06 11:18:24] Generated OTP: 328723 for mobile: 9840760417
+[2025-03-06 11:18:25] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 328723","mobile":"9840760417"}
+[2025-03-06 11:18:25] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-06 11:18:25] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 17
+    [user_type] => local
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election
+    [otp] => 328723
+    [otp_attempts] => 0
+    [otp_mobile] => 9840760417
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:18:37] Verifying OTP. Input: 328723, Stored: 328723
+[2025-03-06 11:18:37] OTP verification successful.
+[2025-03-06 16:03:42] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 17
+    [user_type] => local
+    [user_identifier] => 2055-01-09
+    [user_role] => Local Level Election
+    [otp_mobile] => 9840760417
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+    [show_modal] => 1
+)
+
+[2025-03-06 16:03:42] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9840760417"}
+[2025-03-06 16:03:42] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-06 11:29:24] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 11:29:28] Generated OTP: 113505 for mobile: 9826170721
+[2025-03-06 11:29:28] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 113505","mobile":"9826170721"}
+[2025-03-06 11:29:28] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:29:28] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 113505
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:29:38] Verifying OTP. Input: 113505, Stored: 113505
+[2025-03-06 11:29:38] OTP verification successful.
+[2025-03-06 11:36:50] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org-grp
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election-Group
+)
+
+[2025-03-06 11:36:53] Generated OTP: 581702 for mobile: 9826170721
+[2025-03-06 11:36:53] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 581702","mobile":"9826170721"}
+[2025-03-06 11:36:53] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 11:36:53] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org-grp
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election-Group
+    [otp] => 581702
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 11:37:03] Verifying OTP. Input: 581702, Stored: 581702
+[2025-03-06 11:37:03] OTP verification successful.
+[2025-03-06 16:23:37] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 3
+    [user_type] => org-grp
+    [user_identifier] => 21-77-605
+    [user_role] => Organizational Level Election-Group
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+)
+
+[2025-03-06 16:23:37] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9826170721"}
+[2025-03-06 16:23:37] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 12:15:46] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 12:15:50] Generated OTP: 640470 for mobile: 9826170721
+[2025-03-06 12:15:51] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 640470","mobile":"9826170721"}
+[2025-03-06 12:15:51] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 12:15:51] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 640470
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 12:15:59] Verifying OTP. Input: 640470, Stored: 640470
+[2025-03-06 12:15:59] OTP verification successful.
+[2025-03-06 12:20:53] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+)
+
+[2025-03-06 12:20:57] Generated OTP: 528977 for mobile: 9826170721
+[2025-03-06 12:20:58] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 528977","mobile":"9826170721"}
+[2025-03-06 12:20:58] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 12:20:58] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+    [otp] => 528977
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 12:21:06] Verifying OTP. Input: 528977, Stored: 528977
+[2025-03-06 12:21:06] OTP verification successful.
+[2025-03-06 17:06:42] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+)
+
+[2025-03-06 17:06:43] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9826170721"}
+[2025-03-06 17:06:43] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 14:14:51] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-06 14:14:55] Generated OTP: 769966 for mobile: 9826170721
+[2025-03-06 14:14:56] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 769966","mobile":"9826170721"}
+[2025-03-06 14:14:56] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-06 14:14:56] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 769966
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-06 14:15:09] Verifying OTP. Input: 769966, Stored: 769966
+[2025-03-06 14:15:09] OTP verification successful.
+[2025-03-06 16:15:51] Session Status: Array
+(
+)
+
+[2025-03-07 03:14:59] Session Status: Array
+(
+)
+
+[2025-03-07 03:18:57] Session Status: Array
+(
+    [phone-number] => 9862404678
+    [user_id] => 23
+    [user_type] => college-grp
+    [user_identifier] => 2077-0023
+    [user_role] => School/College Level Election-Group
+)
+
+[2025-03-07 03:19:10] Generated OTP: 850502 for mobile: 9862404678
+[2025-03-07 03:19:11] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 850502","mobile":"9862404678"}
+[2025-03-07 03:19:11] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 03:19:11] Session Status: Array
+(
+    [phone-number] => 9862404678
+    [user_id] => 23
+    [user_type] => college-grp
+    [user_identifier] => 2077-0023
+    [user_role] => School/College Level Election-Group
+    [otp] => 850502
+    [otp_attempts] => 0
+    [otp_mobile] => 9862404678
+    [otp_sent] => 1
+)
+
+[2025-03-07 03:19:28] Verifying OTP. Input: 850502, Stored: 850502
+[2025-03-07 03:19:28] OTP verification successful.
+[2025-03-07 08:07:31] Session Status: Array
+(
+    [phone-number] => 9862404678
+    [user_id] => 23
+    [user_type] => college-grp
+    [user_identifier] => 2077-0023
+    [user_role] => School/College Level Election-Group
+    [otp_mobile] => 9862404678
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+)
+
+[2025-03-07 08:07:32] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9862404678"}
+[2025-03-07 08:07:32] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 03:23:25] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-07 03:23:45] Generated OTP: 841541 for mobile: 9826170721
+[2025-03-07 03:23:46] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 841541","mobile":"9826170721"}
+[2025-03-07 03:23:46] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-07 03:23:46] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 841541
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-07 03:24:02] Verifying OTP. Input: 841541, Stored: 841541
+[2025-03-07 03:24:02] OTP verification successful.
+[2025-03-07 03:56:25] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 1
+    [user_type] => org-grp
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election-Group
+)
+
+[2025-03-07 04:07:38] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-07 04:07:40] Generated OTP: 949047 for mobile: 9826170721
+[2025-03-07 04:07:42] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 949047","mobile":"9826170721"}
+[2025-03-07 04:07:42] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-07 04:07:42] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 949047
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-07 04:07:55] Verifying OTP. Input: 949047, Stored: 949047
+[2025-03-07 04:07:55] OTP verification successful.
+[2025-03-07 04:08:54] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 1
+    [user_type] => org-grp
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election-Group
+)
+
+[2025-03-07 04:08:59] Generated OTP: 590849 for mobile: 9840760417
+[2025-03-07 04:09:01] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 590849","mobile":"9840760417"}
+[2025-03-07 04:09:01] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 04:09:01] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 1
+    [user_type] => org-grp
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election-Group
+    [otp] => 590849
+    [otp_attempts] => 0
+    [otp_mobile] => 9840760417
+    [otp_sent] => 1
+)
+
+[2025-03-07 04:09:11] Verifying OTP. Input: 590849, Stored: 590849
+[2025-03-07 04:09:11] OTP verification successful.
+[2025-03-07 08:55:23] Session Status: Array
+(
+    [phone-number] => 9840760417
+    [user_id] => 1
+    [user_type] => org-grp
+    [user_identifier] => 21-77-601
+    [user_role] => Organizational Level Election-Group
+    [otp_mobile] => 9840760417
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+)
+
+[2025-03-07 08:55:33] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9840760417"}
+[2025-03-07 08:55:33] Response Code: 0, Response: 
+[2025-03-07 08:55:33] CURL Error: Operation timed out after 10001 milliseconds with 0 bytes received
+[2025-03-07 08:55:33] SMS Error: Failed to send SMS. HTTP Error: 0 - Service unavailable
+[2025-03-07 04:44:33] Session Status: Array
+(
+    [phone-number] => 9860394188
+    [user_id] => 2
+    [user_type] => org-grp
+    [user_identifier] => 21-77-612
+    [user_role] => Organizational Level Election-Group
+)
+
+[2025-03-07 04:44:37] Generated OTP: 870091 for mobile: 9860394188
+[2025-03-07 04:44:38] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 870091","mobile":"9860394188"}
+[2025-03-07 04:44:38] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 04:44:38] Session Status: Array
+(
+    [phone-number] => 9860394188
+    [user_id] => 2
+    [user_type] => org-grp
+    [user_identifier] => 21-77-612
+    [user_role] => Organizational Level Election-Group
+    [otp] => 870091
+    [otp_attempts] => 0
+    [otp_mobile] => 9860394188
+    [otp_sent] => 1
+)
+
+[2025-03-07 04:45:00] Verifying OTP. Input: 870091, Stored: 870091
+[2025-03-07 04:45:00] OTP verification successful.
+[2025-03-07 09:30:29] Session Status: Array
+(
+    [phone-number] => 9860394188
+    [user_id] => 2
+    [user_type] => org-grp
+    [user_identifier] => 21-77-612
+    [user_role] => Organizational Level Election-Group
+    [otp_mobile] => 9860394188
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+)
+
+[2025-03-07 09:30:30] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9860394188"}
+[2025-03-07 09:30:30] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 04:50:09] Session Status: Array
+(
+    [phone-number] => 9840531595
+    [user_id] => 6
+    [user_type] => college
+    [user_identifier] => 2077-006
+    [user_role] => School/College Level Election
+)
+
+[2025-03-07 04:50:22] Generated OTP: 698322 for mobile: 9840531595
+[2025-03-07 04:50:23] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 698322","mobile":"9840531595"}
+[2025-03-07 04:50:23] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 04:50:23] Session Status: Array
+(
+    [phone-number] => 9840531595
+    [user_id] => 6
+    [user_type] => college
+    [user_identifier] => 2077-006
+    [user_role] => School/College Level Election
+    [otp] => 698322
+    [otp_attempts] => 0
+    [otp_mobile] => 9840531595
+    [otp_sent] => 1
+)
+
+[2025-03-07 04:50:42] Verifying OTP. Input: 698322, Stored: 698322
+[2025-03-07 04:50:42] OTP verification successful.
+[2025-03-07 09:36:27] Session Status: Array
+(
+    [phone-number] => 9840531595
+    [user_id] => 6
+    [user_type] => college
+    [user_identifier] => 2077-006
+    [user_role] => School/College Level Election
+    [otp_mobile] => 9840531595
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+    [show_modal] => 1
+)
+
+[2025-03-07 09:36:27] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9840531595"}
+[2025-03-07 09:36:27] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 04:52:16] Session Status: Array
+(
+    [phone-number] => 9840531595
+    [user_id] => 6
+    [user_type] => college-grp
+    [user_identifier] => 2077-006
+    [user_role] => School/College Level Election-Group
+)
+
+[2025-03-07 04:52:27] Generated OTP: 899192 for mobile: 9840531595
+[2025-03-07 04:52:28] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 899192","mobile":"9840531595"}
+[2025-03-07 04:52:28] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-07 04:52:28] Session Status: Array
+(
+    [phone-number] => 9840531595
+    [user_id] => 6
+    [user_type] => college-grp
+    [user_identifier] => 2077-006
+    [user_role] => School/College Level Election-Group
+    [otp] => 899192
+    [otp_attempts] => 0
+    [otp_mobile] => 9840531595
+    [otp_sent] => 1
+)
+
+[2025-03-07 04:52:45] Verifying OTP. Input: 899192, Stored: 899192
+[2025-03-07 04:52:45] OTP verification successful.
+[2025-03-07 09:40:15] Session Status: Array
+(
+    [phone-number] => 9840531595
+    [user_id] => 6
+    [user_type] => college-grp
+    [user_identifier] => 2077-006
+    [user_role] => School/College Level Election-Group
+    [otp_mobile] => 9840531595
+    [otp_sent] => 1
+    [loggedin] => 1
+    [message] => Vote successfully submitted!
+    [msg_type] => success
+)
+
+[2025-03-07 09:40:16] SMS Payload: {"message":"Dear voter, thanks for casting your vote through MeroVote!","mobile":"9840531595"}
+[2025-03-07 09:40:16] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":1,"ncell":0,"smartcell":0,"sms_length":1}
+[2025-03-08 07:43:18] Session Status: Array
+(
+)
+
+[2025-03-08 07:43:37] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+)
+
+[2025-03-08 07:43:41] Generated OTP: 144163 for mobile: 9826170721
+[2025-03-08 07:43:42] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 144163","mobile":"9826170721"}
+[2025-03-08 07:43:42] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-08 07:43:42] Session Status: Array
+(
+    [phone-number] => 9826170721
+    [user_id] => 11
+    [user_type] => college-grp
+    [user_identifier] => 2077-0011
+    [user_role] => School/College Level Election-Group
+    [otp] => 144163
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-08 07:44:04] Verifying OTP. Input: 144163, Stored: 144163
+[2025-03-08 07:44:04] OTP verification successful.
+[2025-03-08 07:44:18] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-08 07:47:00] Session Status: Array
+(
+    [phone-number] => 9826170722
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-08 07:47:30] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+)
+
+[2025-03-08 07:48:28] Generated OTP: 495951 for mobile: 9826170721
+[2025-03-08 07:48:29] Request Payload: {"message":"Use this OTP code to access MeroVote Online Voting System: 495951","mobile":"9826170721"}
+[2025-03-08 07:48:29] Response Code: 200, Response: {"message":"Success! SMS has been sent","status":0,"ntc":0,"ncell":1,"smartcell":0,"sms_length":1}
+[2025-03-08 07:48:29] Session Status: Array
+(
+    [user_id] => 2
+    [admin_id] => A-1005
+    [otp] => 495951
+    [otp_attempts] => 0
+    [otp_mobile] => 9826170721
+    [otp_sent] => 1
+)
+
+[2025-03-08 07:48:39] Verifying OTP. Input: 495951, Stored: 495951
+[2025-03-08 07:48:39] OTP verification successful.
