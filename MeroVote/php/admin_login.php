@@ -18,6 +18,9 @@ $error_message = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values
     $phone_number = sanitize_input($_POST['phone-number']);
+
+     // Update session with the sanitized phone number so it can be used later for SMS notifications
+     $_SESSION['phone-number'] = $phone_number;
     $password = sanitize_input($_POST['password']);
     $admin_id = sanitize_input($_POST['admin_id']);
 
