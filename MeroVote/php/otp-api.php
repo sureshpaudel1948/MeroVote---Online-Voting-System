@@ -249,7 +249,9 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
     <?php if (!isset($_SESSION["otp_sent"])) { ?>
         <form method="post">
             <label>Enter Mobile Number:</label>
-            <input type="text" name="mobile" placeholder="9XXXXXXXX" required>
+            <input type="text" name="mobile" 
+                   value="<?php echo isset($_SESSION['phone-number']) ? htmlspecialchars($_SESSION['phone-number']) : ''; ?>" 
+                   placeholder="9XXXXXXXX" required>
             <button type="submit" name="send_otp">Send OTP</button>
         </form>
     <?php } else { ?>
@@ -262,6 +264,7 @@ aria-expanded = 'false' aria-label = 'Toggle navigation'>
     <?php } ?>
     <?php if ($error_message) echo "<p>$error_message</p>"; ?>
 </div>
+
 <footer class = 'bg-dark text-white text-center py-3'>
 <div class = 'container'>
 <p>&copy;
