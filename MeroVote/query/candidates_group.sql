@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS candidates_group (
     photo VARCHAR(255),
     election_name VARCHAR(255) NOT NULL,
     elect_no INT NOT NULL,
-    panel VARCHAR(50) NOT NULL CHECK (panel IN ('Panel 1', 'Panel 2')),  -- Restricting allowed values
+    panel VARCHAR(50) NOT NULL CHECK (panel IN ('Panel 1', 'Panel 2', 'Panel 3', 'Panel 4')),  -- Restricting allowed values
     candidate_position VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
